@@ -1,47 +1,45 @@
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
+<script setup lang="ts">
+import { onMounted } from 'vue'
+import { useAuthStore } from '@/stores/auth'
+import TheHeader from '@/components/layout/AppHeader.vue'
+import TheFooter from '@/components/layout/AppFooter.vue'
+
+const authStore = useAuthStore()
+
+onMounted(() => {
+  // Проверяем авторизацию при загрузке страницы
+  authStore.fetchMe()
+})
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
+  <div class="app-layout">
+    <TheHeader />
 
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
+    <main class="main-content">
+      <router-view /> <!-- Здесь будут меняться страницы -->
+    </main>
 
-  <main>
-    <TheWelcome />
-  </main>
+    <TheFooter />
+  </div>
 </template>
 
-<style scoped>
-header {
-  line-height: 1.55;
+<style>
+/* Глобальные стили для всей страницы */
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
 }
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
+.app-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  font-family: 'Inter', sans-serif;
 }
 
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
+.main-content {
+  flex: 1; /* Растягивает контент, чтобы футер всегда был внизу */
 }
 </style>
