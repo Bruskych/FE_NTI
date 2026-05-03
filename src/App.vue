@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
 import { useAuthStore } from '@/stores/auth'
-import TheHeader from '@/components/layout/AppHeader.vue'
-import TheFooter from '@/components/layout/AppFooter.vue'
+import TheHeader from '@/layouts/AppHeader.vue'
+import TheFooter from '@/layouts/AppFooter.vue'
 
 const authStore = useAuthStore()
 
