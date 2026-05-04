@@ -7,7 +7,6 @@ import TheFooter from '@/layouts/AppFooter.vue'
 const authStore = useAuthStore()
 
 onMounted(() => {
-  // Проверяем авторизацию при загрузке страницы
   authStore.fetchMe()
 })
 </script>

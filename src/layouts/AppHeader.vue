@@ -1,9 +1,25 @@
 <script setup lang="ts">
-import { useAuthStore } from '@/stores/auth';
-import { storeToRefs } from 'pinia';
 
-const authStore = useAuthStore();
-const { isAuthenticated, user } = storeToRefs(authStore);
+// LANGUAGE
+import LanguageToggle from '@/components/ui/LanguageToggle.vue'
+import { useLanguage } from '@/composables/useLanguage'
+const { currentLang, setLanguage } = useLanguage()
+const toggleLang = () => {
+  setLanguage(currentLang.value === 'en' ? 'sk' : 'en')
+}
+
+// DARK / LIGHT THEME
+import { useTheme } from '@/composables/useTheme'
+const { isDark, toggleTheme } = useTheme()
+
+// OTHER
+import BaseButton from '@/components/ui/BaseButton.vue'
+import SecondaryButton from '@/components/ui/SecondaryButton.vue'
+import ThemeToggle from '@/components/ui/ThemeToggle.vue'
+
+import { useAuthStore } from '@/stores/auth'
+const authStore = useAuthStore()
+
 </script>
 
 <template>
@@ -11,65 +27,60 @@ const { isAuthenticated, user } = storeToRefs(authStore);
     <div class="container">
       <router-link to="/" class="logo">NTI Portal</router-link>
 
-      <nav class="nav">
-        <router-link to="/" class="nav-link">Domov</router-link>
-        <router-link to="/programs" class="nav-link">Programy</router-link>
+      <div class="nav-right">
 
-        <div v-if="isAuthenticated" class="user-menu">
-          <span class="user-name">{{ user?.name }}</span>
-          <button @click="authStore.logout()" class="btn-logout">Odhlásiť</button>
+        <!-- ГОСТЬ -->
+        <LanguageToggle :lang="currentLang" @toggle="toggleLang"/>
+        <ThemeToggle :isDark="isDark" @toggle="toggleTheme"/>
+        <div v-if="!authStore.isAuthenticated" class="auth-buttons">
+          <SecondaryButton to="/register">{{ $t('header.sign_up') }}</SecondaryButton>
+          <BaseButton to="/login">{{ $t('header.log_in') }}</BaseButton>
         </div>
-        <router-link v-else to="/login" class="btn-login">Prihlásiť sa</router-link>
-      </nav>
+
+      </div>
+
     </div>
   </header>
 </template>
 
 <style scoped>
 .header {
-  width: 100%;
-  background: #ffffff;
-  border-bottom: 1px solid #e2e8f0;
-  padding: 1rem 0;
+  font-family: var(--font-main), sans-serif;
+
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+
+  background: var(--menu-color);
+  border-bottom: 1px solid var(--menu-border);
 }
+
 .container {
-  max-width: 1200px;
   margin: 0 auto;
+  padding: 0 20px;
+
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  align-items: center;
-  padding: 0 1rem;
+
+  height: 75px;
 }
+
 .logo {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #2563eb;
+  font-size: 1.4rem;
+  font-weight: 700;
   text-decoration: none;
+  color: var(--text-color);
 }
-.nav {
+
+.nav-right {
   display: flex;
-  gap: 1.5rem;
   align-items: center;
+  gap: 15px;
 }
-.nav-link {
-  text-decoration: none;
-  color: #475569;
-  font-weight: 500;
-}
-.nav-link:hover { color: #2563eb; }
-.btn-login {
-  background: #2563eb;
-  color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
-  text-decoration: none;
-}
-.btn-logout {
-  background: #fee2e2;
-  color: #dc2626;
-  border: none;
-  padding: 0.4rem 0.8rem;
-  border-radius: 0.4rem;
-  cursor: pointer;
+
+.auth-buttons {
+  display: flex;
+  gap: 10px;
 }
 </style>

@@ -10,7 +10,8 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "type-check": "vue-tsc --noEmit",
-    "check": "npm run lint && npm run type-check && npm run build"
+    "check": "npm run lint && npm run type-check && npm run build",
+    "prepare": "husky"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.2.4",
@@ -18,7 +19,7 @@
     "pinia": "^3.0.4",
     "tailwindcss": "^4.2.4",
     "vue": "^3.5.32",
-    "vue-i18n": "^9.14.5",
+    "vue-i18n": "^11.4.0",
     "vue-router": "^4.6.4"
   },
   "devDependencies": {
@@ -30,9 +31,11 @@
     "eslint": "^10.3.0",
     "eslint-plugin-vue": "^10.9.0",
     "globals": "^17.6.0",
+    "husky": "^9.1.7",
     "typescript-eslint": "^8.59.1",
     "vite": "^8.0.8",
     "vite-plugin-vue-devtools": "^8.1.1",
+    "vite-svg-loader": "^5.1.1",
     "vue-eslint-parser": "^10.4.0",
     "vue-tsc": "^3.2.7"
   },

@@ -1,22 +1,23 @@
 import { createI18n } from 'vue-i18n'
-import skAuth from './sk/auth.json'
-import skCommon from './sk/common.json'
-import enAuth from './en/auth.json'
-import enCommon from './en/common.json'
+import skHeader from './sk/header.json'
+import enHeader from './en/header.json'
+
+import skFooter from './sk/footer.json'
+import enFooter from './en/footer.json'
 
 const messages = {
     sk: {
-        auth: skAuth,
-        common: skCommon
+        header: skHeader,
+        footer: skFooter,
     },
     en: {
-        auth: enAuth,
-        common: enCommon
+        header: enHeader,
+        footer: enFooter,
     }
 }
 
 export const i18n = createI18n({
-    legacy: false, // Обязательно для Composition API
+    legacy: false,
     locale: localStorage.getItem('lang') || 'sk', // Берем язык из памяти или ставим SK
     fallbackLocale: 'en', // Если перевода нет на SK, покажет EN
     messages

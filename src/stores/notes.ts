@@ -1,17 +1,38 @@
 import { defineStore } from 'pinia'
 import api from '@/core/api/axios'
+import axios from 'axios'
+
+type Note = {
+  id: number
+  title?: string
+  content?: string
+  [key: string]: unknown
+}
+
+type Pagination = {
+  current_page: number
+  last_page: number
+  per_page: number
+  total: number
+}
+
+type ApiError = string | null
 
 export const useNotesStore = defineStore('notes', {
   state: () => ({
-    notes: [],
-    myNotes: [],
-    paginationAll: null,
-    paginationMine: null,
-    selectedNote: null,
+    notes: [] as Note[],
+    myNotes: [] as Note[],
+
+    paginationAll: null as Pagination | null,
+    paginationMine: null as Pagination | null,
+
+    selectedNote: null as Note | null,
+
     loadingAll: false,
     loadingMine: false,
     loadingDetail: false,
-    error: null,
+
+    error: null as ApiError,
   }),
 
   actions: {
@@ -30,8 +51,14 @@ export const useNotesStore = defineStore('notes', {
           per_page: payload.per_page,
           total: payload.total,
         }
-      } catch (error) {
-        this.error = error.response?.data?.message || 'Nepodarilo sa načítať poznámky.'
+      } catch (error: unknown) {
+        if (axios.isAxiosError(error)) {
+          this.error =
+            error.response?.data?.message ||
+            'Nepodarilo sa načítať poznámky.'
+        } else {
+          this.error = 'Nepodarilo sa načítať poznámky.'
+        }
       } finally {
         this.loadingAll = false
       }
@@ -52,14 +79,20 @@ export const useNotesStore = defineStore('notes', {
           per_page: payload.per_page,
           total: payload.total,
         }
-      } catch (error) {
-        this.error = error.response?.data?.message || 'Nepodarilo sa načítať moje poznámky.'
+      } catch (error: unknown) {
+        if (axios.isAxiosError(error)) {
+          this.error =
+            error.response?.data?.message ||
+            'Nepodarilo sa načítať moje poznámky.'
+        } else {
+          this.error = 'Nepodarilo sa načítať moje poznámky.'
+        }
       } finally {
         this.loadingMine = false
       }
     },
 
-    async fetchNoteDetail(id) {
+    async fetchNoteDetail(id: number | string) {
       this.loadingDetail = true
       this.error = null
       this.selectedNote = null
@@ -67,19 +100,31 @@ export const useNotesStore = defineStore('notes', {
       try {
         const response = await api.get(`/notes/${id}`)
         this.selectedNote = response.data.note
-      } catch (error) {
-        this.error = error.response?.data?.message || 'Nepodarilo sa načítať detail poznámky.'
+      } catch (error: unknown) {
+        if (axios.isAxiosError(error)) {
+          this.error =
+            error.response?.data?.message ||
+            'Nepodarilo sa načítať detail poznámky.'
+        } else {
+          this.error = 'Nepodarilo sa načítať detail poznámky.'
+        }
       } finally {
         this.loadingDetail = false
       }
     },
 
-    async openAttachment(publicId) {
+    async openAttachment(publicId: string | number) {
       try {
         const response = await api.get(`/attachments/${publicId}/link`)
         window.open(response.data.url, '_blank')
-      } catch (error) {
-        this.error = error.response?.data?.message || 'Nepodarilo sa otvoriť prílohu.'
+      } catch (error: unknown) {
+        if (axios.isAxiosError(error)) {
+          this.error =
+            error.response?.data?.message ||
+            'Nepodarilo sa otvoriť prílohu.'
+        } else {
+          this.error = 'Nepodarilo sa otvoriť prílohu.'
+        }
       }
     },
   },

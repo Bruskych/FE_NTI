@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import api from '@/core/api/axios'
+import axios from 'axios'
 
 // 1. Описываем интерфейс пользователя согласно ролям из ТЗ
 export interface User {
@@ -50,11 +51,13 @@ export const useAuthStore = defineStore('auth', {
         this.user = data.user
 
         localStorage.setItem('token', data.token)
-      } catch (error: any) {
-        this.error = error.response?.data?.message || 'Login zlyhal.'
+      } catch (error: unknown) {
+        if (axios.isAxiosError(error)) {
+          this.error = error.response?.data?.message || 'Login zlyhal.'
+        } else {
+          this.error = 'Login zlyhal.'
+        }
         throw error
-      } finally {
-        this.loading = false
       }
     },
 

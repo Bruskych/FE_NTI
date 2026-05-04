@@ -1,19 +1,16 @@
-//import './assets/css/main.css'
+import './assets/css/main.css'
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
-// Если ты пока не используешь i18n, можешь закомментировать строку ниже
-// import { i18n } from './locales'
+import { i18n } from './locales'
 
 import App from './App.vue'
-import router from './core/router' // Исправленный путь к твоему роутеру
+import router from './core/router'
 
 const app = createApp(App)
 
-// Подключаем все плагины по очереди
 app.use(createPinia())
 app.use(router)
-// app.use(i18n)
+app.use(i18n)
 
-// Монтируем ОДИН раз в самом конце
 app.mount('#app')
