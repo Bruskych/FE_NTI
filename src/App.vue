@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
 import { useAuthStore } from '@/stores/auth'
-import TheHeader from '@/layouts/AppHeader.vue'
-import TheFooter from '@/layouts/AppFooter.vue'
+import TheHeader from '@/components/layout/AppHeader.vue'
+import TheFooter from '@/components/layout/AppFooter.vue'
 
 const authStore = useAuthStore()
 
@@ -16,7 +16,7 @@ onMounted(() => {
     <TheHeader />
 
     <main class="main-content">
-      <router-view /> <!-- Здесь будут меняться страницы -->
+      <router-view />
     </main>
 
     <TheFooter />
@@ -24,21 +24,18 @@ onMounted(() => {
 </template>
 
 <style>
-/* Глобальные стили для всей страницы */
 body, html {
   margin: 0;
   padding: 0;
   height: 100%;
 }
-
 .app-layout {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
   font-family: 'Inter', sans-serif;
 }
-
 .main-content {
-  flex: 1; /* Растягивает контент, чтобы футер всегда был внизу */
+  flex: 1;
 }
 </style>
