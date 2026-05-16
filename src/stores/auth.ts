@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import type { AxiosError } from 'axios'
 import api from '@/core/api/axios'
 import axios from 'axios'
 
@@ -41,8 +42,7 @@ export const useAuthStore = defineStore('auth', {
       this.error = null
 
       try {
-        // Указываем тип ответа от сервера (token и объект user)
-        const { data } = await api.post<{ token: string; user: User }>('/auth/login', {
+        const { data } = await api.post<{ token: string; user: User }>('/login', {
           email,
           password
         })
@@ -51,13 +51,35 @@ export const useAuthStore = defineStore('auth', {
         this.user = data.user
 
         localStorage.setItem('token', data.token)
+
       } catch (error: unknown) {
-        if (axios.isAxiosError(error)) {
-          this.error = error.response?.data?.message || 'Login zlyhal.'
-        } else {
-          this.error = 'Login zlyhal.'
-        }
+        const err = error as AxiosError<{ message: string }>
+        this.error = err.response?.data?.message || 'Login failed'
         throw error
+      } finally {
+        this.loading = false
+      }
+    },
+
+    async register(userData: Record<string, unknown>) {
+      this.loading = true
+      try {
+        // Формируем payload для Laravel, если там ожидается единое поле name
+        const payload = {
+          name: `${userData.first_name} ${userData.last_name}`.trim(),
+          email: userData.email,
+          password: userData.password,
+          password_confirmation: userData.password_confirmation,
+          role: userData.role
+        }
+        const { data } = await api.post('/register', payload)
+        this.token = data.token
+        this.user = data.user
+        localStorage.setItem('token', data.token)
+      } catch (error) {
+        this.error = 'Register failed'
+      } finally {
+        this.loading = false
       }
     },
 

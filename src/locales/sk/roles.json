@@ -1,0 +1,12 @@
+{
+  "role": "Vaša rola",
+  "visitor": "Návštevník",
+  "student": "Študent",
+  "team_leader": "Vedúci tímu",
+  "company": "Spoločnosť",
+  "mentor": "Mentor",
+  "evaluator": "Hodnotiteľ",
+  "content_editor": "Editor obsahu",
+  "admin": "Administrátor",
+  "super_admin": "Super administrátor"
+}

@@ -13,9 +13,8 @@ const isLink = computed(() => !!props.to)
 <template>
   <component
       :is="isLink ? RouterLink : 'button'"
-      :to="to"
-      :type="!isLink ? (type || 'button') : undefined"
       class="base-button"
+      v-bind="isLink ? { to } : { type: type || 'button' }"
   >
     <slot />
   </component>
@@ -23,6 +22,9 @@ const isLink = computed(() => !!props.to)
 
 <style scoped>
 .base-button {
+  all: unset;
+  box-sizing: border-box;
+
   font-family: var(--font-main), sans-serif;
   font-weight: 550;
 
@@ -34,12 +36,18 @@ const isLink = computed(() => !!props.to)
   background-color: var(--button-bg-color);
   color: var(--button-text-color);
 
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 
   transition: background-color 0.25s ease, filter 0.25s ease;
   will-change: background-color, filter;
 }
 .base-button:hover {
   background-color: var(--button-bg-hover);
+}
+.base-button:visited {
+  color: var(--button-text-color);
 }
 </style>

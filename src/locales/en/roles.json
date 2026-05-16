@@ -1,0 +1,12 @@
+{
+  "role": "Your role",
+  "visitor": "Visitor",
+  "student": "Student",
+  "team_leader": "Team Leader",
+  "company": "Company",
+  "mentor": "Mentor",
+  "evaluator": "Evaluator",
+  "content_editor": "Content Editor",
+  "admin": "Admin",
+  "super_admin": "Super Admin"
+}

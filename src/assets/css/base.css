@@ -3,37 +3,59 @@
 :root {
     --font-main: "Raleway", sans-serif;
 
+    /* ROOT */
     --bg-color: #eef9f5;
     --menu-color: #ffffff;
     --menu-border: #e6e6e6;
 
-    --text-color: #141414;
+    /* TEXT */
+    --text-color: #191919;
     --text-color-unimp: #464646;
 
+    /* 1 BUTTON */
     --button-text-color: #ffffff;
     --button-bg-color: #66cba2;
     --button-bg-hover: #57907e;
 
-    --button-text-color-unimp: #141414;
+    /* 2 BUTTON */
+    --button-text-color-unimp: #191919;
     --button-bg-color-unimp: #ffffff;
     --button-bg-hover-unimp: #e6e6e6;
     --button-border-color-unimp: #e6e6e6;
+
+    /* INPUT + SELECT */
+    --input-bg-color: #ffffff;
+    --input-border-color: #e6e6e6;
+    --input-border-color-focus: #66cba2;
+    --select-bg-color: #ffffff;
+    --select-bg-color-focus: #e6e6e6;
 }
 
 .dark {
-    --bg-color: #141414;
+    /* ROOT */
+    --bg-color: #191919;
     --menu-color: #252525;
     --menu-border: #373737;
 
+    /* TEXT */
     --text-color: #ffffff;
     --text-color-unimp: #515151;
 
+    /* 1 BUTTON */
     --button-text-color: #ffffff;
     --button-bg-color: #66cba2;
     --button-bg-hover: #57907e;
 
+    /* 2 BUTTON */
     --button-text-color-unimp: #ffffff;
     --button-bg-color-unimp: #3f3f3f;
     --button-bg-hover-unimp: #515151;
     --button-border-color-unimp: #3f3f3f;
+
+    /* INPUT + SELECT */
+    --input-bg-color: #191919;
+    --input-border-color: #373737;
+    --input-border-color-focus: #66cba2;
+    --select-bg-color: #3f3f3f;
+    --select-bg-color-focus: #515151;
 }
