@@ -11,7 +11,7 @@ import axios from 'axios'
 import { useNotificationStore } from '@/stores/notifications'
 
 const api = axios.create({
-  baseURL: 'http://127.0.0.1:8000//api',
+  baseURL: 'http://127.0.0.1:8000/api',
   headers: {
     'Accept': 'application/json',
     'Content-Type': 'application/json',

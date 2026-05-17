@@ -12,13 +12,24 @@ const toggleLang = () => {
 import { useTheme } from '@/composables/useTheme'
 const { isDark, toggleTheme } = useTheme()
 
-// OTHER
+// IMPORTS
 import BaseButton from '@/components/ui/BaseButton.vue'
 import SecondaryButton from '@/components/ui/SecondaryButton.vue'
 import ThemeToggle from '@/components/ui/ThemeToggle.vue'
+import UserDropdown from '@/components/layout/UserDropdown.vue'
 
 import { useAuthStore } from '@/stores/auth'
+import {computed} from "vue";
 const authStore = useAuthStore()
+
+// ROLES
+const isLoggedIn = computed(() => authStore.isAuthenticated)
+const isAdmin = computed(() =>
+    authStore.user?.roles?.some(r => r.name === 'admin')
+)
+const isCompany = computed(() =>
+    authStore.user?.roles?.some(r => r.name === 'company')
+)
 
 </script>
 
@@ -29,12 +40,17 @@ const authStore = useAuthStore()
 
       <div class="nav-right">
 
-        <!-- ГОСТЬ -->
         <LanguageToggle :lang="currentLang" @toggle="toggleLang"/>
         <ThemeToggle :isDark="isDark" @toggle="toggleTheme"/>
+
+        <!-- ГОСТЬ -->
         <div v-if="!authStore.isAuthenticated" class="auth-buttons">
           <SecondaryButton to="/register">{{ $t('header.sign_up') }}</SecondaryButton>
           <BaseButton to="/login">{{ $t('header.log_in') }}</BaseButton>
+        </div>
+        <!-- АВТОРИЗОВАН -->
+        <div v-else class="user-menu">
+          <UserDropdown v-if="authStore.isAuthenticated" />
         </div>
 
       </div>

@@ -8,6 +8,7 @@ const { t } = useI18n()
 
 import BaseInput from '@/components/ui/BaseInput.vue'
 import BaseButton from '@/components/ui/BaseButton.vue'
+import ErrorMessage from '@/components/ui/ErrorMessage.vue'
 
 const emailError = ref('')
 const passwordError = ref('')
@@ -45,17 +46,26 @@ const handleLogin = async () => {
     return
   }
   try {
+    // Тут идёт отправка данных с сайта вот сюда - src/stores/auth.ts
     await authStore.login(form.value.email, form.value.password)
     router.push({ name: 'home' })
   } catch (error) {
     console.error('Error:', error)
   }
 }
+
 </script>
+
 <template>
   <div class="login-page">
     <form @submit.prevent="handleLogin" class="auth-form">
       <h1>{{ $t('login.welcomeBack') }}</h1>
+      <ErrorMessage
+          v-if="authStore.error"
+          :message="t('login.invalidCredentials')"
+          closable
+          @close="authStore.error = ''"
+      />
       <BaseInput
           v-model="form.email"
           type="email"
@@ -67,6 +77,7 @@ const handleLogin = async () => {
       <BaseInput
           v-model="form.password"
           type="password"
+          showPasswordToggle
           :label="$t('login.password')"
           :placeholder="$t('login.passwordPlaceholder')"
           :error="passwordError"

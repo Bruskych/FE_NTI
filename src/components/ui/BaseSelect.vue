@@ -84,6 +84,16 @@ onBeforeUnmount(() => document.removeEventListener('click', handleOutside))
 .icon {
   color: var(--text-color);
 }
+.arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.25s ease;
+  transform-origin: center;
+}
+.arrow.open {
+  transform: rotate(180deg);
+}
 .select-wrapper {
   font-family: var(--font-main), sans-serif;
   font-weight: 550;
@@ -123,16 +133,6 @@ onBeforeUnmount(() => document.removeEventListener('click', handleOutside))
 }
 .select-box:hover {
   border-color: var(--input-border-color-focus);
-}
-.arrow {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform 0.25s ease;
-  transform-origin: center;
-}
-.arrow.open {
-  transform: rotate(180deg);
 }
 .dropdown-wrapper {
   position: absolute;
@@ -177,10 +177,10 @@ onBeforeUnmount(() => document.removeEventListener('click', handleOutside))
   color: #888;
 }
 .input-error {
-  border-color: #e74c3c;
+  border-color: var(--error-color);
 }
 .error-message {
-  color: #e74c3c;
+  color: var(--error-color);
   font-size: 12px;
 }
 </style>

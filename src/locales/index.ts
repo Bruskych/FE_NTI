@@ -15,6 +15,9 @@ import enRegister from './en/registration.json'
 import skRole from './sk/roles.json'
 import enRole from './en/roles.json'
 
+import skUserPanel from './sk/user_panel.json'
+import enUserPanel from './en/user_panel.json'
+
 const messages = {
     sk: {
         header: skHeader,
@@ -22,6 +25,7 @@ const messages = {
         login: skLogin,
         register: skRegister,
         role: skRole,
+        userPanel: skUserPanel,
     },
     en: {
         header: enHeader,
@@ -29,6 +33,7 @@ const messages = {
         login: enLogin,
         register: enRegister,
         role: enRole,
+        userPanel: enUserPanel,
     }
 }
 

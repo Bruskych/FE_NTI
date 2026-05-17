@@ -136,7 +136,7 @@ const handleRegister = async () => {
       <BaseSelect
           v-model="form.role"
           :label="$t('role.role')"
-          :placeholder="$t('selectRole')"
+          :placeholder="$t('role.selectRole')"
           :options="roleOptions"
       />
       <BaseButton type="submit" :disabled="authStore.loading">

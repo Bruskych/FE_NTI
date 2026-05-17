@@ -1,10 +1,16 @@
 <script setup lang="ts">
+
+import { ref, computed } from 'vue'
+import ClosedEye from '@/assets/icons/eye_closed.svg'
+import OpenEye from '@/assets/icons/eye_open.svg'
+
 interface Props {
   label?: string                  // Текст над полем ввода
   modelValue: string | number     // Главное значение input
   type?: string                   // Тип input (text / password / email / number)
   placeholder?: string            // Серый текст внутри input
   error?: string                  // Текст ошибки
+  showPasswordToggle?: boolean    // Даёт возможность увидеть свой пароль
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -12,11 +18,18 @@ const props = withDefaults(defineProps<Props>(), {
   placeholder: '',
 })
 
+const showPassword = ref(false)
+const inputType = computed(() => {
+  if (props.type !== 'password') return props.type
+  return showPassword.value ? 'text' : 'password'
+})
+
 const emit = defineEmits(['update:modelValue'])
 const updateValue = (event: Event) => {
   const target = event.target as HTMLInputElement
   emit('update:modelValue', target.value)
 }
+
 </script>
 
 <template>
@@ -26,13 +39,28 @@ const updateValue = (event: Event) => {
       {{ label }}
     </label>
     <!-- Поле ввода -->
-    <input
-        :type="type"
-        :value="modelValue"
-        :placeholder="placeholder"
-        :class="['base-input', { 'input-error': error }]"
-        @input="updateValue"
-    />
+    <div class="input-container">
+      <input
+          :type="inputType"
+          :value="modelValue"
+          :placeholder="placeholder"
+          :class="[
+            'base-input',
+             { 'input-error': error },
+             { 'has-eye': type === 'password' && showPasswordToggle }
+          ]"
+          @input="updateValue"
+      />
+      <button
+          v-if="type === 'password' && showPasswordToggle"
+          type="button"
+          class="eye-btn"
+          @click="showPassword = !showPassword"
+      >
+        <OpenEye v-if="showPassword" class="icon" />
+        <ClosedEye v-else class="icon" />
+      </button>
+    </div>
     <!-- Сообщение о ошибке -->
     <transition name="fade">
       <span v-if="error" class="error-message">{{ error }}</span>
@@ -41,6 +69,39 @@ const updateValue = (event: Event) => {
 </template>
 
 <style scoped>
+.icon {
+  color: var(--text-color);
+  transition: all 0.25s ease;
+}
+.input-container {
+  position: relative;
+  width: 100%;
+}
+.base-input {
+  width: 100%;
+  box-sizing: border-box;
+}
+.base-input.has-eye {
+  padding-right: 45px;
+}
+.eye-btn {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  background: transparent;
+  border: none;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.eye-btn:hover .icon {
+  color: var(--button-bg-color);
+  transform: scale(0.95);
+}
 .input-wrapper {
   font-family: var(--font-main), sans-serif;
   font-weight: 550;
@@ -74,10 +135,10 @@ const updateValue = (event: Event) => {
   border-color: var(--input-border-color-focus);
 }
 .base-input.input-error {
-  border-color: #e74c3c;
+  border-color: var(--error-color);
 }
 .error-message {
-  color: #e74c3c;
+  color: var(--error-color);
   font-size: 12px;
   margin-top: 2px;
 }

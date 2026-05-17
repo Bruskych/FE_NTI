@@ -3,21 +3,31 @@ import type { AxiosError } from 'axios'
 import api from '@/core/api/axios'
 import axios from 'axios'
 
-// 1. Описываем интерфейс пользователя согласно ролям из ТЗ
+// Описываем интерфейс пользователя согласно ролям из ТЗ
 export interface User {
   id: number;
   name: string;
   email: string;
-  role: 'student' | 'leader' | 'company' | 'mentor' | 'evaluator' | 'admin' | 'super_admin';
+  roles: { name: string }[];
   organization_id?: number | null; // Для сотрудников фирм
+  avatar?: string | null;
 }
 
-// 2. Описываем структуру состояния (State)
+// Описываем структуру состояния (State)
 interface AuthState {
   token: string | null;
   user: User | null;
   loading: boolean;
   error: string | null;
+}
+
+// Описываем структуру ошибок
+type LoginErrorResponse = {
+  message?: string
+  errors?: {
+    email?: string[]
+    password?: string[]
+  }
 }
 
 export const useAuthStore = defineStore('auth', {
@@ -29,11 +39,12 @@ export const useAuthStore = defineStore('auth', {
   }),
 
   getters: {
-    isAuthenticated: (state): boolean => !!state.token,
+    isAuthenticated: (state) => !!state.token,
 
-    // Полезное дополнение для NTI: проверка прав
-    isAdmin: (state): boolean => state.user?.role === 'admin' || state.user?.role === 'super_admin',
-    isCompany: (state): boolean => state.user?.role === 'company',
+    isAdmin: (state) =>
+      state.user?.roles?.some(r => r.name === 'admin' || r.name === 'super_admin'),
+    isCompany: (state) =>
+      state.user?.roles?.some(r => r.name === 'company'),
   },
 
   actions: {
@@ -42,6 +53,7 @@ export const useAuthStore = defineStore('auth', {
       this.error = null
 
       try {
+        // Отправка запроса на сервер, и дальше данные уходят в src/core/api/axios.ts
         const { data } = await api.post<{ token: string; user: User }>('/login', {
           email,
           password
@@ -49,13 +61,17 @@ export const useAuthStore = defineStore('auth', {
 
         this.token = data.token
         this.user = data.user
-
         localStorage.setItem('token', data.token)
 
       } catch (error: unknown) {
-        const err = error as AxiosError<{ message: string }>
-        this.error = err.response?.data?.message || 'Login failed'
+        const err = error as AxiosError<LoginErrorResponse>
+
+        this.error =
+          err.response?.data?.errors?.email?.[0] ||
+          err.response?.data?.message ||
+          'Login failed'
         throw error
+
       } finally {
         this.loading = false
       }
@@ -87,7 +103,7 @@ export const useAuthStore = defineStore('auth', {
       if (!this.token) return
 
       try {
-        const { data } = await api.get<{ user: User }>('/auth/me')
+        const { data } = await api.get<{ user: User }>('/me')
         this.user = data.user
       } catch (error) {
         this.logout()
@@ -96,7 +112,7 @@ export const useAuthStore = defineStore('auth', {
 
     async logout(): Promise<void> {
       try {
-        await api.post('/auth/logout')
+        await api.post('/logout')
       } catch (error) {
         console.error('Logout failed:', error)
       } finally {

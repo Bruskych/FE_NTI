@@ -7,6 +7,13 @@
     --bg-color: #eef9f5;
     --menu-color: #ffffff;
     --menu-border: #e6e6e6;
+    --error-color: #cf2d60;
+
+    /* Automatic data insertion */
+    input:-webkit-autofill {
+        -webkit-text-fill-color: #191919;
+        -webkit-box-shadow: 0 0 0 1000px #d3e8f2 inset;
+    }
 
     /* TEXT */
     --text-color: #191919;
@@ -32,10 +39,19 @@
 }
 
 .dark {
+    --font-main: "Raleway", sans-serif;
+
     /* ROOT */
     --bg-color: #191919;
     --menu-color: #252525;
     --menu-border: #373737;
+    --error-color: #e8453c;
+
+    /* Automatic data insertion */
+    input:-webkit-autofill {
+        -webkit-text-fill-color: #ffffff;
+        -webkit-box-shadow: 0 0 0 1000px #6c69a3 inset;
+    }
 
     /* TEXT */
     --text-color: #ffffff;

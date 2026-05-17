@@ -1,5 +1,7 @@
 {
   "role": "Vaša rola",
+  "selectRole": "Kto si?",
+
   "visitor": "Návštevník",
   "student": "Študent",
   "team_leader": "Vedúci tímu",
