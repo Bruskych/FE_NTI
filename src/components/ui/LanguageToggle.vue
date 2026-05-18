@@ -35,9 +35,17 @@ defineEmits<{ (e: 'toggle'): void }>()
   align-items: center;
   justify-content: center;
 
-  transition: all 0.2s ease;
-}
-.lang-toggle:hover {
-  background-color: var(--button-bg-hover-unimp);
+  will-change: transform, background-color, filter;
+  transition:
+      transform 150ms ease-in-out,
+      background-color 250ms ease,
+      filter 250ms ease;
+
+  &:hover {
+    background-color: var(--button-bg-hover-unimp);
+  }
+  &:active {
+    transform: scale(0.95);
+  }
 }
 </style>

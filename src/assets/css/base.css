@@ -1,5 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
 
+/* Все цвета для всего сайта - для белой темы, и чёрной */
+
 :root {
     --font-main: "Raleway", sans-serif;
 
@@ -36,6 +38,13 @@
     --input-border-color-focus: #66cba2;
     --select-bg-color: #ffffff;
     --select-bg-color-focus: #e6e6e6;
+
+    /* USER DROPDOWN */
+    --user-menu-text-color: #66cba2;
+    --user-menu-bg-color: #ffffff;
+    --user-menu-bg-color-hover: #ffffff;
+    --user-menu-line-color: #e6e6e6;
+    --user-menu-border-color: #ffffff;
 }
 
 .dark {
@@ -74,4 +83,11 @@
     --input-border-color-focus: #66cba2;
     --select-bg-color: #3f3f3f;
     --select-bg-color-focus: #515151;
+
+    /* USER DROPDOWN */
+    --user-menu-text-color: #ffffff;
+    --user-menu-bg-color: #333333;
+    --user-menu-bg-color-hover: #525252;
+    --user-menu-line-color: #525252;
+    --user-menu-border-color: #333333;
 }

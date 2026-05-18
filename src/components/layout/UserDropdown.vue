@@ -54,7 +54,7 @@ onBeforeUnmount(() => document.removeEventListener('click', handleOutside))
     <!-- TRIGGER -->
     <div class="trigger" @click="toggle">
       <img :src="userAvatar" class="avatar" />
-      <span class="name">
+      <span class="user-name">
         {{ userName }}
       </span>
       <ArrowIcon class="arrow" :class="{ open: isOpen }" />
@@ -72,7 +72,9 @@ onBeforeUnmount(() => document.removeEventListener('click', handleOutside))
       >
         {{ $t("userPanel.admin_panel") }}
       </div>
-      <div class="menu-divider"></div>
+      <div class="menu-divider">
+        <!-- -->
+      </div>
       <div class="menu-item logout" @click="logout">
         {{ $t("userPanel.logout") }}
       </div>
@@ -89,9 +91,10 @@ onBeforeUnmount(() => document.removeEventListener('click', handleOutside))
   justify-content: center;
   transition: transform 0.25s ease;
   transform-origin: center;
-}
-.arrow.open {
-  transform: rotate(180deg);
+
+  &.open {
+    transform: rotate(180deg);
+  }
 }
 .user-dropdown {
   position: relative;
@@ -108,9 +111,10 @@ onBeforeUnmount(() => document.removeEventListener('click', handleOutside))
   border-radius: 10px;
 
   transition: 0.2s;
-}
-.trigger:hover {
-  background: rgba(0,0,0,0.05);
+
+  &:hover {
+    background: rgba(0,0,0,0.05);
+  }
 }
 .avatar {
   width: 36px;
@@ -118,39 +122,40 @@ onBeforeUnmount(() => document.removeEventListener('click', handleOutside))
   border-radius: 50%;
   object-fit: cover;
 }
-.name {
-  font-weight: 600;
+.user-name {
   color: var(--text-color);
+  font-weight: 600;
 }
 .menu {
+  background: var(--user-menu-bg-color);
+  border: 1px solid var(--user-menu-border-color);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+
   position: absolute;
   top: 110%;
   right: 0;
-
   width: 180px;
-  background: var(--menu-color);
-  border: 1px solid var(--menu-border);
   border-radius: 10px;
-
-  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
   overflow: hidden;
-
   z-index: 1000;
 }
 .menu-item {
+  color: var(--text-color);
   padding: 10px 12px;
   cursor: pointer;
   transition: 0.2s;
   font-size: 14px;
-}
-.menu-item:hover {
-  background: rgba(0,0,0,0.05);
+
+  &:hover {
+    color: var(--user-menu-text-color);
+    background: var(--user-menu-bg-color-hover);
+  }
 }
 .logout {
-  color: #e74c3c;
+  color: var(--error-color);
 }
 .menu-divider {
-  height: 1px;
-  background: var(--menu-border);
+  background: var(--user-menu-line-color);
+  height: 1.2px;
 }
 </style>

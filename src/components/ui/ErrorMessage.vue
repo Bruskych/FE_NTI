@@ -63,6 +63,13 @@ const hasMessage = computed(() => !!props.message)
   width: 24px;
   height: 24px;
   padding: 0;
+
+  &:hover .icon {
+    transform: rotate(90deg);
+  }
+  &:active {
+    transform: scale(0.95);
+  }
 }
 .icon {
   color: var(--error-color);
@@ -70,8 +77,5 @@ const hasMessage = computed(() => !!props.message)
   transition: transform 0.25s ease;
   transform-origin: center;
   transform-box: fill-box;
-}
-.close-btn:hover .icon {
-  transform: rotate(90deg);
 }
 </style>

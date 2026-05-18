@@ -41,13 +41,20 @@ const isLink = computed(() => !!props.to)
   justify-content: center;
   text-align: center;
 
-  transition: background-color 0.25s ease, filter 0.25s ease;
-  will-change: background-color, filter;
-}
-.base-button:hover {
-  background-color: var(--button-bg-hover);
-}
-.base-button:visited {
-  color: var(--button-text-color);
+  will-change: transform, background-color, filter;
+  transition:
+      transform 150ms ease-in-out,
+      background-color 250ms ease,
+      filter 250ms ease;
+
+  &:hover {
+    background-color: var(--button-bg-hover);
+  }
+  &:visited {
+    color: var(--button-text-color);
+  }
+  &:active {
+    transform: scale(0.95);
+  }
 }
 </style>

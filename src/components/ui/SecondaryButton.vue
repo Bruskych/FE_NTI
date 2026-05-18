@@ -37,11 +37,17 @@ const isLink = computed(() => !!props.to)
 
   display: inline-block;
 
-  transition: background-color 0.25s ease, filter 0.25s ease;
-  will-change: background-color, filter;
-}
+  will-change: transform, background-color, filter;
+  transition:
+      transform 150ms ease-in-out,
+      background-color 250ms ease,
+      filter 250ms ease;
 
-.base-button:hover {
-  background-color: var(--button-bg-hover-unimp);
+  &:hover {
+    background-color: var(--button-bg-hover-unimp);
+  }
+  &:active {
+    transform: scale(0.95);
+  }
 }
 </style>
