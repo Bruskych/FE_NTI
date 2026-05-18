@@ -3,6 +3,15 @@ import type { AxiosError } from 'axios'
 import api from '@/core/api/axios'
 import axios from 'axios'
 
+// Описываем структуру уведомлений
+interface Notification {
+  id: number
+  title: string
+  message: string
+  type: string
+  read_at: string | null
+}
+
 // Описываем интерфейс пользователя согласно ролям из ТЗ
 export interface User {
   id: number;
@@ -17,6 +26,7 @@ export interface User {
 interface AuthState {
   token: string | null;
   user: User | null;
+  notifications: Notification[];
   loading: boolean;
   error: string | null;
 }
@@ -30,10 +40,18 @@ type LoginErrorResponse = {
   }
 }
 
+// Описываем тип ответа для входа в аккаунт
+type LoginResponse = {
+  token: string
+  user: User
+  notifications: Notification[]
+}
+
 export const useAuthStore = defineStore('auth', {
   state: (): AuthState => ({
     token: localStorage.getItem('token'),
     user: null,
+    notifications: [],
     loading: false,
     error: null,
   }),
@@ -54,13 +72,14 @@ export const useAuthStore = defineStore('auth', {
 
       try {
         // Отправка запроса на сервер, и дальше данные уходят в src/core/api/axios.ts
-        const { data } = await api.post<{ token: string; user: User }>('/login', {
+        const { data } = await api.post<LoginResponse>('/login', {
           email,
           password
         })
 
         this.token = data.token
         this.user = data.user
+        this.notifications = data.notifications
         localStorage.setItem('token', data.token)
 
       } catch (error: unknown) {
@@ -101,10 +120,10 @@ export const useAuthStore = defineStore('auth', {
 
     async fetchMe(): Promise<void> {
       if (!this.token) return
-
       try {
-        const { data } = await api.get<{ user: User }>('/me')
+        const { data } = await api.get('/me')
         this.user = data.user
+        this.notifications = data.notifications
       } catch (error) {
         this.logout()
       }

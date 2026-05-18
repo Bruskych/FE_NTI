@@ -21,6 +21,7 @@ import BaseButton from '@/components/ui/BaseButton.vue'
 import SecondaryButton from '@/components/ui/SecondaryButton.vue'
 import ThemeToggle from '@/components/ui/ThemeToggle.vue'
 import UserDropdown from '@/components/layout/UserDropdown.vue'
+import NotificationsButton from '@/components/ui/NotificationsButton.vue'
 
 import { useAuthStore } from '@/stores/auth'
 import {computed} from "vue";
@@ -44,6 +45,7 @@ const isCompany = computed(() =>
 
       <div class="nav-right">
 
+        <NotificationsButton v-if="authStore.isAuthenticated" />
         <LanguageToggle :lang="currentLang" @toggle="toggleLang"/>
         <ThemeToggle :isDark="isDark" @toggle="toggleTheme"/>
 
@@ -52,6 +54,7 @@ const isCompany = computed(() =>
           <SecondaryButton to="/register">{{ $t('header.sign_up') }}</SecondaryButton>
           <BaseButton to="/login">{{ $t('header.log_in') }}</BaseButton>
         </div>
+
         <!-- АВТОРИЗОВАН -->
         <div v-else class="user-menu">
           <UserDropdown v-if="authStore.isAuthenticated" />
@@ -91,6 +94,14 @@ const isCompany = computed(() =>
   font-weight: 700;
   text-decoration: none;
   color: var(--text-color);
+  transition: 0.2s;
+
+  &:hover {
+    color: var(--text-color-hover);
+  }
+  &:active {
+    transform: scale(0.95);
+  }
 }
 
 .nav-right {

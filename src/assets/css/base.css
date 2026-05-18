@@ -20,6 +20,7 @@
 
     /* TEXT */
     --text-color: #191919;
+    --text-color-hover: #66cba2;
     --text-color-unimp: #464646;
 
     /* 1 BUTTON */
@@ -66,6 +67,7 @@
 
     /* TEXT */
     --text-color: #ffffff;
+    --text-color-hover: #66cba2;
     --text-color-unimp: #515151;
 
     /* 1 BUTTON */
