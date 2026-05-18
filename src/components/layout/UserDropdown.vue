@@ -1,3 +1,8 @@
+<!--
+  Панель, которая появляется при нажатии на профиль пользователя,
+  где можно выйти из аккаунта, изменить данные аккаунта и так далее
+-->
+
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useAuthStore } from '@/stores/auth'

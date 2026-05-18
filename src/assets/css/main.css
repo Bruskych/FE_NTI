@@ -11,14 +11,24 @@ html, body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
-
 #app {
     min-height: 100vh;
     margin: 0 auto;
 }
-
 .app-layout {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+}
+
+/* Стили для полосы прокрутки сайта */
+::-webkit-scrollbar {
+    width: 6px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: var(--scroll-color);
+    border-radius: 10px;
 }

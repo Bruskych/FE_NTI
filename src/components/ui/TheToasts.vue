@@ -1,3 +1,7 @@
+<!--
+  Всплывающее уведомление
+-->
+
 <script setup lang="ts">
 import { useNotificationStore } from '@/stores/notifications'
 const store = useNotificationStore()

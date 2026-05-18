@@ -1,3 +1,7 @@
+<!--
+  Верхняя панель сайта
+-->
+
 <script setup lang="ts">
 
 // LANGUAGE

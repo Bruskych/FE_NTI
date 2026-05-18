@@ -1,3 +1,7 @@
+<!--
+  Поле ввода данных в виде раскрывающегося списка с вариантами выбора
+-->
+
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import ArrowIcon from '@/assets/icons/arrow.svg'

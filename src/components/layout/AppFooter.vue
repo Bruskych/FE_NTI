@@ -1,3 +1,7 @@
+<!--
+  Нижняя панель сайта
+-->
+
 <script setup lang="ts">
 
 </script>

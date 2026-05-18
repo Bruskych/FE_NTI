@@ -10,6 +10,7 @@
     --menu-color: #ffffff;
     --menu-border: #e6e6e6;
     --error-color: #cf2d60;
+    --scroll-color: #8ed1b9;
 
     /* Automatic data insertion */
     input:-webkit-autofill {
@@ -55,6 +56,7 @@
     --menu-color: #252525;
     --menu-border: #373737;
     --error-color: #e8453c;
+    --scroll-color: #cccccc;
 
     /* Automatic data insertion */
     input:-webkit-autofill {

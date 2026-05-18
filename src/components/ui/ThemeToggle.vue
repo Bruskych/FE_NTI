@@ -1,3 +1,7 @@
+<!--
+  Кнопка переключения темы
+-->
+
 <script setup lang="ts">
 // ICONS + THEME
 import SunIcon from '@/assets/icons/sun.svg'

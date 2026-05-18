@@ -1,3 +1,7 @@
+<!--
+  Набор кнопок, из которых можно выбрать только один вариант
+-->
+
 <script setup lang="ts">
 type OptionValue = string | number
 

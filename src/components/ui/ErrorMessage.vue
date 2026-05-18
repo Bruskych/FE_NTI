@@ -1,3 +1,7 @@
+<!--
+  Небольшое всплывающее уведомление об ошибке, которое можно закрыть
+-->
+
 <script setup lang="ts">
 import CloseIcon from '@/assets/icons/close.svg'
 import { computed } from 'vue'

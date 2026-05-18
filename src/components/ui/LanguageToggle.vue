@@ -1,3 +1,7 @@
+<!--
+  Кнопка переключения языка
+-->
+
 <script setup lang="ts">
 
 defineProps<{ lang: string }>()
