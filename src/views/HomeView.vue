@@ -1,3 +1,7 @@
+<!--
+  Главная страница
+-->
+
 <script setup lang="ts">
 </script>
 

@@ -1,3 +1,7 @@
+<!--
+  Если пользователь хочет зайти на несуществующую страницу, вылезет эта страница ошибки
+-->
+
 <script setup lang="ts">
 import { useRouter, useRoute } from 'vue-router'
 import BaseButton from '@/components/ui/BaseButton.vue'
