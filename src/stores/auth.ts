@@ -56,13 +56,17 @@ export const useAuthStore = defineStore('auth', {
     error: null,
   }),
 
+  // Проверка ролей
   getters: {
     isAuthenticated: (state) => !!state.token,
-
-    isAdmin: (state) =>
-      state.user?.roles?.some(r => r.name === 'admin' || r.name === 'super_admin'),
-    isCompany: (state) =>
-      state.user?.roles?.some(r => r.name === 'company'),
+    hasRole: (state) => {
+      return (role: string) =>
+        state.user?.roles?.some(r => r.name === role) ?? false
+    },
+    hasAnyRole: (state) => {
+      return (roles: string[]) =>
+        state.user?.roles?.some(r => roles.includes(r.name)) ?? false
+    },
   },
 
   actions: {
@@ -123,9 +127,14 @@ export const useAuthStore = defineStore('auth', {
       try {
         const { data } = await api.get('/me')
         this.user = data.user
-        this.notifications = data.notifications
-      } catch (error) {
-        this.logout()
+      } catch (error: unknown) {
+        const err = error as AxiosError
+        const status = err.response?.status
+        if (status === 401) {
+          await this.logout()
+          return
+        }
+        console.warn('fetchMe failed but user stays logged in:', status)
       }
     },
 

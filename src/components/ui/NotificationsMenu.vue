@@ -86,7 +86,7 @@ defineProps<{
   }
 }
 .empty-state {
-  color: var();
+  color: var(--text-color);
 
   padding: 20px 16px;
   font-size: 14px;

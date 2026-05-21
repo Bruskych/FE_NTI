@@ -1,97 +1,135 @@
 @import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
 
-/* Все цвета для всего сайта - для белой темы, и чёрной */
+/* (цвета, шрифт) для всего сайта - для белой темы, и чёрной */
 
 :root {
+    /* MAIN COLORS */
+    --main-color-dark: #bd524c;
+    --main-color: #ea6d7e;
+    --main-color-light: #f9ecec;
+
+    --main-light-1: #ffffff;
+    --main-light-2: #e2e2e6;
+    --main-light-3: #d0d0d5;
+    --main-light-4: #bdbdc4;
+    --main-light-5: #aaaab2;
+
+    --main-dark-1: #08070c;
+    --main-dark-2: #13111b;
+    --main-dark-3: #1c1925;
+    --main-dark-4: #252232;
+    --main-dark-5: #363345;
+
+    /* MAIN FONT */
     --font-main: "Raleway", sans-serif;
 
     /* ROOT */
-    --bg-color: #eef9f5;
-    --menu-color: #ffffff;
-    --menu-border: #e6e6e6;
+    --bg-color: var(--main-color-light);
+    --menu-color: var(--main-light-1);
+    --menu-border: var(--main-light-2);
+    --scroll-color: var(--main-color);
     --error-color: #cf2d60;
-    --scroll-color: #8ed1b9;
 
     /* Automatic data insertion */
     input:-webkit-autofill {
-        -webkit-text-fill-color: #191919;
+        -webkit-text-fill-color: var(--main-dark-1);
         -webkit-box-shadow: 0 0 0 1000px #d3e8f2 inset;
     }
 
+    /* SELECTION TEXT */
+    ::selection {
+        background: var(--main-color-dark);
+        color: var(--main-light-1);
+    }
+    ::-moz-selection {
+        background: var(--main-color-dark);
+        color: var(--main-light-1);
+    }
+
     /* TEXT */
-    --text-color: #191919;
-    --text-color-hover: #66cba2;
-    --text-color-unimp: #464646;
+    --text-color: var(--main-dark-1);
+    --text-color-hover: var(--main-color);
+    --text-color-unimp: var(--main-dark-3);
 
     /* 1 BUTTON */
-    --button-text-color: #ffffff;
-    --button-bg-color: #66cba2;
-    --button-bg-hover: #57907e;
+    --button-text-color: var(--main-light-1);
+    --button-bg-color: var(--main-color);
+    --button-bg-hover: var(--main-color-dark);
 
     /* 2 BUTTON */
-    --button-text-color-unimp: #191919;
-    --button-bg-color-unimp: #ffffff;
-    --button-bg-hover-unimp: #e6e6e6;
-    --button-border-color-unimp: #e6e6e6;
+    --button-text-color-unimp: var(--main-dark-1);
+    --button-bg-color-unimp: var(--main-light-1);
+    --button-bg-hover-unimp: var(--main-light-2);
+    --button-border-color-unimp: var(--main-light-2);
 
     /* INPUT + SELECT */
-    --input-bg-color: #ffffff;
-    --input-border-color: #e6e6e6;
-    --input-border-color-focus: #66cba2;
-    --select-bg-color: #ffffff;
-    --select-bg-color-focus: #e6e6e6;
+    --input-bg-color: var(--main-light-1);
+    --input-border-color: var(--main-light-2);
+    --input-border-color-focus: var(--main-color);
+    --select-bg-color: var(--main-light-1);
+    --select-bg-color-focus: var(--main-light-2);
 
     /* USER DROPDOWN */
-    --user-menu-text-color: #66cba2;
-    --user-menu-bg-color: #ffffff;
-    --user-menu-bg-color-hover: #ffffff;
-    --user-menu-line-color: #e6e6e6;
-    --user-menu-border-color: #ffffff;
+    --user-menu-text-color: var(--main-color);
+    --user-menu-bg-color: var(--main-light-1);
+    --user-menu-bg-color-hover: var(--main-light-1);
+    --user-menu-line-color: var(--main-light-2);
+    --user-menu-border-color: var(--main-light-1);
 }
 
 .dark {
     --font-main: "Raleway", sans-serif;
 
     /* ROOT */
-    --bg-color: #191919;
-    --menu-color: #252525;
-    --menu-border: #373737;
+    --bg-color: var(--main-dark-2);
+    --menu-color: var(--main-dark-3);
+    --menu-border: var(--main-dark-4);
+    --scroll-color: var(--main-light-2);
     --error-color: #e8453c;
-    --scroll-color: #cccccc;
 
     /* Automatic data insertion */
     input:-webkit-autofill {
-        -webkit-text-fill-color: #ffffff;
+        -webkit-text-fill-color: var(--main-light-1);
         -webkit-box-shadow: 0 0 0 1000px #6c69a3 inset;
     }
 
+    /* SELECTION TEXT */
+    ::selection {
+        background: var(--main-color-dark);
+        color: var(--main-light-1);
+    }
+    ::-moz-selection {
+        background: var(--main-color-dark);
+        color: var(--main-light-1);
+    }
+
     /* TEXT */
-    --text-color: #ffffff;
-    --text-color-hover: #66cba2;
-    --text-color-unimp: #515151;
+    --text-color: var(--main-light-1);
+    --text-color-hover: var(--main-color);
+    --text-color-unimp: var(--main-dark-4);
 
     /* 1 BUTTON */
-    --button-text-color: #ffffff;
-    --button-bg-color: #66cba2;
-    --button-bg-hover: #57907e;
+    --button-text-color: var(--main-light-1);
+    --button-bg-color: var(--main-color);
+    --button-bg-hover: var(--main-color-dark);
 
     /* 2 BUTTON */
-    --button-text-color-unimp: #ffffff;
-    --button-bg-color-unimp: #3f3f3f;
-    --button-bg-hover-unimp: #515151;
-    --button-border-color-unimp: #3f3f3f;
+    --button-text-color-unimp: var(--main-light-1);
+    --button-bg-color-unimp: var(--main-dark-4);
+    --button-bg-hover-unimp: var(--main-dark-5);
+    --button-border-color-unimp: var(--main-dark-3);
 
     /* INPUT + SELECT */
-    --input-bg-color: #191919;
-    --input-border-color: #373737;
-    --input-border-color-focus: #66cba2;
-    --select-bg-color: #3f3f3f;
-    --select-bg-color-focus: #515151;
+    --input-bg-color: var(--main-dark-1);
+    --input-border-color: var(--main-dark-3);
+    --input-border-color-focus: var(--main-color);
+    --select-bg-color: var(--main-dark-3);
+    --select-bg-color-focus: var(--main-dark-4);
 
     /* USER DROPDOWN */
-    --user-menu-text-color: #ffffff;
-    --user-menu-bg-color: #333333;
-    --user-menu-bg-color-hover: #525252;
-    --user-menu-line-color: #525252;
-    --user-menu-border-color: #333333;
+    --user-menu-text-color: var(--main-light-1);
+    --user-menu-bg-color: var(--main-dark-3);
+    --user-menu-bg-color-hover: var(--main-dark-5);
+    --user-menu-line-color: var(--main-dark-5);
+    --user-menu-border-color: var(--main-dark-3);
 }

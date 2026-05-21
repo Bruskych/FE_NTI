@@ -4,7 +4,7 @@
   "lastName": "Priezvisko",
   "firstNamePlaceholder": "Zadajte svoje krstné meno...",
   "lastNamePlaceholder": "Zadajte svoje priezvisko...",
-  "emailPlaceholder": "Zadajte svoj e-mail...",
+  "emailPlaceholder": "Príklad{'@'}gmail.com",
   "passwordPlaceholder": "Zadajte svoje heslo...",
   "confirmPasswordPlaceholder": "Potvrďte svoje heslo...",
   "username": "Používateľské meno",

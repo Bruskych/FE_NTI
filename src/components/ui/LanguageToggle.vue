@@ -19,6 +19,8 @@ defineEmits<{ (e: 'toggle'): void }>()
 
 <style scoped>
 .lang-text {
+  color: var(--text-color);
+
   font-size: 12px;
   font-weight: 550;
   letter-spacing: 0.5px;

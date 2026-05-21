@@ -4,12 +4,13 @@ https://hugeicons.com/icons
 2. Font
 https://fonts.google.com/selection/embed
 
-3.  Password: password
-    Email: superadmin@nti.sk
-    Email: admin@nti.sk
-    Email: editor@nti.sk
-    Email: evaluator@nti.sk
-    Email: mentor@nti.sk
-    Email: leader@student.nti.sk
-    Email: student@student.nti.sk
-    Email: company@firma.sk
+3.  Password for account: password
+
+    Email: superadmin@nti.sk            - role: super_admin
+    Email: admin@nti.sk                 - role: admin
+    Email: editor@nti.sk                - role: content_editor
+    Email: evaluator@nti.sk             - role: evaluator
+    Email: company@firma.sk             - role: company
+    Email: mentor@nti.sk                - role: mentor
+    Email: leader@student.nti.sk        - role: team_leader
+    Email: student@student.nti.sk       - role: student

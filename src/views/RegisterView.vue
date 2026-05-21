@@ -120,6 +120,7 @@ const handleRegister = async () => {
       <BaseInput
           v-model="form.password"
           type="password"
+          showPasswordToggle
           :label="$t('register.password')"
           :placeholder="$t('register.passwordPlaceholder')"
           :error="passwordError"
@@ -128,6 +129,7 @@ const handleRegister = async () => {
       <BaseInput
           v-model="form.password_confirmation"
           type="password"
+          showPasswordToggle
           :label="$t('register.confirmPassword')"
           :placeholder="$t('register.confirmPasswordPlaceholder')"
           :error="passwordConfirmationError"
@@ -148,17 +150,19 @@ const handleRegister = async () => {
 
 <style scoped>
 .register-page {
+  color: var(--text-color);
+
   font-family: var(--font-main), sans-serif;
   font-weight: 550;
-  color: var(--text-color);
 }
 .auth-form {
+  background: var(--menu-color);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+
   max-width: 450px;
   margin: 40px auto;
   padding: 20px;
-  background: var(--menu-color);
   border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
   display: flex;
   flex-direction: column;
   gap: 15px;

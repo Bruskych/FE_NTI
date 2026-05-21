@@ -25,7 +25,18 @@ import NotificationsButton from '@/components/ui/NotificationsButton.vue'
 
 import { useAuthStore } from '@/stores/auth'
 import {computed} from "vue";
+import {useRoute, useRouter} from "vue-router";
+const router = useRouter()
+const route = useRoute()
 const authStore = useAuthStore()
+
+// LINKS
+const goLogin = () => {
+  router.push('/login')
+}
+const goRegister = () => {
+  router.push('/register')
+}
 
 // ROLES
 const isLoggedIn = computed(() => authStore.isAuthenticated)
@@ -51,8 +62,8 @@ const isCompany = computed(() =>
 
         <!-- ГОСТЬ -->
         <div v-if="!authStore.isAuthenticated" class="auth-buttons">
-          <SecondaryButton to="/register">{{ $t('header.sign_up') }}</SecondaryButton>
-          <BaseButton to="/login">{{ $t('header.log_in') }}</BaseButton>
+          <SecondaryButton @click="goRegister">{{ $t('header.sign_up') }}</SecondaryButton>
+          <BaseButton @click="goLogin">{{ $t('header.log_in') }}</BaseButton>
         </div>
 
         <!-- АВТОРИЗОВАН -->

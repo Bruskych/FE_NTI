@@ -71,7 +71,7 @@ onBeforeUnmount(() => document.removeEventListener('click', handleOutside))
         {{ $t("userPanel.profile") }}
       </div>
       <div
-          v-if="authStore.isAdmin"
+          v-if="authStore.hasAnyRole(['admin', 'super_admin'])"
           class="menu-item"
           @click="router.push('/admin')"
       >

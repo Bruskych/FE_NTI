@@ -20,6 +20,7 @@ const isLink = computed(() => !!props.to)
       :to="to"
       :type="!isLink ? (type || 'button') : undefined"
       class="base-button"
+      v-bind="$attrs"
   >
     <slot />
   </component>
@@ -27,6 +28,9 @@ const isLink = computed(() => !!props.to)
 
 <style scoped>
 .base-button {
+  all: unset;
+  box-sizing: border-box;
+
   font-family: var(--font-main), sans-serif;
   font-weight: 550;
 
@@ -39,7 +43,9 @@ const isLink = computed(() => !!props.to)
   background-color: var(--button-bg-color-unimp);
   color: var(--button-text-color-unimp);
 
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 
   will-change: transform, background-color, filter;
   transition:

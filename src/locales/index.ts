@@ -18,6 +18,9 @@ import enRole from './en/roles.json'
 import skUserPanel from './sk/user_panel.json'
 import enUserPanel from './en/user_panel.json'
 
+import skError from './sk/error.json'
+import enError from './en/error.json'
+
 const messages = {
     sk: {
         header: skHeader,
@@ -26,6 +29,7 @@ const messages = {
         register: skRegister,
         role: skRole,
         userPanel: skUserPanel,
+        error: skError,
     },
     en: {
         header: enHeader,
@@ -34,6 +38,7 @@ const messages = {
         register: enRegister,
         role: enRole,
         userPanel: enUserPanel,
+        error: enError,
     }
 }
 
