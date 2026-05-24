@@ -10,6 +10,12 @@ import { useRouter } from 'vue-router'
 
 import ArrowIcon from '@/assets/icons/arrow.svg'
 
+import SettingsIcon from '@/assets/icons/settings.svg'
+import AdminIcon from '@/assets/icons/admin.svg'
+import LogoutIcon from '@/assets/icons/logout.svg'
+
+import DropdownMenuItem from '@/components/ui/DropdownMenuItem.vue'
+
 const authStore = useAuthStore()
 const router = useRouter()
 
@@ -17,12 +23,10 @@ const isOpen = ref(false)
 const dropdownRef = ref<HTMLElement | null>(null)
 
 const user = computed(() => authStore.user)
-
-// Имя
 const userName = computed(() => {
   return user.value?.name || 'User'
 })
-// Аватар
+
 const userAvatar = computed(() => {
   return (
       user.value?.avatar ||
@@ -44,10 +48,6 @@ const logout = async () => {
   await authStore.logout()
   router.push('/')
 }
-const goProfile = () => {
-  router.push('/profile')
-  close()
-}
 
 onMounted(() => document.addEventListener('click', handleOutside))
 onBeforeUnmount(() => document.removeEventListener('click', handleOutside))
@@ -67,22 +67,24 @@ onBeforeUnmount(() => document.removeEventListener('click', handleOutside))
 
     <!-- MENU -->
     <div v-if="isOpen" class="menu">
-      <div class="menu-item" @click="goProfile">
-        {{ $t("userPanel.profile") }}
-      </div>
-      <div
-          v-if="authStore.hasAnyRole(['admin', 'super_admin'])"
-          class="menu-item"
-          @click="router.push('/admin')"
-      >
-        {{ $t("userPanel.admin_panel") }}
-      </div>
-      <div class="menu-divider">
-        <!-- -->
-      </div>
-      <div class="menu-item logout" @click="logout">
-        {{ $t("userPanel.logout") }}
-      </div>
+      <DropdownMenuItem
+          :label="$t('userPanel.admin_panel')"
+          :icon="AdminIcon"
+          to="/admin"
+          :roles="['admin', 'super_admin']"
+      />
+      <DropdownMenuItem
+          :label="$t('userPanel.settings')"
+          :icon="SettingsIcon"
+          to="/settings"
+      />
+      <div class="menu-divider"></div>
+      <DropdownMenuItem
+          :label="$t('userPanel.logout')"
+          :icon="LogoutIcon"
+          danger
+          @click="logout"
+      />
     </div>
 
   </div>
@@ -143,21 +145,6 @@ onBeforeUnmount(() => document.removeEventListener('click', handleOutside))
   border-radius: 10px;
   overflow: hidden;
   z-index: 1000;
-}
-.menu-item {
-  color: var(--text-color);
-  padding: 10px 12px;
-  cursor: pointer;
-  transition: 0.2s;
-  font-size: 14px;
-
-  &:hover {
-    color: var(--user-menu-text-color);
-    background: var(--user-menu-bg-color-hover);
-  }
-}
-.logout {
-  color: var(--error-color);
 }
 .menu-divider {
   background: var(--user-menu-line-color);

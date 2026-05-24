@@ -20,6 +20,7 @@ defineEmits<{ (e: 'toggle'): void }>()
 <style scoped>
 .icon {
   color: var(--text-color);
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 .theme-toggle {
   width: 40px;
