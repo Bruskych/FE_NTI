@@ -13,6 +13,8 @@ import AcceptIcon from '@/assets/icons/check.svg'
 import RejectIcon from '@/assets/icons/close.svg'
 import BaseInput from '@/components/ui/BaseInput.vue'
 import SortableTh from '@/components/ui/SortableTh.vue'
+import EmptyIcon from '@/assets/icons/empty.svg'
+import ArrowIcon from "@/assets/icons/arrow.svg";
 
 interface StudentApplication {
   application_id: number
@@ -158,8 +160,10 @@ onMounted(fetchPendingApplications)
           <p>{{ $t('adminTable.student_apps.loading') }}</p>
         </div>
         <div v-else-if="applications.length === 0" class="empty-state">
-          <div class="empty-icon">🎉</div>
-          <h3>{{ $t('adminTable.student_apps.empty') }}</h3>
+          <div class="empty-icon">
+            <EmptyIcon class="icon" />
+          </div>
+          <p>{{ $t('adminTable.student_apps.empty') }}</p>
         </div>
 
         <div v-for="app in applications" :key="app.application_id" class="table-row">
@@ -220,12 +224,6 @@ onMounted(fetchPendingApplications)
 .subtitle {
   font-size: 16px;
 }
-.empty-state {
-  background: var(--menu-color);
-  border-radius: 12px;
-  padding: 48px;
-  text-align: center;
-}
 .table-container {
   background: var(--table-row-bg-color);
   display: flex;
@@ -278,6 +276,24 @@ onMounted(fetchPendingApplications)
   display: flex;
   gap: 8px;
 }
+
+/* -- LOADING -- */
+.empty-state {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  opacity: 0.6;
+}
+.empty-icon {
+  width: 50px;
+  height: 50px;
+  margin-bottom: 8px;
+  color: var(--text-color);
+  opacity: 0.6;
+}
 .table-loading {
   height: 100%;
   min-height: 200px;
@@ -299,10 +315,6 @@ onMounted(fetchPendingApplications)
   border-top-color: var(--main-color);
   border-radius: 50%;
   animation: spin 1s linear infinite;
-}
-.empty-icon {
-  font-size: 40px;
-  margin-bottom: 12px;
 }
 @keyframes spin {
   to {

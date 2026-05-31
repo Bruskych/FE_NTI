@@ -14,3 +14,5 @@ https://fonts.google.com/selection/embed
     Email: mentor@nti.sk                - role: mentor
     Email: leader@student.nti.sk        - role: team_leader
     Email: student@student.nti.sk       - role: student
+
+4. git reset --soft HEAD~1              - откатить последний коммит

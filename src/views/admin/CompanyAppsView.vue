@@ -11,6 +11,7 @@ import AcceptIcon from '@/assets/icons/check.svg'
 import RejectIcon from '@/assets/icons/close.svg'
 import SortableTh from "@/components/ui/SortableTh.vue";
 import BaseInput from "@/components/ui/BaseInput.vue";
+import EmptyIcon from '@/assets/icons/empty.svg'
 
 interface CompanyApplication {
   application_id: number
@@ -183,8 +184,10 @@ onMounted(() => {
           <p>{{ $t('adminTable.company_apps.loading') }}</p>
         </div>
         <div v-else-if="applications.length === 0" class="empty-state">
-          <div class="empty-icon">🏢</div>
-          <h3>{{ $t('adminTable.company_apps.empty') }}</h3>
+          <div class="empty-icon">
+            <EmptyIcon class="icon" />
+          </div>
+          <p>{{ $t('adminTable.company_apps.empty') }}</p>
         </div>
 
         <div v-for="app in applications" :key="app.application_id" class="table-row">
@@ -355,6 +358,8 @@ onMounted(() => {
 .buttons-group {
   display: flex; gap: 8px; justify-content: flex-end;
 }
+
+/* -- LOADING -- */
 .empty-state {
   height: 100%;
   display: flex;
@@ -362,6 +367,14 @@ onMounted(() => {
   justify-content: center;
   align-items: center;
   gap: 12px;
+  opacity: 0.6;
+}
+.empty-icon {
+  width: 50px;
+  height: 50px;
+  margin-bottom: 8px;
+  color: var(--text-color);
+  opacity: 0.6;
 }
 .table-loading {
   height: 100%;
@@ -384,10 +397,6 @@ onMounted(() => {
   border-top-color: var(--main-color);
   border-radius: 50%;
   animation: spin 1s linear infinite;
-}
-.empty-icon {
-  font-size: 40px;
-  margin-bottom: 12px;
 }
 @keyframes spin {
   to {
