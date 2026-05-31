@@ -48,8 +48,6 @@ const hasMessage = computed(() => !!props.message)
 
   font-size: 14px;
   font-weight: 500;
-
-  transition: 0.2s;
 }
 .text {
   flex: 1;
@@ -68,8 +66,10 @@ const hasMessage = computed(() => !!props.message)
   height: 24px;
   padding: 0;
 
-  &:hover .icon {
-    transform: rotate(90deg);
+  @media (hover:hover) and (pointer: fine){
+    &:hover .icon {
+      transform: rotate(90deg);
+    }
   }
   &:active {
     transform: scale(0.95);
@@ -78,7 +78,6 @@ const hasMessage = computed(() => !!props.message)
 .icon {
   color: var(--error-color);
 
-  transition: transform 0.25s ease;
   transform-origin: center;
   transform-box: fill-box;
 }

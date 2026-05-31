@@ -65,7 +65,6 @@ onBeforeUnmount(() => {
 }
 .icon {
   color: var(--text-color);
-  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 .notifications-button {
   width: 40px;
@@ -82,12 +81,10 @@ onBeforeUnmount(() => {
 
   cursor: pointer;
 
-  transition:
-      transform 150ms ease,
-      background-color 250ms ease;
-
-  &:hover {
-    background-color: var(--button-bg-hover-unimp);
+  @media (hover:hover) and (pointer: fine){
+    &:hover {
+      background-color: var(--button-bg-hover-unimp);
+    }
   }
   &:active {
     transform: scale(0.95);
@@ -102,7 +99,7 @@ onBeforeUnmount(() => {
 }
 .dropdown-enter-active,
 .dropdown-leave-active {
-  transition: all 0.2s ease;
+  transform: translateX(-50%);
 }
 .dropdown-enter-from,
 .dropdown-leave-to {

@@ -1,0 +1,37 @@
+{
+  "__comment": "Translations for the admin table",
+  "company_apps": {
+    "title": "Company registration requests",
+    "subtitle": "Here you can verify company details, approve access, or reject registration",
+    "loading": "Loading requests...",
+    "empty": "No new requests",
+    "comment_placeholder": "Reason...",
+
+    "columns": {
+      "id": "ID",
+      "company": "Company",
+      "ico": "Tax ID",
+      "description": "Description",
+      "representative": "Representative",
+      "date": "Date",
+      "comment": "Comment",
+      "actions": "Actions"
+    }
+  },
+  "student_apps": {
+    "title": "Student registration requests",
+    "subtitle": "Here you can approve or reject new users",
+    "loading": "Loading requests...",
+    "empty": "No new requests",
+    "comment_placeholder": "Reason...",
+
+    "columns": {
+      "id": "ID",
+      "name": "Name",
+      "email": "Email",
+      "date": "Date",
+      "comment": "Comment",
+      "actions": "Actions"
+    }
+  }
+}

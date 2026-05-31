@@ -88,7 +88,6 @@ const isCompany = computed(() =>
   background: var(--menu-color);
   border-bottom: 1px solid var(--menu-border);
 }
-
 .container {
   margin: 0 auto;
   padding: 0 20px;
@@ -99,28 +98,26 @@ const isCompany = computed(() =>
 
   height: 75px;
 }
-
 .logo {
   font-size: 1.4rem;
   font-weight: 700;
   text-decoration: none;
   color: var(--text-color);
-  transition: 0.2s;
 
-  &:hover {
-    color: var(--text-color-hover);
+  @media (hover:hover) and (pointer: fine){
+    &:hover {
+      color: var(--text-color-hover);
+    }
   }
   &:active {
     transform: scale(0.95);
   }
 }
-
 .nav-right {
   display: flex;
   align-items: center;
   gap: 15px;
 }
-
 .auth-buttons {
   display: flex;
   gap: 10px;

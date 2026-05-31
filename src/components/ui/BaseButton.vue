@@ -26,12 +26,9 @@ const isLink = computed(() => !!props.to)
 
 <style scoped>
 .base-button {
-  all: unset;
-  box-sizing: border-box;
-
-  font-family: var(--font-main), sans-serif;
   font-weight: 550;
 
+  box-sizing: border-box;
   padding: 10px 20px;
   border-radius: 6px;
   cursor: pointer;
@@ -45,20 +42,25 @@ const isLink = computed(() => !!props.to)
   justify-content: center;
   text-align: center;
 
-  will-change: transform, background-color, filter;
-  transition:
-      transform 150ms ease-in-out,
-      background-color 250ms ease,
-      filter 250ms ease;
-
-  &:hover {
-    background-color: var(--button-bg-hover);
+  @media (hover:hover) and (pointer: fine){
+    &:hover {
+      background-color: var(--button-bg-hover);
+    }
   }
   &:visited {
     color: var(--button-text-color);
   }
   &:active {
     transform: scale(0.95);
+  }
+}
+@media (max-width: 768px) {
+  .base-button {
+    white-space: nowrap;
+    min-width: fit-content;
+
+    font-size: 13px;
+    padding: 12px 14px;
   }
 }
 </style>

@@ -95,7 +95,6 @@ const handleLogin = async () => {
 </template>
 <style scoped>
 .login-page {
-  font-family: var(--font-main), sans-serif;
   font-weight: 550;
   color: var(--text-color);
 }

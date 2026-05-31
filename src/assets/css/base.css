@@ -9,16 +9,18 @@
     --main-color-light: #f9ecec;
 
     --main-light-1: #ffffff;
-    --main-light-2: #e2e2e6;
-    --main-light-3: #d0d0d5;
-    --main-light-4: #bdbdc4;
-    --main-light-5: #aaaab2;
+    --main-light-2: #f1ecf1;
+    --main-light-3: #dbd6db;
+    --main-light-4: #c2b9b9;
+    --main-light-5: #afa0a5;
+    --main-light-6: #938889;
 
     --main-dark-1: #08070c;
     --main-dark-2: #13111b;
     --main-dark-3: #1c1925;
     --main-dark-4: #252232;
     --main-dark-5: #363345;
+    --main-dark-6: #47425e;
 
     /* MAIN FONT */
     --font-main: "Raleway", sans-serif;
@@ -29,6 +31,8 @@
     --menu-border: var(--main-light-2);
     --scroll-color: var(--main-color);
     --error-color: #cf2d60;
+    --wait-color: #dd7f03;
+    --good-color: #45c893;
 
     /* Automatic data insertion */
     input:-webkit-autofill {
@@ -44,6 +48,23 @@
     ::-moz-selection {
         background: var(--main-color-dark);
         color: var(--main-light-1);
+    }
+
+    /* TOOLTIP */
+    .v-popper__inner {
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.55) !important;
+        background: var(--main-dark-5) !important;
+        color: var(--main-light-1) !important;
+        border-radius: 5px !important;
+        padding: 8px 14px !important;
+    }
+    .v-popper__arrow-outer {
+        border-top-color: var(--main-dark-5) !important;
+        display: none !important;
+    }
+    .v-popper__arrow-inner {
+        border-top-color: var(--main-dark-5) !important;
+        display: none !important;
     }
 
     /* TEXT */
@@ -66,6 +87,7 @@
     --input-bg-color: var(--main-light-1);
     --input-border-color: var(--main-light-2);
     --input-border-color-focus: var(--main-color);
+    --input-placeholder-color-table: var(--main-light-6);
     --select-bg-color: var(--main-light-1);
     --select-bg-color-focus: var(--main-light-2);
 
@@ -75,6 +97,22 @@
     --user-menu-bg-color-hover: var(--main-light-1);
     --user-menu-line-color: var(--main-light-2);
     --user-menu-border-color: var(--main-light-1);
+
+    /* CARD */
+    --card-text-color: var(--main-dark-1);
+    --card-text-color-hover: var(--main-color);
+    --card-text-color-active: var(--main-dark-1);
+    --card-bg-color: var(--main-light-1);
+    --card-bg-color-hover: var(--main-light-2);
+    --card-bg-color-active: var(--main-light-2);
+
+    /* TABLE */
+    --table-header-bg-color: var(--main-light-3);
+    --table-header-bg-color-hover: var(--main-light-4);
+    --table-header-text-color: var(--main-dark-1);
+    --table-row-bg-color: var(--main-light-2);
+    --table-row-text-color: var(--main-dark-1);
+    --table-row-text-color-unimp: var(--main-dark-3);
 }
 
 .dark {
@@ -86,6 +124,8 @@
     --menu-border: var(--main-dark-4);
     --scroll-color: var(--main-light-2);
     --error-color: #e8453c;
+    --wait-color: #feb113;
+    --good-color: #b5c507;
 
     /* Automatic data insertion */
     input:-webkit-autofill {
@@ -101,6 +141,22 @@
     ::-moz-selection {
         background: var(--main-color-dark);
         color: var(--main-light-1);
+    }
+
+    /* TOOLTIP */
+    .v-popper__inner {
+        background: var(--main-dark-5) !important;
+        color: var(--main-light-1) !important;
+        border-radius: 5px !important;
+        padding: 8px 14px !important;
+    }
+    .v-popper__arrow-outer {
+        border-top-color: var(--main-dark-5) !important;
+        display: none !important;
+    }
+    .v-popper__arrow-inner {
+        border-top-color: var(--main-dark-5) !important;
+        display: none !important;
     }
 
     /* TEXT */
@@ -123,6 +179,7 @@
     --input-bg-color: var(--main-dark-1);
     --input-border-color: var(--main-dark-3);
     --input-border-color-focus: var(--main-color);
+    --input-placeholder-color-table: var(--main-light-6);
     --select-bg-color: var(--main-dark-3);
     --select-bg-color-focus: var(--main-dark-4);
 
@@ -132,4 +189,20 @@
     --user-menu-bg-color-hover: var(--main-dark-5);
     --user-menu-line-color: var(--main-dark-5);
     --user-menu-border-color: var(--main-dark-3);
+
+    /* CARD */
+    --card-text-color: var(--main-light-1);
+    --card-text-color-hover: var(--main-color);
+    --card-text-color-active: var(--main-light-1);
+    --card-bg-color: var(--main-dark-3);
+    --card-bg-color-hover: var(--main-dark-5);
+    --card-bg-color-active: var(--main-dark-5);
+
+    /* TABLE */
+    --table-header-bg-color: var(--main-dark-5);
+    --table-header-bg-color-hover: var(--main-dark-6);
+    --table-header-text-color: var(--main-light-1);
+    --table-row-bg-color: var(--main-dark-4);
+    --table-row-text-color: var(--main-light-1);
+    --table-row-text-color-unimp: var(--main-light-3);
 }

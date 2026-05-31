@@ -23,7 +23,7 @@ defineEmits<{ (e: 'toggle'): void }>()
 
   font-size: 12px;
   font-weight: 550;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.75px;
 }
 .lang-toggle {
   width: 40px;
@@ -41,14 +41,10 @@ defineEmits<{ (e: 'toggle'): void }>()
   align-items: center;
   justify-content: center;
 
-  will-change: transform, background-color, filter;
-  transition:
-      transform 150ms ease-in-out,
-      background-color 250ms ease,
-      filter 250ms ease;
-
-  &:hover {
-    background-color: var(--button-bg-hover-unimp);
+  @media (hover:hover) and (pointer: fine){
+    &:hover {
+      background-color: var(--button-bg-hover-unimp);
+    }
   }
   &:active {
     transform: scale(0.95);

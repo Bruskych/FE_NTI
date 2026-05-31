@@ -20,7 +20,6 @@ defineEmits<{ (e: 'toggle'): void }>()
 <style scoped>
 .icon {
   color: var(--text-color);
-  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 .theme-toggle {
   width: 40px;
@@ -39,13 +38,11 @@ defineEmits<{ (e: 'toggle'): void }>()
   justify-content: center;
 
   will-change: transform, background-color, filter;
-  transition:
-      transform 150ms ease-in-out,
-      background-color 250ms ease,
-      filter 250ms ease;
 
-  &:hover {
-    background-color: var(--button-bg-hover-unimp);
+  @media (hover:hover) and (pointer: fine){
+    &:hover {
+      background-color: var(--button-bg-hover-unimp);
+    }
   }
   &:active {
     transform: scale(0.95);

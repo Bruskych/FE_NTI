@@ -18,8 +18,17 @@ import enRole from './en/roles.json'
 import skUserPanel from './sk/user_panel.json'
 import enUserPanel from './en/user_panel.json'
 
+import skAdminPanel from './sk/admin_panel.json'
+import enAdminPanel from './en/admin_panel.json'
+
 import skError from './sk/error.json'
 import enError from './en/error.json'
+
+import skActions from './sk/actions.json'
+import enActions from './en/actions.json'
+
+import skAdminTable from './sk/admin_table.json'
+import enAdminTable from './en/admin_table.json'
 
 const messages = {
     sk: {
@@ -29,7 +38,10 @@ const messages = {
         register: skRegister,
         role: skRole,
         userPanel: skUserPanel,
+        adminPanel: skAdminPanel,
         error: skError,
+        actions: skActions,
+        adminTable: skAdminTable,
     },
     en: {
         header: enHeader,
@@ -38,7 +50,10 @@ const messages = {
         register: enRegister,
         role: enRole,
         userPanel: enUserPanel,
+        adminPanel: enAdminPanel,
         error: enError,
+        actions: enActions,
+        adminTable: enAdminTable,
     }
 }
 

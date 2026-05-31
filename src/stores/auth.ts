@@ -3,6 +3,29 @@ import type { AxiosError } from 'axios'
 import api from '@/core/api/axios'
 import axios from 'axios'
 
+// Интерфейс данных, которые приходят из формы регистрации
+export interface RegisterFormData {
+  first_name: string
+  last_name: string
+  email: string
+  password: string
+  password_confirmation: string
+  role: 'student' | 'company'
+  // Поля компании (опциональны)
+  company_name?: string
+  company_tax_id?: string
+  sector?: string
+  website_link?: string
+  description?: string
+}
+
+// Интерфейс ответа сервера при регистрации
+interface RegisterResponse {
+  token: string
+  user: User
+  notifications?: Notification[]
+}
+
 // Описываем структуру уведомлений
 interface Notification {
   id: number
@@ -100,23 +123,38 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
-    async register(userData: Record<string, unknown>) {
+    // В actions:
+    async register(userData: RegisterFormData): Promise<void> {
       this.loading = true
+      this.error = null
       try {
-        // Формируем payload для Laravel, если там ожидается единое поле name
-        const payload = {
+        const payload: Record<string, string | undefined> = {
           name: `${userData.first_name} ${userData.last_name}`.trim(),
           email: userData.email,
           password: userData.password,
           password_confirmation: userData.password_confirmation,
           role: userData.role
         }
-        const { data } = await api.post('/register', payload)
+
+        if (userData.role === 'company') {
+          payload.company_name = userData.company_name
+          payload.company_tax_id = userData.company_tax_id
+          payload.sector = userData.sector
+          payload.website_link = userData.website_link
+          payload.description = userData.description
+        }
+
+        const { data } = await api.post<RegisterResponse>('/register', payload)
+
         this.token = data.token
         this.user = data.user
+        this.notifications = data.notifications || []
+
         localStorage.setItem('token', data.token)
-      } catch (error) {
-        this.error = 'Register failed'
+      } catch (error: unknown) {
+        const err = error as AxiosError<{ message?: string }>
+        this.error = err.response?.data?.message || 'Register failed'
+        throw error
       } finally {
         this.loading = false
       }

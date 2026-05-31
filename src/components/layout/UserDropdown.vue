@@ -96,7 +96,6 @@ onBeforeUnmount(() => document.removeEventListener('click', handleOutside))
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.25s ease;
   transform-origin: center;
 
   &.open {
@@ -116,12 +115,6 @@ onBeforeUnmount(() => document.removeEventListener('click', handleOutside))
   cursor: pointer;
   padding: 6px 10px;
   border-radius: 10px;
-
-  transition: 0.2s;
-
-  &:hover {
-    background: rgba(0,0,0,0.05);
-  }
 }
 .avatar {
   width: 36px;

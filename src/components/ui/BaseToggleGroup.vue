@@ -41,7 +41,6 @@ const handleSelect = (value: OptionValue) => {
 
 <style scoped>
 .toggle-group {
-  font-family: var(--font-main), sans-serif;
   font-weight: 550;
 
   display: flex;
@@ -57,16 +56,18 @@ const handleSelect = (value: OptionValue) => {
   color: var(--text-color, #333333);
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
   text-align: center;
-}
-.toggle-btn:hover {
-  border-color: #66cba2;
-}
-.toggle-btn.active {
-  background: #66cba2;
-  color: white;
-  border-color: #66cba2;
-  box-shadow: 0 4px 12px rgba(102, 203, 162, 0.3);
+
+  @media (hover:hover) and (pointer: fine){
+    &:hover {
+      border-color: #66cba2;
+    }
+  }
+  &.active {
+    background: #66cba2;
+    color: white;
+    border-color: #66cba2;
+    box-shadow: 0 4px 12px rgba(102, 203, 162, 0.3);
+  }
 }
 </style>

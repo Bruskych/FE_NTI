@@ -1,11 +1,15 @@
+<!--
+  Элементы для меню пользователя (при нажатии на профиль в углу экрана)
+-->
+
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, type Component } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 
 const props = defineProps<{
   label: string
-  icon?: string
+  icon?: Component | string
   to?: string
   roles?: string[]
   danger?: boolean
@@ -55,16 +59,17 @@ const handleClick = () => {
 
   padding: 10px 12px;
   cursor: pointer;
-  transition: 0.2s;
   font-size: 14px;
 
   display: flex;
   align-items: center;
   gap: 10px;
 
-  &:hover {
-    color: var(--user-menu-text-color);
-    background: var(--user-menu-bg-color-hover);
+  @media (hover:hover) and (pointer: fine){
+    &:hover {
+      color: var(--user-menu-text-color);
+      background: var(--user-menu-bg-color-hover);
+    }
   }
 }
 .menu-icon {

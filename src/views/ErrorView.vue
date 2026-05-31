@@ -50,7 +50,6 @@ const requestedPage = computed(() => route.fullPath)
   margin-bottom: 16px;
 }
 .error-page {
-  font-family: var(--font-main), sans-serif;
   font-weight: 550;
 
   min-height: 80vh;

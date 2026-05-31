@@ -92,7 +92,6 @@ onBeforeUnmount(() => document.removeEventListener('click', handleOutside))
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.25s ease;
   transform-origin: center;
 
   &.open {
@@ -100,7 +99,6 @@ onBeforeUnmount(() => document.removeEventListener('click', handleOutside))
   }
 }
 .select-wrapper {
-  font-family: var(--font-main), sans-serif;
   font-weight: 550;
 
   display: flex;
@@ -134,10 +132,10 @@ onBeforeUnmount(() => document.removeEventListener('click', handleOutside))
   cursor: pointer;
   user-select: none;
 
-  transition: border 0.2s ease;
-
-  &:hover {
-    border-color: var(--input-border-color-focus);
+  @media (hover:hover) and (pointer: fine){
+    &:hover {
+      border-color: var(--input-border-color-focus);
+    }
   }
 }
 .dropdown-wrapper {
@@ -153,10 +151,6 @@ onBeforeUnmount(() => document.removeEventListener('click', handleOutside))
   opacity: 0;
 
   transform: translateY(5px);
-  transition:
-      max-height 0.25s ease,
-      opacity 0.2s ease,
-      transform 0.2s ease;
 
   margin-bottom: 6px;
 
@@ -175,10 +169,11 @@ onBeforeUnmount(() => document.removeEventListener('click', handleOutside))
 .option {
   padding: 10px 14px;
   cursor: pointer;
-  transition: 0.2s;
 
-  &:hover {
-    background: var(--select-bg-color-focus);
+  @media (hover:hover) and (pointer: fine){
+    &:hover {
+      background: var(--select-bg-color-focus);
+    }
   }
 }
 .placeholder {

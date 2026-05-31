@@ -15,11 +15,16 @@ interface Props {
   placeholder?: string            // Серый текст внутри input
   error?: string                  // Текст ошибки
   showPasswordToggle?: boolean    // Даёт возможность увидеть свой пароль
+  visible?: boolean               // Вкл/Выкл поле ввода
+  noMargin?: boolean              // Отключать отступ снизу
+  variant?: 'default' | 'table'   // Варианты под конкретную страницу
 }
 
 const props = withDefaults(defineProps<Props>(), {
   type: 'text',
   placeholder: '',
+  visible: true,
+  variant: 'default'
 })
 
 const showPassword = ref(false)
@@ -37,7 +42,7 @@ const updateValue = (event: Event) => {
 </script>
 
 <template>
-  <div class="input-wrapper">
+  <div v-show="visible" :class="['input-wrapper',{ 'no-margin': noMargin },`variant-${variant}`]">
     <!-- Название поля ввода -->
     <label v-if="label" class="input-label">
       {{ label }}
@@ -75,18 +80,10 @@ const updateValue = (event: Event) => {
 <style scoped>
 .icon {
   color: var(--text-color);
-  transition: all 0.25s ease;
 }
 .input-container {
   position: relative;
   width: 100%;
-}
-.base-input {
-  width: 100%;
-  box-sizing: border-box;
-}
-.base-input.has-eye {
-  padding-right: 45px;
 }
 .eye-btn {
   position: absolute;
@@ -101,13 +98,15 @@ const updateValue = (event: Event) => {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-.eye-btn:hover .icon {
-  color: var(--button-bg-color);
-  transform: scale(0.95);
+
+  @media (hover:hover) and (pointer: fine){
+    &:hover .icon {
+      color: var(--button-bg-color);
+      transform: scale(0.95);
+    }
+  }
 }
 .input-wrapper {
-  font-family: var(--font-main), sans-serif;
   font-weight: 550;
 
   display: flex;
@@ -115,6 +114,10 @@ const updateValue = (event: Event) => {
   gap: 6px;
   margin-bottom: 16px;
   width: 100%;
+
+  &.no-margin {
+    margin-bottom: 0;
+  }
 }
 .input-label {
   font-size: 14px;
@@ -122,24 +125,29 @@ const updateValue = (event: Event) => {
   color: var(--text-color);
 }
 .base-input {
+  font-weight: 550;
+
+  width: 100%;
+  box-sizing: border-box;
+
   padding: 12px 16px;
   border-radius: 6px;
-  border: 1px solid var(--input-border-color);
+  border: 1.3px solid var(--input-border-color);
 
   background-color: var(--input-bg-color);
   color: var(--text-color);
 
-  font-family: var(--font-main), sans-serif;
-  font-weight: 550;
-
-  transition: all 0.2s ease;
   outline: none;
-}
-.base-input:focus {
-  border-color: var(--input-border-color-focus);
-}
-.base-input.input-error {
-  border-color: var(--error-color);
+
+  &:focus {
+    border-color: var(--input-border-color-focus);
+  }
+  &.input-error {
+    border-color: var(--error-color);
+  }
+  &.has-eye {
+    padding-right: 45px;
+  }
 }
 .error-message {
   color: var(--error-color);
@@ -147,9 +155,24 @@ const updateValue = (event: Event) => {
   margin-top: 2px;
 }
 .fade-enter-active, .fade-leave-active {
-  transition: opacity 0.3s;
+  opacity: 0;
 }
 .fade-enter-from, .fade-leave-to {
   opacity: 0;
+}
+
+.variant-table {
+  .base-input {
+    border: 1.3px solid var(--table-header-bg-color);
+    background-color: var(--table-row-bg-color);
+
+    &:focus {
+      border-color: var(--table-header-bg-color);
+    }
+    &::placeholder {
+      color: var(--input-placeholder-color-table);
+      opacity: 1;
+    }
+  }
 }
 </style>

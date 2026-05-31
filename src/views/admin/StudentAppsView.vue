@@ -1,0 +1,312 @@
+<!--
+  Под-страница админа, где видны все заявки от Студентов
+-->
+
+<script setup lang="ts">
+import { ref, onMounted } from 'vue'
+import api from '@/core/api/axios'
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
+
+import IconButton from '@/components/ui/IconButton.vue'
+import AcceptIcon from '@/assets/icons/check.svg'
+import RejectIcon from '@/assets/icons/close.svg'
+import BaseInput from '@/components/ui/BaseInput.vue'
+import SortableTh from '@/components/ui/SortableTh.vue'
+
+interface StudentApplication {
+  application_id: number
+  status: string
+  submitted_at: string
+  student_name: string
+  student_email: string
+  user_id: number | null
+}
+
+const applications = ref<StudentApplication[]>([])
+const loading = ref(false)
+const actionLoading = ref<number | null>(null)
+
+// комментарии по каждой заявке
+const commentText = ref<Record<number, string>>({})
+
+// сортировка
+const sortKey = ref<string | null>(null)
+const sortOrder = ref<'asc' | 'desc'>('asc')
+
+// сортировка списка
+const sortBy = (key: string) => {
+  if (sortKey.value === key) {
+    sortOrder.value = sortOrder.value === 'asc' ? 'desc' : 'asc'
+  } else {
+    sortKey.value = key
+    sortOrder.value = 'asc'
+  }
+  applications.value = [...applications.value].sort((a, b) => {
+    const valA = a[key as keyof StudentApplication] ?? ''
+    const valB = b[key as keyof StudentApplication] ?? ''
+
+    const modifier = sortOrder.value === 'asc' ? 1 : -1
+    return valA > valB ? modifier : -modifier
+  })
+}
+
+// загрузка заявок
+const fetchPendingApplications = async () => {
+  loading.value = true
+  try {
+    const { data } = await api.get('/admin/students/pending')
+    applications.value = data
+  } finally {
+    loading.value = false
+  }
+}
+
+// одобрение заявки
+const handleApprove = async (appId: number) => {
+  actionLoading.value = appId
+  try {
+    await api.post(`/admin/students/${appId}/approve`, {
+      comment: commentText.value[appId] || 'Schválené administrátorom.'
+    })
+    applications.value = applications.value.filter(
+        app => app.application_id !== appId
+    )
+  } finally {
+    actionLoading.value = null
+  }
+}
+
+// отклонение заявки
+const handleReject = async (appId: number) => {
+  if (!commentText.value[appId]) {
+    alert('Prosím, uveďte dôvod zamietnutia žiadosti.')
+    return
+  }
+  actionLoading.value = appId
+  try {
+    await api.post(`/admin/students/${appId}/reject`, {
+      comment: commentText.value[appId]
+    })
+    applications.value = applications.value.filter(
+        app => app.application_id !== appId
+    )
+  } finally {
+    actionLoading.value = null
+  }
+}
+
+// формат даты
+const formatDate = (dateString: string) =>
+    dateString
+        ? new Date(dateString).toLocaleDateString('sk-SK', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        })
+        : ''
+
+onMounted(fetchPendingApplications)
+</script>
+
+<template>
+  <div class="student-apps-page">
+    <div class="page-header">
+      <h1>
+        {{ $t('adminTable.student_apps.title') }}
+      </h1>
+      <p class="subtitle">
+        {{ $t('adminTable.student_apps.subtitle') }}
+      </p>
+    </div>
+
+    <div class="table-container">
+      <div class="table-header">
+
+        <SortableTh field="application_id" :sort-key="sortKey" :sort-order="sortOrder" @sort="sortBy">
+          {{ $t('adminTable.student_apps.columns.id') }}
+        </SortableTh>
+
+        <SortableTh field="student_name" :sort-key="sortKey" :sort-order="sortOrder" @sort="sortBy">
+          {{ $t('adminTable.student_apps.columns.name') }}
+        </SortableTh>
+
+        <SortableTh field="student_email" :sort-key="sortKey" :sort-order="sortOrder" @sort="sortBy">
+          {{ $t('adminTable.student_apps.columns.email') }}
+        </SortableTh>
+
+        <SortableTh field="submitted_at" :sort-key="sortKey" :sort-order="sortOrder" @sort="sortBy">
+          {{ $t('adminTable.student_apps.columns.date') }}
+        </SortableTh>
+
+        <div class="th">
+          {{ $t('adminTable.student_apps.columns.comment') }}
+        </div>
+
+        <div class="th">
+          {{ $t('adminTable.student_apps.columns.actions') }}
+        </div>
+
+      </div>
+
+      <div class="table-body">
+
+        <div v-if="loading" class="table-loading">
+          <div class="spinner"></div>
+          <p>{{ $t('adminTable.student_apps.loading') }}</p>
+        </div>
+        <div v-else-if="applications.length === 0" class="empty-state">
+          <div class="empty-icon">🎉</div>
+          <h3>{{ $t('adminTable.student_apps.empty') }}</h3>
+        </div>
+
+        <div v-for="app in applications" :key="app.application_id" class="table-row">
+
+          <div class="td app-id">#{{ app.application_id }}</div>
+          <div class="td student-name">{{ app.student_name }}</div>
+          <div class="td email">{{ app.student_email }}</div>
+          <div class="td date-td">{{ formatDate(app.submitted_at) }}</div>
+
+          <div class="td">
+            <BaseInput
+                v-model="commentText[app.application_id]"
+                :placeholder="$t('adminTable.student_apps.comment_placeholder')"
+                no-margin
+                :disabled="actionLoading === app.application_id"
+                variant="table"
+            />
+          </div>
+
+          <div class="td actions-td">
+            <div class="buttons-group">
+              <IconButton
+                  severity="success"
+                  :disabled="actionLoading !== null"
+                  @click="handleApprove(app.application_id)"
+                  v-tooltip="$t('actions.submit_application')"
+              >
+                <AcceptIcon v-if="actionLoading !== app.application_id" />
+              </IconButton>
+
+              <IconButton
+                  severity="danger"
+                  :disabled="actionLoading !== null"
+                  @click="handleReject(app.application_id)"
+                  v-tooltip="$t('actions.cancel_application')"
+              >
+                <RejectIcon v-if="actionLoading !== app.application_id" />
+              </IconButton>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.actions-td {
+  transform: translateX(4px);
+}
+.student-apps-page {
+  padding: 24px;
+  color: var(--text-color);
+}
+.page-header {
+  margin-bottom: 24px;
+}
+.subtitle {
+  font-size: 16px;
+}
+.empty-state {
+  background: var(--menu-color);
+  border-radius: 12px;
+  padding: 48px;
+  text-align: center;
+}
+.table-container {
+  background: var(--table-row-bg-color);
+  display: flex;
+  flex-direction: column;
+  height: 550px;
+  border-radius: 12px;
+  overflow: hidden;
+}
+.table-header {
+  background: var(--table-header-bg-color);
+  color: var(--table-header-text-color);
+  display: grid;
+  grid-template-columns: 80px 1fr 1fr 150px 220px 120px;
+  align-items: center;
+  padding: 16px;
+}
+.table-row {
+  background: var(--table-row-bg-color);
+  color: var(--table-row-text-color);
+  display: grid;
+  grid-template-columns: 80px 1fr 1fr 150px 220px 120px;
+  align-items: center;
+  padding: 16px;
+
+  &:hover {
+    background: var(--table-header-bg-color);
+  }
+}
+.table-body {
+  flex: 1;
+  overflow-y: auto;
+}
+.td {
+  padding: 0 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-word;
+}
+.th {
+  display: flex;
+  align-items: center;
+  padding: 6px 8px;
+  line-height: 1;
+}
+.app-id {
+  font-weight: bold;
+  color: var(--main-color);
+}
+.buttons-group {
+  display: flex;
+  gap: 8px;
+}
+.table-loading {
+  height: 100%;
+  min-height: 200px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  gap: 12px;
+
+  color: var(--text-color);
+  opacity: 0.7;
+}
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 6px solid var(--table-header-bg-color-hover);
+  border-top-color: var(--main-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+.empty-icon {
+  font-size: 40px;
+  margin-bottom: 12px;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+</style>

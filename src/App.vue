@@ -1,12 +1,27 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
 import { useAuthStore } from '@/stores/auth'
+import { watch } from 'vue'
+import { useRoute } from 'vue-router'
 import api from '@/core/api/axios'
 
 import TheHeader from '@/components/layout/AppHeader.vue'
 import TheFooter from '@/components/layout/AppFooter.vue'
 
 const authStore = useAuthStore()
+const route = useRoute()
+
+watch(
+    () => route.meta.isWhitePage,
+    (isWhite) => {
+      if (isWhite) {
+        document.body.classList.add('white-theme')
+      } else {
+        document.body.classList.remove('white-theme')
+      }
+    },
+    { immediate: true }
+)
 
 onMounted(() => {
   authStore.fetchMe()

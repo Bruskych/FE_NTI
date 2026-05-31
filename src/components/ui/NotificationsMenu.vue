@@ -78,11 +78,12 @@ defineProps<{
 
   font-size: 15px;
   padding: 12px 16px;
-  transition: background 0.2s ease;
   cursor: pointer;
 
-  &:hover {
-    background: var(--select-bg-color-focus);
+  @media (hover:hover) and (pointer: fine){
+    &:hover {
+      background: var(--select-bg-color-focus);
+    }
   }
 }
 .empty-state {
