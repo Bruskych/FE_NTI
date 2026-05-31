@@ -14,7 +14,6 @@ import RejectIcon from '@/assets/icons/close.svg'
 import BaseInput from '@/components/ui/BaseInput.vue'
 import SortableTh from '@/components/ui/SortableTh.vue'
 import EmptyIcon from '@/assets/icons/empty.svg'
-import ArrowIcon from "@/assets/icons/arrow.svg";
 
 interface StudentApplication {
   application_id: number
