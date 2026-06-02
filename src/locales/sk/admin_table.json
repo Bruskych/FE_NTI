@@ -1,0 +1,37 @@
+{
+  "___comment___": "Preklady pre administratívnu tabuľku",
+  "company_apps": {
+    "title": "Žiadosti o registráciu firiem",
+    "subtitle": "Tu môžete overiť údaje firiem, schváliť ich prístup alebo zamietnuť registráciu",
+    "loading": "Načítavam žiadosti...",
+    "empty": "Žiadne nové žiadosti",
+    "comment_placeholder": "Dôvod...",
+
+    "columns": {
+      "id": "ID",
+      "company": "Firma",
+      "ico": "IČO",
+      "description": "Popis",
+      "representative": "Zástupca",
+      "date": "Dátum",
+      "comment": "Komentár",
+      "actions": "Akcie"
+    }
+  },
+  "student_apps": {
+    "title": "Žiadosti o registráciu študentov",
+    "subtitle": "Tu môžete schváliť alebo zamietnuť nových používateľov",
+    "loading": "Načítavam žiadosti...",
+    "empty": "Žiadne nové žiadosti",
+    "comment_placeholder": "Dôvod...",
+
+    "columns": {
+      "id": "ID",
+      "name": "Meno",
+      "email": "Email",
+      "date": "Dátum",
+      "comment": "Komentár",
+      "actions": "Akcie"
+    }
+  }
+}

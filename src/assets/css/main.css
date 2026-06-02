@@ -1,0 +1,82 @@
+@import 'base.css';
+
+/* Точка входа */
+#app {
+    min-height: 100vh;
+    margin: 0 auto;
+}
+
+/* Структура содержимого */
+.app-layout {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-color);
+}
+
+/* Страница, её фон и тд */
+html, body {
+    font-family: var(--font-main), sans-serif;
+
+    min-height: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: var(--bg-color);
+
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Для страниц где нужен белый фон */
+body.white-theme {
+    --bg-color: var(--menu-color);
+}
+
+/* Стили для всего подряд */
+* {
+    font-family: var(--font-main), sans-serif;
+    transition:
+            /* Прозрачность и эффекты */
+            opacity 0.2s ease,           /* Плавное появление/исчезновение */
+            filter 0.2s ease,            /* Эффекты (размытие, яркость) */
+            transform 0.2s ease,         /* Масштабирование, сдвиги, повороты */
+
+            /* Цвета и фоны */
+            background-color 0.2s ease,  /* Смена цвета фона */
+            color 0.2s ease,             /* Смена цвета текста */
+            fill 0.2s ease,              /* Цвет заливки SVG-иконок */
+            stroke 0.2s ease,            /* Цвет обводки SVG-иконок */
+
+            /* Границы и акценты */
+            border-color 0.2s ease,      /* Цвет рамки (лучше, чем просто border) */
+            box-shadow 0.2s ease,        /* Плавная тень */
+            outline-color 0.2s ease;     /* Цвет обводки фокуса (доступность) */
+}
+
+/* Убирает стандартные стили браузера для кнопок, тем самым работают те которые написаны вручную */
+button {
+    appearance: none;
+    border: none;
+    background: none;
+
+    padding: 0;
+    margin: 0;
+
+    font: inherit;
+    color: inherit;
+
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+/* Стили для полосы прокрутки сайта */
+::-webkit-scrollbar {
+    width: 6px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: var(--scroll-color);
+    border-radius: 10px;
+}

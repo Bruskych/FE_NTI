@@ -1,0 +1,9 @@
+{
+  "Comment": "Перевод для действий кнопок",
+
+  "submit": "Accept",
+  "cancel": "Reject",
+
+  "submit_application": "Accept the application",
+  "cancel_application": "Reject the application"
+}
