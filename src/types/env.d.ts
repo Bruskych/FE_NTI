@@ -18,13 +18,15 @@ declare module 'vue' {
 }
 
 // 3. Дает TypeScript возможность "видеть" структуру .vue файлов
-declare module '*.vue' {
-    const component: DefineComponent<Record<string, unknown>, Record<string, unknown>, unknown>
-    export default component
-}
+//declare module '*.vue' {
+//    import type { DefineComponent } from 'vue'
+//   const component: DefineComponent<Record<string, unknown>, Record<string, unknown>, unknown>
+//    export default component
+//}
 
 // 4. Позволяет импортировать SVG-файлы
 declare module '*.svg' {
+    import type { DefineComponent } from 'vue'
     const component: DefineComponent<Record<string, unknown>, Record<string, unknown>, unknown>
     export default component
 }
