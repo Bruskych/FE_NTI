@@ -27,7 +27,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="app-container">
+  <div class="app-layout">
     <TheHeader />
 
     <main class="main-content">
@@ -38,26 +38,24 @@ onMounted(() => {
   </div>
 </template>
 
-<style scoped>
-.app-container {
+<style>
+/* Глобальні базові стилі для всього додатку */
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+/* Обгортка, яка розтягує контент на весь екран і притискає футер до низу */
+.app-layout {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  font-family: 'Inter', sans-serif;
 }
 
+/* Центральна частина займає весь вільний простір */
 .main-content {
   flex: 1 0 auto;
-}
-
-header {
-  line-height: 1.55;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: 1rem;
-  }
 }
 </style>
