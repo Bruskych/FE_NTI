@@ -1,17 +1,19 @@
-import { useI18n } from 'vue-i18n'
 import { ref } from 'vue'
+import { i18n } from '@/locales' // Используем точный alias @ для импорта локалей
 
-const currentLang = ref(localStorage.getItem('lang') || 'en')
+// Получаем сохраненный язык из localStorage или берем 'sk' по умолчанию
+const currentLang = ref(localStorage.getItem('lang') || 'sk')
 
 export function useLanguage() {
-  const { locale } = useI18n()
-  const setLanguage = (lang: string) => {
-    locale.value = lang as 'en' | 'sk'
-    currentLang.value = lang
-    localStorage.setItem('lang', lang)
-  }
-  return {
-    currentLang,
-    setLanguage
-  }
+    const setLanguage = (lang: 'en' | 'sk') => {
+        // Обновляем глобальный контекст vue-i18n для мгновенного переключения
+        i18n.global.locale.value = lang
+        currentLang.value = lang
+        localStorage.setItem('lang', lang)
+    }
+
+    return {
+        currentLang,
+        setLanguage
+    }
 }
