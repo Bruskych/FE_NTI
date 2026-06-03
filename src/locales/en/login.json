@@ -16,7 +16,8 @@
   "signIn": "Sign In",
   "welcomeBack": "Welcome Back",
   "rememberMe": "Remember Me",
-  "forgotPassword": "Forgot Password?",
+  "forgotPasswordLink": "Forgot Password?",
+  "passwordTooShort": "Password must be at least 8 characters long",
   "dontHaveAccount": "Don't have an account?",
   "createAccount": "Create Account",
   "continue": "Continue",
@@ -32,5 +33,34 @@
   "or": "Or",
   "loginWithGoogle": "Login with Google",
   "loginWithApple": "Login with Apple",
-  "loginWithFacebook": "Login with Facebook"
+  "loginWithFacebook": "Login with Facebook",
+  "forgotPassword": {
+    "title": "Forgot Password?",
+    "hint": "Enter your email and we'll send you a reset link.",
+    "send": "Send Reset Link",
+    "checkEmail": "Check Your Email",
+    "checkEmailHint": "If an account with that email exists, a reset link has been sent.",
+    "error": "Something went wrong. Please try again."
+  },
+  "resetPassword": {
+    "title": "Set New Password",
+    "submit": "Reset Password",
+    "passwordMin": "Password must be at least 8 characters",
+    "passwordMismatch": "Passwords do not match",
+    "successTitle": "Password Reset!",
+    "successHint": "Your password has been changed. Redirecting to login...",
+    "error": "Invalid or expired reset link. Please request a new one."
+  },
+  "verifyEmail": {
+    "verifying": "Verifying your email...",
+    "successTitle": "Email Verified!",
+    "successHint": "Your email has been successfully verified.",
+    "alreadyTitle": "Already Verified",
+    "alreadyHint": "Your email is already verified.",
+    "errorTitle": "Verification Failed",
+    "errorHint": "The verification link is invalid or has expired.",
+    "resend": "Resend Verification Email",
+    "resendSent": "A new verification email has been sent.",
+    "goHome": "Go to Homepage"
+  }
 }

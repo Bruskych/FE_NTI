@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import type { AxiosError } from 'axios'
 import api from '@/core/api/axios'
 
-// Интерфейс данных, которые приходят из формы регистрации
+// Interface for data coming from the registration form
 export interface RegisterFormData {
     first_name: string
     last_name: string
@@ -10,7 +10,7 @@ export interface RegisterFormData {
     password: string
     password_confirmation: string
     role: 'student' | 'company'
-    // Поля компании (опциональны)
+    // Company optional fields
     company_name?: string
     company_tax_id?: string
     sector?: string
@@ -18,14 +18,14 @@ export interface RegisterFormData {
     description?: string
 }
 
-// Интерфейс ответа сервера при регистрации
+// Interface for server response upon registration
 interface RegisterResponse {
     token: string
     user: User
     notifications?: Notification[]
 }
 
-// Описываем структуру уведомлений
+// Notification structure definition
 interface Notification {
     id: number
     title: string
@@ -34,7 +34,7 @@ interface Notification {
     read_at: string | null
 }
 
-// Описываем интерфейс пользователя согласно ролям из ТЗ
+// User interface definition according to the requirements specifications
 export interface User {
     id: number
     name: string
@@ -42,9 +42,10 @@ export interface User {
     roles: { name: string }[]
     organization_id?: number | null
     avatar?: string | null
+    email_verified_at?: string | null
 }
 
-// Описываем структуру состояния (State)
+// State structure definition
 interface AuthState {
     token: string | null
     user: User | null
@@ -53,7 +54,7 @@ interface AuthState {
     error: string | null
 }
 
-// Описываем структуру ошибок
+// Error response structure definition
 type LoginErrorResponse = {
     message?: string
     errors?: {
@@ -62,7 +63,7 @@ type LoginErrorResponse = {
     }
 }
 
-// Описываем тип ответа для входа в аккаунт
+// Login response type definition
 type LoginResponse = {
     token: string
     user: User
@@ -130,7 +131,7 @@ export const useAuthStore = defineStore('auth', {
                     email:                 userData.email,
                     password:              userData.password,
                     password_confirmation: userData.password_confirmation,
-                    // FIX: бекенд очікує account_type, не role
+                    // FIX: backend expects account_type instead of role
                     account_type:          userData.role,
                     gdpr_consent:          '1',
                 }
