@@ -22,6 +22,7 @@ const loading = ref(false)
 const serverError = ref('')
 
 onMounted(() => {
+  // Достаем параметры токена и email из URL адреса
   form.value.token = (route.query.token as string) || ''
   form.value.email = (route.query.email as string) || ''
 
@@ -63,6 +64,7 @@ const handleSubmit = async () => {
     await api.post('/reset-password', form.value)
     router.push({ name: 'login' })
   } catch (error: unknown) {
+    // Безопасное приведение ошибки к типу без any для прохождения eslint проверки
     const err = error as {
       response?: {
         data?: { errors?: Record<string, string[]>; message?: string };
@@ -159,12 +161,12 @@ const handleSubmit = async () => {
   margin-bottom: 10px;
 }
 .header-group h1 {
-  text-align: left;
+  text-align: left; /* Заголовок слева */
   margin: 0;
   font-size: 28px;
 }
 .bottom-link {
-  text-align: center;
+  text-align: center; /* Ссылка по центру */
   font-size: 14px;
   margin: 5px 0 0 0;
 }

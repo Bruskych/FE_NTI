@@ -18,6 +18,7 @@ const emailErrorKey = ref('')
 const passwordErrorKey = ref('')
 
 onMounted(() => {
+  // Очищаем прошлые ошибки авторизации при входе на страницу
   authStore.error = ''
 })
 
@@ -119,11 +120,11 @@ const handleLogin = async () => {
   gap: 15px;
 }
 .auth-form h1 {
-  text-align: left;
+  text-align: left; /* Заголовок строго слева */
   margin: 0 0 5px 0;
 }
 .bottom-link {
-  text-align: center;
+  text-align: center; /* Ссылка строго по центру */
   margin-top: 5px;
 }
 .bottom-link a {

@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import type { AxiosError } from 'axios'
 import api from '@/core/api/axios'
 
-// Interface for data coming from the registration form
+// Интерфейс для данных, поступающих из формы регистрации
 export interface RegisterFormData {
     first_name: string
     last_name: string
@@ -10,7 +10,7 @@ export interface RegisterFormData {
     password: string
     password_confirmation: string
     role: 'student' | 'company'
-    // Company optional fields
+    // Необязательные поля для компании
     company_name?: string
     company_tax_id?: string
     sector?: string
@@ -18,14 +18,14 @@ export interface RegisterFormData {
     description?: string
 }
 
-// Interface for server response upon registration
+// Интерфейс ответа сервера при успешной регистрации
 interface RegisterResponse {
     token: string
     user: User
     notifications?: Notification[]
 }
 
-// Notification structure definition
+// Структура уведомлений пользователя
 interface Notification {
     id: number
     title: string
@@ -34,7 +34,7 @@ interface Notification {
     read_at: string | null
 }
 
-// User interface definition according to the requirements specifications
+// Интерфейс пользователя согласно техническим требованиям проекта
 export interface User {
     id: number
     name: string
@@ -45,7 +45,7 @@ export interface User {
     email_verified_at?: string | null
 }
 
-// State structure definition
+// Определение структуры состояния (State) хранилища
 interface AuthState {
     token: string | null
     user: User | null
@@ -54,7 +54,7 @@ interface AuthState {
     error: string | null
 }
 
-// Error response structure definition
+// Структура ошибки при входе
 type LoginErrorResponse = {
     message?: string
     errors?: {
@@ -63,7 +63,7 @@ type LoginErrorResponse = {
     }
 }
 
-// Login response type definition
+// Структура успешного ответа при входе
 type LoginResponse = {
     token: string
     user: User
@@ -92,6 +92,7 @@ export const useAuthStore = defineStore('auth', {
     },
 
     actions: {
+        // Авторизация пользователя (Вход)
         async login(email: string, password: string): Promise<void> {
             this.loading = true
             this.error = null
@@ -121,6 +122,7 @@ export const useAuthStore = defineStore('auth', {
             }
         },
 
+        // Регистрация нового аккаунта
         async register(userData: RegisterFormData): Promise<void> {
             this.loading = true
             this.error = null
@@ -131,7 +133,7 @@ export const useAuthStore = defineStore('auth', {
                     email:                 userData.email,
                     password:              userData.password,
                     password_confirmation: userData.password_confirmation,
-                    // FIX: backend expects account_type instead of role
+                    // Исправление: бэкенд ожидает account_type вместо поля role
                     account_type:          userData.role,
                     gdpr_consent:          '1',
                 }
@@ -162,6 +164,7 @@ export const useAuthStore = defineStore('auth', {
             }
         },
 
+        // Получение данных текущего авторизованного профиля
         async fetchMe(): Promise<void> {
             if (!this.token) return
             try {
@@ -171,6 +174,7 @@ export const useAuthStore = defineStore('auth', {
                 const err = error as AxiosError
                 const status = err.response?.status
                 if (status === 401) {
+                    // Если токен невалиден или протух — принудительно разлогиниваем
                     await this.logout()
                     return
                 }
@@ -178,12 +182,14 @@ export const useAuthStore = defineStore('auth', {
             }
         },
 
+        // Выход из системы
         async logout(): Promise<void> {
             try {
                 await api.post('/auth/logout')
             } catch (error) {
                 console.error('Logout failed:', error)
             } finally {
+                // Полная очистка локального состояния в любом случае
                 this.token = null
                 this.user = null
                 localStorage.removeItem('token')

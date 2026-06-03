@@ -32,6 +32,7 @@ const handleSubmit = async () => {
     await api.post('/forgot-password', { email: email.value })
     submitted.value = true
   } catch (error: unknown) {
+    // Безопасное приведение типов ошибок для строгого ESLint без использования any
     const err = error as {
       response?: {
         data?: { errors?: Record<string, string[]>; message?: string };
@@ -129,12 +130,12 @@ const handleSubmit = async () => {
   margin-bottom: 10px;
 }
 .header-group h1 {
-  text-align: left;
+  text-align: left; /* Текст заголовка слева */
   margin: 0 0 10px 0;
   font-size: 28px;
 }
 .hint-text {
-  text-align: left;
+  text-align: left; /* Подсказка слева */
   font-size: 14px;
   color: var(--text-color);
   opacity: 0.7;
@@ -142,7 +143,7 @@ const handleSubmit = async () => {
   line-height: 1.4;
 }
 .bottom-link {
-  text-align: center;
+  text-align: center; /* Ссылка возврата по центру */
   font-size: 14px;
   margin: 5px 0 0 0;
 }

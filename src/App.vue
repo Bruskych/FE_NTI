@@ -9,6 +9,7 @@ import TheFooter from '@/components/layout/AppFooter.vue'
 const authStore = useAuthStore()
 const route = useRoute()
 
+// Следим за мета-полем роута для динамического переключения светлой темы
 watch(
     () => route.meta.isWhitePage,
     (isWhite) => {
@@ -22,6 +23,7 @@ watch(
 )
 
 onMounted(() => {
+  // Автоматически запрашиваем данные текущего пользователя при монтировании приложения
   authStore.fetchMe()
 })
 </script>
@@ -39,14 +41,14 @@ onMounted(() => {
 </template>
 
 <style>
-/* Глобальні базові стилі для всього додатку */
+/* Глобальные базовые стили для всего приложения */
 body, html {
   margin: 0;
   padding: 0;
   height: 100%;
 }
 
-/* Обгортка, яка розтягує контент на весь екран і притискає футер до низу */
+/* Обертка, растягивающая контент на весь экран и прижимающая футер к низу */
 .app-layout {
   display: flex;
   flex-direction: column;
@@ -54,7 +56,7 @@ body, html {
   font-family: 'Inter', sans-serif;
 }
 
-/* Центральна частина займає весь вільний простір */
+/* Центральная часть занимает все свободное пространство */
 .main-content {
   flex: 1 0 auto;
 }

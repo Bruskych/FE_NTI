@@ -15,6 +15,7 @@ const resendLoading = ref(false)
 const resendSent = ref(false)
 
 onMounted(async () => {
+  // Извлекаем id пользователя и хеш верификации из параметров роута
   const id   = route.params.id as string
   const hash = route.params.hash as string
 
@@ -24,13 +25,16 @@ onMounted(async () => {
   }
 
   try {
+    // Отправляем запрос на бэкенд для подтверждения почты
     await api.get(`/auth/verify-email/${id}/${hash}`)
     status.value = 'success'
 
+    // Если пользователь уже залогинен, обновляем его профиль в стейте
     if (authStore.isAuthenticated) {
       await authStore.fetchMe()
     }
   } catch (error: unknown) {
+    // Заменяем error: any на ручное безопасное сопоставление статуса ответа
     const err = error as { response?: { status?: number } }
     if (err.response?.status === 400 || err.response?.status === 409) {
       status.value = 'already'
@@ -125,11 +129,11 @@ const handleResend = async () => {
   gap: 15px;
 }
 .auth-form h1 {
-  text-align: left;
+  text-align: left; /* Текст заголовков слева */
   margin: 0;
 }
 .hint-text {
-  text-align: left;
+  text-align: left; /* Описание слева */
   font-size: 14px;
   color: var(--text-color);
   opacity: 0.7;
@@ -137,7 +141,7 @@ const handleResend = async () => {
   line-height: 1.4;
 }
 .bottom-link {
-  text-align: center;
+  text-align: center; /* Кнопки навигации по центру */
   font-size: 14px;
   margin: 0;
 }

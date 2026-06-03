@@ -1,10 +1,10 @@
 /**
- * Axios configuration for communication with the Laravel API.
- * * Features:
- * - Dynamic Bearer token injection for authorization.
- * - Dynamic system language injection for backend localization on every request.
- * - Global response interceptor: automatically triggers a Toast notification
- * whenever the server returns a "message" property.
+ * Конфигурация Axios для взаимодействия с Laravel API.
+ * Возможные функции:
+ * - Динамическая подстановка Bearer токена для авторизации.
+ * - Автоматическая передача текущего языка системы для локализации ответов бэкенда.
+ * - Глобальный перехватчик ответов: автоматически вызывает Toast-уведомление,
+ * когда сервер возвращает свойство "message".
  */
 
 import axios from 'axios'
@@ -18,19 +18,19 @@ const api = axios.create({
     },
 })
 
-// (Request Interceptor) Triggers dynamically RIGHT BEFORE the request is sent to the server
+// (Перехватчик запросов) Срабатывает динамически НЕПОСРЕДСТВЕННО ПЕРЕД отправкой запроса на сервер
 api.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem('token')
 
-        // FIX: Always fetch the latest language from localStorage dynamically on every single request
+        // Исправление: Всегда динамически получаем самый актуальный язык из localStorage для каждого запроса
         const lang = localStorage.getItem('lang') || 'en'
 
         if (token) {
             config.headers.Authorization = `Bearer ${token}`
         }
 
-        // Inject the current active language code into the request headers
+        // Добавляем код текущего активного языка в заголовки запроса
         config.headers['Accept-Language'] = lang
 
         return config
@@ -40,11 +40,12 @@ api.interceptors.request.use(
     }
 )
 
-// (Response Interceptor) Triggers immediately AFTER the server responds
+// (Перехватчик ответов) Срабатывает сразу ЖЕ ПОСЛЕ того, как сервер прислал ответ
 api.interceptors.response.use(
     (response) => {
         const notifications = useNotificationStore()
 
+        // Если сервер прислал успешное сообщение, выводим его через хранилище уведомлений
         if (response.data?.message) {
             notifications.add(response.data.message, 'success')
         }
@@ -54,6 +55,7 @@ api.interceptors.response.use(
         const notifications = useNotificationStore()
         const errorMessage = error.response?.data?.message || 'System error (Connection failed)'
 
+        // Выводим текст ошибки с сервера в Toast-уведомление
         notifications.add(errorMessage, 'error')
 
         return Promise.reject(error)
