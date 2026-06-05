@@ -8,7 +8,7 @@ import ArrowIcon from '@/assets/icons/arrow.svg'
 import SettingsIcon from '@/assets/icons/settings.svg'
 import AdminIcon from '@/assets/icons/admin.svg'
 import LogoutIcon from '@/assets/icons/logout.svg'
-import DashboardIcon from '@/assets/icons/dashboard-svgrepo-com.svg'
+import DashboardIcon from '@/assets/icons/dashboard.svg'
 import DropdownMenuItem from '@/components/ui/DropdownMenuItem.vue'
 
 const authStore = useAuthStore()

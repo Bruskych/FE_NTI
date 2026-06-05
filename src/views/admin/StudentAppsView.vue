@@ -290,8 +290,12 @@ onMounted(fetchPendingApplications)
   align-items: center;
   gap: 12px;
 }
-.empty-state { opacity: 0.6; }
-.table-loading { opacity: 0.7; }
+.empty-state {
+  opacity: 0.6;
+}
+.table-loading {
+  opacity: 0.7;
+}
 .empty-icon {
   width: 50px;
   height: 50px;
@@ -307,6 +311,8 @@ onMounted(fetchPendingApplications)
   animation: spin 1s linear infinite;
 }
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 </style>

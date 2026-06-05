@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useI18n } from 'vue-i18n'
+import SecondaryButton from "@/components/ui/SecondaryButton.vue";
 const { t } = useI18n()
 
 const authStore = useAuthStore()
@@ -61,14 +62,13 @@ const onFileSelected = async (event: Event) => {
         @change="onFileSelected"
     />
 
-    <button
+    <SecondaryButton
         type="button"
-        class="upload-btn"
         :disabled="authStore.loading"
         @click="triggerFileInput"
     >
       {{ authStore.loading ? $t('error.avatar.loading') : $t('error.avatar.change_btn') }}
-    </button>
+    </SecondaryButton>
 
     <p v-if="validationError" class="error-text">
       {{ validationError }}
@@ -79,20 +79,18 @@ const onFileSelected = async (event: Event) => {
 <style scoped>
 .avatar-uploader {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 20px;
 }
 .avatar-preview {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
+  width: 200px;
+  height: 200px;
+  border-radius: 5px;
   overflow: hidden;
-  background-color: #e0e0e0;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2px solid #ccc;
 }
 .avatar-img {
   width: 100%;
@@ -103,20 +101,6 @@ const onFileSelected = async (event: Event) => {
   font-size: 32px;
   font-weight: bold;
   color: #666;
-}
-.upload-btn {
-  padding: 8px 16px;
-  background-color: #4f46e5;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
-
-  &:disabled {
-    background-color: #a5b4fc;
-    cursor: not-allowed;
-  }
 }
 .error-text {
   color: #ef4444;

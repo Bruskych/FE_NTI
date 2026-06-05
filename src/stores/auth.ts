@@ -255,6 +255,25 @@ export const useAuthStore = defineStore('auth', {
             } finally {
                 this.loading = false;
             }
+        },
+
+        // Обновления имени + фамилии пользователя
+        async updateProfileInfo(payload: { name: string }): Promise<void> {
+            this.loading = true;
+            this.error = null;
+            try {
+                const { data } = await api.put('/settings/update-profile', payload);
+
+                if (data.user) {
+                    this.user = data.user;
+                    localStorage.setItem('cached_user', JSON.stringify(data.user));
+                }
+            } catch (error: unknown) {
+                console.error('Profile update failed:', error);
+                throw error;
+            } finally {
+                this.loading = false;
+            }
         }
     },
 })

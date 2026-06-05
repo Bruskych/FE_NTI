@@ -1,29 +1,32 @@
 <script setup lang="ts">
 import NavCardItem from '@/components/ui/NavCardItem.vue'
-import UsersIcon from '@/assets/icons/users.svg'
+import UserIcon from '@/assets/icons/user.svg'
 </script>
 
 <template>
-  <div class="admin-page">
+  <div class="settings-page">
 
-    <aside class="admin-sidebar">
+    <aside class="settings-sidebar">
       <div class="sidebar-menu">
         <NavCardItem
-            :label="$t('adminPanel.student_applications')"
-            to="/admin/students"
-            :roles="['admin', 'super_admin']"
-            :icon="UsersIcon"
-        />
-        <NavCardItem
-            :label="$t('adminPanel.company_applications')"
-            to="/admin/companies"
-            :roles="['admin', 'super_admin']"
-            :icon="UsersIcon"
+            :label="$t('userPanel.profile')"
+            to="/settings/profile"
+            :roles="[
+                'super_admin',
+                'admin',
+                'content_editor',
+                'evaluator',
+                'company',
+                'mentor',
+                'team_leader',
+                'student'
+            ]"
+            :icon="UserIcon"
         />
       </div>
     </aside>
 
-    <main class="admin-content">
+    <main class="settings-content">
       <router-view v-slot="{ Component }">
         <transition name="page-fade" mode="out-in">
           <component :is="Component" />
@@ -35,7 +38,7 @@ import UsersIcon from '@/assets/icons/users.svg'
 </template>
 
 <style scoped>
-.admin-page {
+.settings-page {
   font-family: var(--font-main), sans-serif;
   font-weight: 550;
   display: flex;
@@ -46,7 +49,7 @@ import UsersIcon from '@/assets/icons/users.svg'
   background: var(--bg-color);
 }
 
-.admin-sidebar {
+.settings-sidebar {
   height: 100%;
   flex: 0 0 20%;
   min-width: 260px;
@@ -65,7 +68,7 @@ import UsersIcon from '@/assets/icons/users.svg'
   overflow-y: auto;
 }
 
-.admin-content {
+.settings-content {
   flex: 1;
   height: 100%;
   padding: 40px;
@@ -75,6 +78,7 @@ import UsersIcon from '@/assets/icons/users.svg'
   flex-direction: column;
 }
 
+/* Анимация плавного переключения вкладок */
 .page-fade-enter-active,
 .page-fade-leave-active {
   transition: opacity 0.2s ease, transform 0.2s ease;

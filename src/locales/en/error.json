@@ -3,6 +3,7 @@
   "not_found_description1": "Sorry, the page",
   "not_found_description2": "was not found or you do not have access to it.",
   "home_button": "Go Home",
+  "error_save": "Error saving data:",
 
   "avatar": {
     "err_load": "Error loading avatar:",

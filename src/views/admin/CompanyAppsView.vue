@@ -60,7 +60,7 @@ const fetchPendingApplications = async () => {
     const { data } = await api.get('/admin/companies/pending')
     applications.value = data
   } catch (error) {
-    console.error('Chyba pri načítaní firemných žiadostí:', error)
+    console.error('Error loading company applications:', error)
   } finally {
     loading.value = false
   }
@@ -74,7 +74,7 @@ const handleApprove = async (appId: number) => {
     })
     applications.value = applications.value.filter(app => app.application_id !== appId)
   } catch (error) {
-    console.error('Chyba pri schvaľovaní фирмы:', error)
+    console.error('Error approving company:', error)
   } finally {
     actionLoading.value = null
   }
@@ -92,7 +92,7 @@ const handleReject = async (appId: number) => {
     })
     applications.value = applications.value.filter(app => app.application_id !== appId)
   } catch (error) {
-    console.error('Chyba pri zamietaní firmy:', error)
+    console.error('Error rejecting company:', error)
   } finally {
     actionLoading.value = null
   }
@@ -350,8 +350,12 @@ onMounted(() => {
   align-items: center;
   gap: 12px;
 }
-.empty-state { opacity: 0.6; }
-.table-loading { opacity: 0.7; }
+.empty-state {
+  opacity: 0.6;
+}
+.table-loading {
+  opacity: 0.7;
+}
 .empty-icon {
   width: 50px;
   height: 50px;
@@ -367,6 +371,8 @@ onMounted(() => {
   animation: spin 1s linear infinite;
 }
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 </style>

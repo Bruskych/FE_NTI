@@ -3,10 +3,10 @@
 -->
 
 <script setup lang="ts">
-
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import ClosedEye from '@/assets/icons/eye_closed.svg'
 import OpenEye from '@/assets/icons/eye_open.svg'
+import SaveIcon from '@/assets/icons/empty.svg'
 
 interface Props {
   label?: string                  // Текст над полем ввода
@@ -15,30 +15,50 @@ interface Props {
   placeholder?: string            // Серый текст внутри input
   error?: string                  // Текст ошибки
   showPasswordToggle?: boolean    // Даёт возможность увидеть свой пароль
+  showSaveToggle?: boolean        // Включает кнопку сохранения при изменении текста
   visible?: boolean               // Вкл/Выкл поле ввода
   noMargin?: boolean              // Отключать отступ снизу
-  variant?: 'default' | 'table'   // Варианты под конкретную страницу
+  variant?: 'default' | 'table'   // Варианты поля
 }
 
 const props = withDefaults(defineProps<Props>(), {
   type: 'text',
   placeholder: '',
   visible: true,
-  variant: 'default'
+  variant: 'default',
+  showPasswordToggle: false,
+  showSaveToggle: false
 })
 
+const emit = defineEmits(['update:modelValue', 'save'])
+
 const showPassword = ref(false)
+const isChanged = ref(false)
+const initialValue = ref(props.modelValue)
+watch(() => props.modelValue, (newVal) => {
+  if (!isChanged.value) {
+    initialValue.value = newVal
+  }
+})
+
 const inputType = computed(() => {
   if (props.type !== 'password') return props.type
   return showPassword.value ? 'text' : 'password'
 })
 
-const emit = defineEmits(['update:modelValue'])
 const updateValue = (event: Event) => {
   const target = event.target as HTMLInputElement
   emit('update:modelValue', target.value)
+  if (props.showSaveToggle) {
+    isChanged.value = target.value !== initialValue.value
+  }
 }
 
+const handleSave = () => {
+  emit('save', props.modelValue)
+  isChanged.value = false
+  initialValue.value = props.modelValue
+}
 </script>
 
 <template>
@@ -56,20 +76,33 @@ const updateValue = (event: Event) => {
           :class="[
             'base-input',
              { 'input-error': error },
-             { 'has-eye': type === 'password' && showPasswordToggle }
+             { 'has-action-btn': (type === 'password' && showPasswordToggle) || (showSaveToggle && isChanged) }
           ]"
           @input="updateValue"
       />
+
+      <!-- Кнопка переключения пароля (глаз) -->
       <button
           v-if="type === 'password' && showPasswordToggle"
           type="button"
-          class="eye-btn"
+          class="action-btn"
           @click="showPassword = !showPassword"
       >
         <OpenEye v-if="showPassword" class="icon" />
         <ClosedEye v-else class="icon" />
       </button>
+
+      <!-- Кнопка сохранения -->
+      <button
+          v-if="showSaveToggle && isChanged"
+          type="button"
+          class="action-btn save-btn"
+          @click="handleSave"
+      >
+        <SaveIcon class="icon" />
+      </button>
     </div>
+
     <!-- Сообщение о ошибке -->
     <transition name="fade">
       <span v-if="error" class="error-message">{{ error }}</span>
@@ -80,12 +113,15 @@ const updateValue = (event: Event) => {
 <style scoped>
 .icon {
   color: var(--text-color);
+  width: 24px;
+  height: 24px;
+  transition: transform 0.2s ease, color 0.2s ease;
 }
 .input-container {
   position: relative;
   width: 100%;
 }
-.eye-btn {
+.action-btn {
   position: absolute;
   right: 8px;
   top: 50%;
@@ -103,6 +139,13 @@ const updateValue = (event: Event) => {
     &:hover .icon {
       color: var(--button-bg-color);
       transform: scale(0.95);
+    }
+  }
+}
+.save-btn {
+  @media (hover:hover) and (pointer: fine){
+    &:hover .icon {
+      color: var(--good-color);
     }
   }
 }
@@ -145,7 +188,7 @@ const updateValue = (event: Event) => {
   &.input-error {
     border-color: var(--error-color);
   }
-  &.has-eye {
+  &.has-action-btn {
     padding-right: 45px;
   }
 }
@@ -160,7 +203,6 @@ const updateValue = (event: Event) => {
 .fade-enter-from, .fade-leave-to {
   opacity: 0;
 }
-
 .variant-table {
   .base-input {
     border: 1.3px solid var(--table-header-bg-color);

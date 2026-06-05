@@ -5,14 +5,14 @@ import { useAuthStore } from '@/stores/auth'
 import { useLanguage } from '@/composables/useLanguage'
 import { useTheme } from '@/composables/useTheme'
 
-import ntiLogo from '@/assets/images/nti_logo.png'
-
 import LanguageToggle from '@/components/ui/LanguageToggle.vue'
 import BaseButton from '@/components/ui/BaseButton.vue'
 import SecondaryButton from '@/components/ui/SecondaryButton.vue'
 import ThemeToggle from '@/components/ui/ThemeToggle.vue'
 import UserDropdown from '@/components/layout/UserDropdown.vue'
 import NotificationsButton from '@/components/ui/NotificationsButton.vue'
+
+import ntiLogo from '@/assets/images/nti_logo.png'
 
 const router = useRouter()
 const route = useRoute()
@@ -116,14 +116,13 @@ const isSectionActive = (sectionId: string) => {
   width: 100%;
 }
 .container {
-  margin: 0 auto;
-  padding: 0 24px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 75px;
   width: 100%;
-  max-width: 1440px;
+  padding: 0 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 75px;
+  box-sizing: border-box;
 }
 .header-left {
   display: flex;

@@ -7,6 +7,7 @@ import { useI18n } from 'vue-i18n'
 import BaseInput from '@/components/ui/BaseInput.vue'
 import BaseButton from '@/components/ui/BaseButton.vue'
 import BaseSelect from '@/components/ui/BaseSelect.vue'
+import ErrorMessage from '@/components/ui/ErrorMessage.vue'
 
 const { t } = useI18n()
 const authStore = useAuthStore()
@@ -292,9 +293,12 @@ const handleRegister = async () => {
           :placeholder="$t('role.selectRole')"
           :options="roleOptions"
       />
-      <div v-if="authStore.error" class="backend-error">
-        {{ authStore.error }}
-      </div>
+      <ErrorMessage
+          v-if="authStore.error"
+          :message="authStore.error"
+          closable
+          @close="authStore.error = ''"
+      />
       <BaseButton type="submit" :disabled="authStore.loading">
         {{ authStore.loading ? $t('register.loading') : $t('register.register') }}
       </BaseButton>
@@ -318,15 +322,5 @@ const handleRegister = async () => {
   display: flex;
   flex-direction: column;
   gap: 15px;
-}
-.backend-error {
-  color: var(--error-color);
-  border: 1px solid var(--error-color);
-  background: rgba(255, 77, 79, 0.1);
-
-  padding: 10px;
-  border-radius: 6px;
-  font-size: 14px;
-  text-align: center;
 }
 </style>

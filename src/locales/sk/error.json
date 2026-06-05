@@ -3,6 +3,7 @@
   "not_found_description1": "Prepáčte, stránka",
   "not_found_description2": "nebola nájdená alebo k nej nemáte prístup.",
   "home_button": "Domov",
+  "error_save": "Chyba pri ukladaní údajov:",
 
   "avatar": {
     "err_load": "Chyba pri načítaní avatara:",
