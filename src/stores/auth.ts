@@ -93,12 +93,13 @@ export const useAuthStore = defineStore('auth', {
     },
 
     actions: {
+        // Авторизация (Вход) - Исправлен путь на /auth/login
         async login(email: string, password: string): Promise<void> {
             this.loading = true
             this.error = null
 
             try {
-                const { data } = await api.post<LoginResponse>('/login', {
+                const { data } = await api.post<LoginResponse>('/auth/login', {
                     email,
                     password,
                 })
@@ -122,6 +123,7 @@ export const useAuthStore = defineStore('auth', {
             }
         },
 
+        // Регистрация - Исправлен путь на /auth/register
         async register(userData: RegisterFormData): Promise<void> {
             this.loading = true
             this.error = null
@@ -132,7 +134,7 @@ export const useAuthStore = defineStore('auth', {
                     email:                 userData.email,
                     password:              userData.password,
                     password_confirmation: userData.password_confirmation,
-                    role:          userData.role,
+                    role:                  userData.role,
                     gdpr_consent:          '1',
                 }
 
@@ -144,7 +146,7 @@ export const useAuthStore = defineStore('auth', {
                     payload.description    = userData.description
                 }
 
-                const { data } = await api.post<RegisterResponse>('/register', payload)
+                const { data } = await api.post<RegisterResponse>('/auth/register', payload)
 
                 this.token = data.token
                 this.user = data.user
@@ -162,12 +164,13 @@ export const useAuthStore = defineStore('auth', {
             }
         },
 
+        // Сброс пароля - Исправлен путь на /auth/forgot-password
         async forgotPassword(email: string): Promise<void> {
             this.loading = true
             this.error = null
 
             try {
-                await api.post('/forgot-password', { email })
+                await api.post('/auth/forgot-password', { email })
             } catch (error: unknown) {
                 const err = error as AxiosError<{ errors?: Record<string, string[]>; message?: string }>
 
@@ -189,10 +192,11 @@ export const useAuthStore = defineStore('auth', {
             }
         },
 
+        // Получение профиля - Исправлен путь на /auth/me
         async fetchMe(): Promise<void> {
             if (!this.token) return
             try {
-                const { data } = await api.get('/me')
+                const { data } = await api.get('/auth/me')
                 this.user = data.user
             } catch (error: unknown) {
                 const err = error as AxiosError
@@ -205,9 +209,10 @@ export const useAuthStore = defineStore('auth', {
             }
         },
 
+        // Выход из системы - Исправлен путь на /auth/logout
         async logout(): Promise<void> {
             try {
-                await api.post('/logout')
+                await api.post('/auth/logout')
             } catch (error) {
                 console.error('Logout failed:', error)
             } finally {
@@ -217,7 +222,7 @@ export const useAuthStore = defineStore('auth', {
             }
         },
 
-        // Загрузка фото в профиль пользователя
+        // Загрузка фото в профиль пользователя (Тут всё было ок)
         async uploadAvatar(file: File): Promise<void> {
             this.loading = true;
             this.error = null;
