@@ -132,7 +132,7 @@ export const useAuthStore = defineStore('auth', {
                     email:                 userData.email,
                     password:              userData.password,
                     password_confirmation: userData.password_confirmation,
-                    account_type:          userData.role,
+                    role:          userData.role,
                     gdpr_consent:          '1',
                 }
 
