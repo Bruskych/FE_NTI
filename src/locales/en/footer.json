@@ -1,5 +1,9 @@
 {
-  "license": "© 2026 All rights reserved. All trademarks are the property of their respective owners.",
+  "navigation": "Navigation",
+  "support": "Support & Legal",
   "privacy_policy": "Privacy Policy",
-  "contacts": "Contacts"
+  "terms_of_service": "Terms of Service",
+  "license": "All rights reserved. All trademarks are the property of their respective owners.",
+  "contacts": "Contacts",
+  "about_us": "About Us"
 }

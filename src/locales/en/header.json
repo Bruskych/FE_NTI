@@ -1,4 +1,14 @@
 {
-  "sign_up": "SIGN UP",
-  "log_in": "LOG IN"
+  "programs": "Programs",
+  "news": "News",
+  "partners": "Partners",
+  "sign_up": "Sign Up",
+  "log_in": "Log In",
+  "dashboard": "Dashboard",
+  "myTeam": "My Team",
+  "myProject": "My Project",
+  "myChallenges": "My Challenges",
+  "applications": "Applications",
+  "consultations": "Consultations",
+  "evaluations": "Evaluations"
 }

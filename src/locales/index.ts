@@ -30,6 +30,10 @@ import enActions from './en/actions.json'
 import skAdminTable from './sk/admin_table.json'
 import enAdminTable from './en/admin_table.json'
 
+import skHome from './sk/home.json'
+import enHome from './en/home.json'
+
+
 const messages = {
     sk: {
         header: skHeader,
@@ -42,6 +46,7 @@ const messages = {
         error: skError,
         actions: skActions,
         adminTable: skAdminTable,
+        home: skHome
     },
     en: {
         header: enHeader,
@@ -54,6 +59,7 @@ const messages = {
         error: enError,
         actions: enActions,
         adminTable: enAdminTable,
+        home: enHome
     }
 }
 

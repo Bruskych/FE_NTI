@@ -1,7 +1,7 @@
 {
   "profile": "Profile",
-  "logout": "Logout",
+  "dashboard": "My Dashboard",
   "admin_panel": "Admin panel",
   "settings": "Account settings",
-  "": ""
+  "logout": "Logout"
 }

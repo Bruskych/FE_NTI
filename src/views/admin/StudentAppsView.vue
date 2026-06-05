@@ -1,7 +1,3 @@
-<!--
-  Под-страница админа, где видны все заявки от Студентов
--->
-
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import api from '@/core/api/axios'
@@ -27,15 +23,11 @@ interface StudentApplication {
 const applications = ref<StudentApplication[]>([])
 const loading = ref(false)
 const actionLoading = ref<number | null>(null)
-
-// комментарии по каждой заявке
 const commentText = ref<Record<number, string>>({})
 
-// сортировка
 const sortKey = ref<string | null>(null)
 const sortOrder = ref<'asc' | 'desc'>('asc')
 
-// сортировка списка
 const sortBy = (key: string) => {
   if (sortKey.value === key) {
     sortOrder.value = sortOrder.value === 'asc' ? 'desc' : 'asc'
@@ -52,7 +44,6 @@ const sortBy = (key: string) => {
   })
 }
 
-// загрузка заявок
 const fetchPendingApplications = async () => {
   loading.value = true
   try {
@@ -63,7 +54,6 @@ const fetchPendingApplications = async () => {
   }
 }
 
-// одобрение заявки
 const handleApprove = async (appId: number) => {
   actionLoading.value = appId
   try {
@@ -78,7 +68,6 @@ const handleApprove = async (appId: number) => {
   }
 }
 
-// отклонение заявки
 const handleReject = async (appId: number) => {
   if (!commentText.value[appId]) {
     alert('Prosím, uveďte dôvod zamietnutia žiadosti.')
@@ -97,7 +86,6 @@ const handleReject = async (appId: number) => {
   }
 }
 
-// формат даты
 const formatDate = (dateString: string) =>
     dateString
         ? new Date(dateString).toLocaleDateString('sk-SK', {
@@ -125,7 +113,6 @@ onMounted(fetchPendingApplications)
 
     <div class="table-container">
       <div class="table-header">
-
         <SortableTh field="application_id" :sort-key="sortKey" :sort-order="sortOrder" @sort="sortBy">
           {{ $t('adminTable.student_apps.columns.id') }}
         </SortableTh>
@@ -149,11 +136,9 @@ onMounted(fetchPendingApplications)
         <div class="th">
           {{ $t('adminTable.student_apps.columns.actions') }}
         </div>
-
       </div>
 
       <div class="table-body">
-
         <div v-if="loading" class="table-loading">
           <div class="spinner"></div>
           <p>{{ $t('adminTable.student_apps.loading') }}</p>
@@ -165,8 +150,7 @@ onMounted(fetchPendingApplications)
           <p>{{ $t('adminTable.student_apps.empty') }}</p>
         </div>
 
-        <div v-for="app in applications" :key="app.application_id" class="table-row">
-
+        <div v-else v-for="app in applications" :key="app.application_id" class="table-row">
           <div class="td app-id">#{{ app.application_id }}</div>
           <div class="td student-name">{{ app.student_name }}</div>
           <div class="td email">{{ app.student_email }}</div>
@@ -210,12 +194,11 @@ onMounted(fetchPendingApplications)
 </template>
 
 <style scoped>
-.actions-td {
-  transform: translateX(4px);
-}
 .student-apps-page {
-  padding: 24px;
   color: var(--text-color);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 .page-header {
   margin-bottom: 24px;
@@ -223,12 +206,15 @@ onMounted(fetchPendingApplications)
 .subtitle {
   font-size: 16px;
 }
+
+/* -- TABLE STRUCTURE -- */
 .table-container {
   background: var(--table-row-bg-color);
   display: flex;
   flex-direction: column;
-  height: 550px;
+  flex: 1;
   border-radius: 12px;
+  border: 1px solid var(--menu-border);
   overflow: hidden;
 }
 .table-header {
@@ -238,6 +224,12 @@ onMounted(fetchPendingApplications)
   grid-template-columns: 80px 1fr 1fr 150px 220px 120px;
   align-items: center;
   padding: 16px;
+  font-weight: 600;
+  border-bottom: 1px solid var(--menu-border);
+}
+.table-body {
+  flex: 1;
+  overflow-y: auto;
 }
 .table-row {
   background: var(--table-row-bg-color);
@@ -246,14 +238,14 @@ onMounted(fetchPendingApplications)
   grid-template-columns: 80px 1fr 1fr 150px 220px 120px;
   align-items: center;
   padding: 16px;
+  border-bottom: 1px solid var(--menu-border);
 
   &:hover {
     background: var(--table-header-bg-color);
   }
 }
-.table-body {
-  flex: 1;
-  overflow-y: auto;
+.table-row:last-child {
+  border-bottom: none;
 }
 .td {
   padding: 0 8px;
@@ -267,45 +259,44 @@ onMounted(fetchPendingApplications)
   padding: 6px 8px;
   line-height: 1;
 }
+
+/* -- CELL CONTENT -- */
 .app-id {
   font-weight: bold;
   color: var(--main-color);
+}
+.student-name {
+  font-weight: 550;
+}
+.date-td {
+  font-weight: 550;
+  font-size: 14px;
+}
+.actions-td {
+  transform: translateX(4px);
 }
 .buttons-group {
   display: flex;
   gap: 8px;
 }
 
-/* -- LOADING -- */
-.empty-state {
+/* -- STATES & LOADING -- */
+.empty-state, .table-loading {
   height: 100%;
+  min-height: 250px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   gap: 12px;
-  opacity: 0.6;
 }
+.empty-state { opacity: 0.6; }
+.table-loading { opacity: 0.7; }
 .empty-icon {
   width: 50px;
   height: 50px;
   margin-bottom: 8px;
   color: var(--text-color);
-  opacity: 0.6;
-}
-.table-loading {
-  height: 100%;
-  min-height: 200px;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-
-  gap: 12px;
-
-  color: var(--text-color);
-  opacity: 0.7;
 }
 .spinner {
   width: 32px;
@@ -316,8 +307,6 @@ onMounted(fetchPendingApplications)
   animation: spin 1s linear infinite;
 }
 @keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+  to { transform: rotate(360deg); }
 }
 </style>

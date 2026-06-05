@@ -1,4 +1,14 @@
 {
-  "sign_up": "REGISTRÁCIA",
-  "log_in": "PRIHLÁSENIE"
+  "programs": "Programy",
+  "news": "Novinky",
+  "partners": "Partneri",
+  "sign_up": "Registrácia",
+  "log_in": "Prihlásenie",
+  "dashboard": "Nástenka",
+  "myTeam": "Môj tím",
+  "myProject": "Môj projekt",
+  "myChallenges": "Moje výzvy",
+  "applications": "Žiadosti",
+  "consultations": "Konzultácie",
+  "evaluations": "Hodnotenia"
 }

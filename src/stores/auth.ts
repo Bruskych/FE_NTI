@@ -98,7 +98,7 @@ export const useAuthStore = defineStore('auth', {
             this.error = null
 
             try {
-                const { data } = await api.post<LoginResponse>('/auth/login', {
+                const { data } = await api.post<LoginResponse>('/login', {
                     email,
                     password,
                 })
@@ -133,7 +133,6 @@ export const useAuthStore = defineStore('auth', {
                     email:                 userData.email,
                     password:              userData.password,
                     password_confirmation: userData.password_confirmation,
-                    // Исправление: бэкенд ожидает account_type вместо поля role
                     account_type:          userData.role,
                     gdpr_consent:          '1',
                 }
@@ -146,7 +145,7 @@ export const useAuthStore = defineStore('auth', {
                     payload.description    = userData.description
                 }
 
-                const { data } = await api.post<RegisterResponse>('/auth/register', payload)
+                const { data } = await api.post<RegisterResponse>('/register', payload)
 
                 this.token = data.token
                 this.user = data.user
@@ -168,13 +167,12 @@ export const useAuthStore = defineStore('auth', {
         async fetchMe(): Promise<void> {
             if (!this.token) return
             try {
-                const { data } = await api.get('/auth/me')
+                const { data } = await api.get('/me')
                 this.user = data.user
             } catch (error: unknown) {
                 const err = error as AxiosError
                 const status = err.response?.status
                 if (status === 401) {
-                    // Если токен невалиден или протух — принудительно разлогиниваем
                     await this.logout()
                     return
                 }
@@ -185,11 +183,10 @@ export const useAuthStore = defineStore('auth', {
         // Выход из системы
         async logout(): Promise<void> {
             try {
-                await api.post('/auth/logout')
+                await api.post('/logout')
             } catch (error) {
                 console.error('Logout failed:', error)
             } finally {
-                // Полная очистка локального состояния в любом случае
                 this.token = null
                 this.user = null
                 localStorage.removeItem('token')

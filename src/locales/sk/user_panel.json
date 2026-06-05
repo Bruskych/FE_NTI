@@ -1,7 +1,7 @@
 {
   "profile": "Profil",
-  "logout": "Odhlásiť sa",
+  "dashboard": "Moja nástenka",
   "admin_panel": "Administrátorský panel",
   "settings": "Nastavenia účtu",
-  "": ""
+  "logout": "Odhlásiť sa"
 }
