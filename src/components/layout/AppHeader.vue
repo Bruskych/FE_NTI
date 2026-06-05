@@ -63,6 +63,13 @@ const isSectionActive = (sectionId: string) => {
 
         <nav class="nav-links">
           <button
+              @click="navigateToSection('about-us')"
+              class="nav-link-btn"
+              :class="{ 'is-active': isSectionActive('about-us') }"
+          >
+            {{ $t('header.about_us') }}
+          </button>
+          <button
               @click="navigateToSection('programs')"
               class="nav-link-btn"
               :class="{ 'is-active': isSectionActive('programs') }"

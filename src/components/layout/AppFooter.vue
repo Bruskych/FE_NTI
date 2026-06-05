@@ -31,7 +31,7 @@ const navigateToSection = async (sectionId: string) => {
         <div class="footer-block block-main">
           <span class="footer-logo-text">NTI Portal</span>
           <p class="footer-description">
-            Nitriansky technologický inkubátor UKF v Nitre spája talentovaných študentov, inovátorov a firmy pre budovanie úspešných technologických projektov.
+            {{ $t('footer.description') }}
           </p>
 
           <div class="footer-socials">
@@ -50,10 +50,10 @@ const navigateToSection = async (sectionId: string) => {
         <div class="footer-block block-center">
           <h4 class="block-title">{{ $t('footer.navigation') }}</h4>
           <nav class="block-links">
+            <button @click="navigateToSection('about-us')" class="interactive-link-btn">{{ $t('header.about_us') }}</button>
             <button @click="navigateToSection('programs')" class="interactive-link-btn">{{ $t('header.programs') }}</button>
             <button @click="navigateToSection('news')" class="interactive-link-btn">{{ $t('header.news') }}</button>
             <button @click="navigateToSection('partners')" class="interactive-link-btn">{{ $t('header.partners') }}</button>
-            <router-link to="/about-us" class="interactive-link-btn router-style">{{ $t('footer.about_us') || 'O nás' }}</router-link>
           </nav>
         </div>
 
@@ -70,7 +70,7 @@ const navigateToSection = async (sectionId: string) => {
               <span class="link-text">+421 9xx xxx xxx</span>
             </a>
 
-            <a href="https://maps.google.com" target="_blank" rel="noopener" class="contact-link address-layout">
+            <a href="http://maps.google.com/?q=Trieda+A.+Hlinku+1+Nitra" target="_blank" rel="noopener" class="contact-link address-layout">
               <svg class="contact-icon address-icon-align" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
               <span class="link-text">Trieda A. Hlinku 1,<br>949 01 Nitra, Slovakia</span>
             </a>
@@ -183,7 +183,6 @@ const navigateToSection = async (sectionId: string) => {
   width: 100%;
 }
 
-/* Элементы управления с анимацией линии при наведении */
 .interactive-link-btn {
   background: none;
   border: none;
@@ -200,8 +199,6 @@ const navigateToSection = async (sectionId: string) => {
   position: relative;
   width: fit-content;
 }
-
-.interactive-link-btn.router-style { text-decoration: none; }
 
 .interactive-link-btn::after, .contact-link .link-text::after {
   content: '';
@@ -277,7 +274,6 @@ const navigateToSection = async (sectionId: string) => {
 .copyright-flex { display: flex; justify-content: space-between; align-items: center; }
 .copyright-text { font-size: 0.8rem; margin: 0; color: #52626d; }
 
-/* Медиа-запросы для адаптивной сетки футера */
 @media (max-width: 992px) {
   .footer-grid-system { grid-template-columns: 1.2fr 1fr; gap: 30px; }
   .block-center { padding-left: 0; }
