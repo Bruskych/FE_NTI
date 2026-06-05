@@ -1,47 +1,58 @@
 <script setup lang="ts">
-import { onMounted, watch } from 'vue'
-import { useRoute } from 'vue-router'
-import { useAuthStore } from '@/stores/auth'
-
-import TheHeader from '@/components/layout/AppHeader.vue'
-import TheFooter from '@/components/layout/AppFooter.vue'
-
-const authStore = useAuthStore()
-const route = useRoute()
-
-// Следим за мета-полем роута для динамического переключения светлой темы
-watch(
-    () => route.meta.isWhitePage,
-    (isWhite) => {
-      if (isWhite) {
-        document.body.classList.add('white-theme')
-      } else {
-        document.body.classList.remove('white-theme')
-      }
-    },
-    { immediate: true }
-)
-
-onMounted(() => {
-  // Автоматически запрашиваем данные текущего пользователя при монтировании приложения
-  authStore.fetchMe()
-})
+import { RouterView } from 'vue-router'
+import AppHeader from '@/components/layout/AppHeader.vue'
+import AppFooter from '@/components/layout/AppFooter.vue'
 </script>
 
 <template>
   <div class="app-layout">
-    <TheHeader />
+    <AppHeader />
 
-    <main class="main-content">
+    <main class="app-main">
       <RouterView />
     </main>
 
-    <TheFooter />
+    <AppFooter />
   </div>
 </template>
 
 <style>
-.main-content {
-  flex: 1 0 auto;
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background-color: #090d10 !important;
+  color: #f8fafc;
+  font-family: sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#app {
+  height: 100%;
+}
+
+.app-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #090d10;
+}
+
+.app-main {
+  flex: 1;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+footer, .custom-footer {
+  margin-top: auto; /* Надійно штовхає футер до низу екрана, якщо контенту мало */
+  flex-shrink: 0;
+}
+
+body {
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 </style>

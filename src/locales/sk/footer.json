@@ -1,5 +1,10 @@
 {
-  "license": "© 2026 Všetky práva vyhradené. Všetky ochranné známky sú majetkom ich príslušných vlastníkov.",
-  "privacy_policy": "Ochrana údajov",
-  "contacts": "Kontakty"
+  "navigation": "Navigácia",
+  "support": "Podpora a legislatíva",
+  "privacy_policy": "Ochrana osobných údajov",
+  "terms_of_service": "Podmienky používania",
+  "license": "Všetky práva vyhradené. Všetky ochranné známky sú majetkom ich príslušných vlastníkov.",
+  "contacts": "Kontakty",
+  "about_us": "O nás",
+  "description": "Technologický inkubátor v Nitre podporuje mladé technologické talenty a priamo prepája univerzitné projekty s modernými podnikateľskými ekosystémami."
 }

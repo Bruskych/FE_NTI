@@ -1,7 +1,3 @@
-<!--
-  Под-страница админа, где видны все заявки от Организаций
--->
-
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import api from '@/core/api/axios'
@@ -27,27 +23,21 @@ interface CompanyApplication {
   user_id: number | null
 }
 
-// Состояние
 const sortKey = ref<string | null>(null)
 const sortOrder = ref<'asc' | 'desc'>('asc')
 
-// Функция сортировки
 const sortBy = (key: string) => {
-  // Переключение направления при повторном клике
   if (sortKey.value === key) {
     sortOrder.value = sortOrder.value === 'asc' ? 'desc' : 'asc'
   } else {
-    // Новая колонка -> сброс на 'asc'
     sortKey.value = key
     sortOrder.value = 'asc'
   }
 
-  // Сама сортировка
   applications.value.sort((a, b) => {
     let valA = a[key as keyof CompanyApplication] ?? ''
     let valB = b[key as keyof CompanyApplication] ?? ''
 
-    // Приводим к строке для сравнения (универсально для дат, имен и ID)
     const strA = valA.toString().toLowerCase()
     const strB = valB.toString().toLowerCase()
 
@@ -61,10 +51,9 @@ const sortBy = (key: string) => {
 
 const applications = ref<CompanyApplication[]>([])
 const loading = ref(false)
-const actionLoading = ref<number | null>(null) // Хранит ID заявки, которая сейчас обрабатывается
-const commentText = ref<Record<number, string>>({}) // Хранит комментарии для каждой заявки отдельно
+const actionLoading = ref<number | null>(null)
+const commentText = ref<Record<number, string>>({})
 
-// Загрузка списка заявок компаний, ожидающих подтверждения
 const fetchPendingApplications = async () => {
   loading.value = true
   try {
@@ -77,7 +66,6 @@ const fetchPendingApplications = async () => {
   }
 }
 
-// Одобрение заявки компании
 const handleApprove = async (appId: number) => {
   actionLoading.value = appId
   try {
@@ -86,13 +74,12 @@ const handleApprove = async (appId: number) => {
     })
     applications.value = applications.value.filter(app => app.application_id !== appId)
   } catch (error) {
-    console.error('Chyba pri schvaľovaní firmy:', error)
+    console.error('Chyba pri schvaľovaní фирмы:', error)
   } finally {
     actionLoading.value = null
   }
 }
 
-// Отклонение заявки компании
 const handleReject = async (appId: number) => {
   if (!commentText.value[appId]) {
     alert('Prosím, uveďte dôvod zamietnutia registrácie firmy.')
@@ -111,7 +98,6 @@ const handleReject = async (appId: number) => {
   }
 }
 
-// Форматирование даты
 const formatDate = (dateString: string) => {
   if (!dateString) return ''
   const date = new Date(dateString)
@@ -142,7 +128,6 @@ onMounted(() => {
 
     <div class="table-container">
       <div class="table-header">
-
         <SortableTh field="application_id" :sort-key="sortKey" :sort-order="sortOrder" @sort="sortBy">
           {{ $t('adminTable.company_apps.columns.id') }}
         </SortableTh>
@@ -174,11 +159,9 @@ onMounted(() => {
         <div class="th">
           {{ $t('adminTable.company_apps.columns.actions') }}
         </div>
-
       </div>
 
       <div class="table-body">
-
         <div v-if="loading" class="table-loading">
           <div class="spinner"></div>
           <p>{{ $t('adminTable.company_apps.loading') }}</p>
@@ -190,7 +173,7 @@ onMounted(() => {
           <p>{{ $t('adminTable.company_apps.empty') }}</p>
         </div>
 
-        <div v-for="app in applications" :key="app.application_id" class="table-row">
+        <div v-else v-for="app in applications" :key="app.application_id" class="table-row">
           <div class="td app-id">#{{ app.application_id }}</div>
 
           <div class="td company-info">
@@ -240,65 +223,27 @@ onMounted(() => {
 </template>
 
 <style scoped>
-/* -- FIRMA -- */
-.company-name {
-  font-weight: 550;
-  font-size: 17px;
+.company-apps-page {
   color: var(--text-color);
-}
-.company-sector {
-  font-weight: 500;
-  font-size: 14px;
-  color: var(--table-row-text-color-unimp);
-  opacity: 0.8;
-}
-
-/* -- KOD -- */
-.tax-id {
-  font-size: 14px;
-}
-
-/* -- DESCRIPTION -- */
-.description-text {
-  font-size: 14px;
-  line-height: 1.4;
-  color: var(--text-color);
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-/* -- OWNER -- */
-.owner-info {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  height: 100%;
 }
-.owner-name {
-  font-weight: 550;
-  font-size: 17px;
-  color: var(--text-color);
+.page-header {
+  margin-bottom: 24px;
 }
-.owner-email {
-  font-weight: 500;
-  font-size: 14px;
-  color: var(--table-row-text-color-unimp);
-  opacity: 0.8;
+.subtitle {
+  font-size: 16px;
 }
 
-/* -- DATE -- */
-.date-td {
-  font-weight: 550;
-  font-size: 14px;
-}
-
-/* -- TABLE -- */
+/* -- TABLE STRUCTURE -- */
 .table-container {
   background: var(--table-row-bg-color);
   display: flex;
   flex-direction: column;
-  height: 550px;
+  flex: 1;
   border-radius: 12px;
+  border: 1px solid var(--menu-border);
   overflow: hidden;
 }
 .table-header {
@@ -308,6 +253,12 @@ onMounted(() => {
   grid-template-columns: 80px 1.5fr 100px 2fr 1.5fr 120px 200px 120px;
   align-items: center;
   padding: 16px;
+  font-weight: 600;
+  border-bottom: 1px solid var(--menu-border);
+}
+.table-body {
+  flex: 1;
+  overflow-y: auto;
 }
 .table-row {
   background: var(--table-row-bg-color);
@@ -316,13 +267,14 @@ onMounted(() => {
   grid-template-columns: 80px 1.5fr 100px 2fr 1.5fr 120px 200px 120px;
   align-items: center;
   padding: 16px;
+  border-bottom: 1px solid var(--menu-border);
 
   &:hover {
     background: var(--table-header-bg-color);
   }
 }
-.table-body {
-  flex: 1; overflow-y: auto;
+.table-row:last-child {
+  border-bottom: none;
 }
 .td {
   padding: 0 8px;
@@ -337,58 +289,74 @@ onMounted(() => {
   line-height: 1;
 }
 
-/* -- OTHER -- */
-.company-apps-page {
-  padding: 24px; color: var(--text-color);
-}
-.page-header {
-  margin-bottom: 24px;
-}
-.subtitle {
-  font-size: 16px;
-}
+/* -- CELL CONTENT -- */
 .app-id {
   font-weight: bold; color: var(--main-color);
 }
-.company-info, .owner-info {
+.company-name {
+  font-weight: 550;
+  font-size: 17px;
+  color: var(--text-color);
+}
+.company-sector {
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--table-row-text-color-unimp);
+  opacity: 0.8;
+}
+.tax-id {
+  font-size: 14px;
+}
+.description-text {
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--text-color);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.owner-info {
   display: flex;
   flex-direction: column;
+  gap: 2px;
   overflow: hidden;
+}
+.owner-name {
+  font-weight: 550;
+  font-size: 17px;
+  color: var(--text-color);
+}
+.owner-email {
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--table-row-text-color-unimp);
+  opacity: 0.8;
+}
+.date-td {
+  font-weight: 550;
+  font-size: 14px;
 }
 .buttons-group {
   display: flex; gap: 8px; justify-content: flex-end;
 }
 
-/* -- LOADING -- */
-.empty-state {
+/* -- STATES & LOADING -- */
+.empty-state, .table-loading {
   height: 100%;
+  min-height: 250px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   gap: 12px;
-  opacity: 0.6;
 }
+.empty-state { opacity: 0.6; }
+.table-loading { opacity: 0.7; }
 .empty-icon {
   width: 50px;
   height: 50px;
   margin-bottom: 8px;
   color: var(--text-color);
-  opacity: 0.6;
-}
-.table-loading {
-  height: 100%;
-  min-height: 200px;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-
-  gap: 12px;
-
-  color: var(--text-color);
-  opacity: 0.7;
 }
 .spinner {
   width: 32px;
@@ -399,8 +367,6 @@ onMounted(() => {
   animation: spin 1s linear infinite;
 }
 @keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+  to { transform: rotate(360deg); }
 }
 </style>
