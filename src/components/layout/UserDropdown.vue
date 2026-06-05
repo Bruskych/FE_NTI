@@ -29,7 +29,7 @@ const userName = computed(() => {
 
 const userAvatar = computed(() => {
   return (
-      user.value?.avatar ||
+      user.value?.avatar_url ||
       `https://ui-avatars.com/api/?name=${encodeURIComponent(userName.value)}`
   )
 })

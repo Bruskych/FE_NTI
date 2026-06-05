@@ -2,5 +2,14 @@
   "not_found_title": "Page not found",
   "not_found_description1": "Sorry, the page",
   "not_found_description2": "was not found or you do not have access to it.",
-  "home_button": "Go Home"
+  "home_button": "Go Home",
+
+  "avatar": {
+    "err_load": "Error loading avatar:",
+    "change_btn": "Change avatar",
+    "loading": "Uploading...",
+    "error_invalid_type": "Only images are allowed (JPEG, JPG, PNG).",
+    "error_too_large": "The file is too large. Maximum size is 10 MB.",
+    "success_message": "Avatar uploaded successfully!"
+  }
 }

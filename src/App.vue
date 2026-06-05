@@ -41,22 +41,6 @@ onMounted(() => {
 </template>
 
 <style>
-/* Глобальные базовые стили для всего приложения */
-body, html {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-}
-
-/* Обертка, растягивающая контент на весь экран и прижимающая футер к низу */
-.app-layout {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  font-family: 'Inter', sans-serif;
-}
-
-/* Центральная часть занимает все свободное пространство */
 .main-content {
   flex: 1 0 auto;
 }

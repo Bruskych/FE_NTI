@@ -41,7 +41,8 @@ export interface User {
     email: string
     roles: { name: string }[]
     organization_id?: number | null
-    avatar?: string | null
+    avatar_path?: string | null
+    avatar_url?: string | null
     email_verified_at?: string | null
 }
 
@@ -133,7 +134,6 @@ export const useAuthStore = defineStore('auth', {
                     email:                 userData.email,
                     password:              userData.password,
                     password_confirmation: userData.password_confirmation,
-                    // Исправление: бэкенд ожидает account_type вместо поля role
                     account_type:          userData.role,
                     gdpr_consent:          '1',
                 }
@@ -195,5 +195,29 @@ export const useAuthStore = defineStore('auth', {
                 localStorage.removeItem('token')
             }
         },
+
+        // Загрузка фото в профиль пользователя
+        async uploadAvatar(file: File): Promise<void> {
+            this.loading = true;
+            this.error = null;
+
+            try {
+                const formData = new FormData();
+                formData.append('photo', file);
+                const { data } = await api.post('/auth/store', formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                });
+                if (data.user) {
+                    this.user = data.user;
+                }
+            } catch (error: unknown) {
+                console.error('Avatar upload failed:', error);
+                throw error;
+            } finally {
+                this.loading = false;
+            }
+        }
     },
 })
