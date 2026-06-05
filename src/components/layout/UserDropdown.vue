@@ -30,7 +30,7 @@ const isAnyAdmin = computed(() => {
 // Генерация аватара: если кастомного нет, берем красивый дефолтный по инициалам
 const userAvatar = computed(() => {
   return (
-      user.value?.avatar ||
+      user.value?.avatar_url ||
       `https://ui-avatars.com/api/?name=${encodeURIComponent(userName.value)}`
   )
 })

@@ -2,5 +2,14 @@
   "not_found_title": "Stránka nebola nájdená",
   "not_found_description1": "Prepáčte, stránka",
   "not_found_description2": "nebola nájdená alebo k nej nemáte prístup.",
-  "home_button": "Domov"
+  "home_button": "Domov",
+
+  "avatar": {
+    "err_load": "Chyba pri načítaní avatara:",
+    "change_btn": "Zmeniť avatar",
+    "loading": "Nahráva sa...",
+    "error_invalid_type": "Povolené sú iba obrázky (JPEG, JPG, PNG).",
+    "error_too_large": "Súbor je príliš veľký. Maximálna veľkosť je 10 MB.",
+    "success_message": "Avatar bol úspešne nahratý!"
+  }
 }
