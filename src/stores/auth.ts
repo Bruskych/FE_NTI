@@ -93,7 +93,6 @@ export const useAuthStore = defineStore('auth', {
     },
 
     actions: {
-        // Авторизация пользователя (Вход)
         async login(email: string, password: string): Promise<void> {
             this.loading = true
             this.error = null
@@ -123,7 +122,6 @@ export const useAuthStore = defineStore('auth', {
             }
         },
 
-        // Регистрация нового аккаунта
         async register(userData: RegisterFormData): Promise<void> {
             this.loading = true
             this.error = null
@@ -164,7 +162,33 @@ export const useAuthStore = defineStore('auth', {
             }
         },
 
-        // Получение данных текущего авторизованного профиля
+        async forgotPassword(email: string): Promise<void> {
+            this.loading = true
+            this.error = null
+
+            try {
+                await api.post('/forgot-password', { email })
+            } catch (error: unknown) {
+                const err = error as AxiosError<{ errors?: Record<string, string[]>; message?: string }>
+
+                if (err.response?.data) {
+                    const responseData = err.response.data
+                    if (responseData.errors) {
+                        this.error = Object.values(responseData.errors).flat().join(', ')
+                    } else if (responseData.message) {
+                        this.error = `Server: ${responseData.message}`
+                    } else {
+                        this.error = `Server error (Status: ${err.response.status})`
+                    }
+                } else {
+                    this.error = `Connection error: ${err.message || 'API is unreachable'}`
+                }
+                throw error
+            } finally {
+                this.loading = false
+            }
+        },
+
         async fetchMe(): Promise<void> {
             if (!this.token) return
             try {
@@ -181,7 +205,6 @@ export const useAuthStore = defineStore('auth', {
             }
         },
 
-        // Выход из системы
         async logout(): Promise<void> {
             try {
                 await api.post('/logout')

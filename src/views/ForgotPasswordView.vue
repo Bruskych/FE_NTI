@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import api from '@/core/api/axios'
+import { useAuthStore } from '@/stores/auth'
 import BaseInput from '@/components/ui/BaseInput.vue'
 import BaseButton from '@/components/ui/BaseButton.vue'
 import ErrorMessage from '@/components/ui/ErrorMessage.vue'
 
+const authStore = useAuthStore()
+
 const email = ref('')
 const emailErrorKey = ref('')
-const loading = ref(false)
 const submitted = ref(false)
 const serverError = ref('')
 
@@ -25,36 +26,13 @@ const handleSubmit = async () => {
   validateEmail()
   if (emailErrorKey.value) return
 
-  loading.value = true
   serverError.value = ''
 
   try {
-    await api.post('/forgot-password', { email: email.value })
+    await authStore.forgotPassword(email.value)
     submitted.value = true
   } catch (error: unknown) {
-    // Безопасное приведение типов ошибок для строгого ESLint без использования any
-    const err = error as {
-      response?: {
-        data?: { errors?: Record<string, string[]>; message?: string };
-        status?: number
-      };
-      message?: string
-    }
-
-    if (err.response?.data) {
-      const responseData = err.response.data
-      if (responseData.errors) {
-        serverError.value = Object.values(responseData.errors).flat().join(', ')
-      } else if (responseData.message) {
-        serverError.value = `Server: ${responseData.message}`
-      } else {
-        serverError.value = `Server error (Status: ${err.response.status})`
-      }
-    } else {
-      serverError.value = `Connection error: ${err.message || 'API is unreachable'}`
-    }
-  } finally {
-    loading.value = false
+    serverError.value = authStore.error || 'An unexpected error occurred'
   }
 }
 </script>
@@ -94,11 +72,11 @@ const handleSubmit = async () => {
             :placeholder="$t('login.emailPlaceholder')"
             :error="emailErrorKey ? $t(emailErrorKey) : ''"
             @blur="validateEmail"
-            @input="emailErrorKey = ''; serverError = ''"
+            @input="emailErrorKey = ''; serverError = ''; authStore.error = null"
         />
 
-        <BaseButton type="submit" :disabled="loading">
-          {{ loading ? $t('login.loading') : $t('login.forgotPassword.send') }}
+        <BaseButton type="submit" :disabled="authStore.loading">
+          {{ authStore.loading ? $t('login.loading') : $t('login.forgotPassword.send') }}
         </BaseButton>
 
         <p class="bottom-link">
@@ -130,12 +108,12 @@ const handleSubmit = async () => {
   margin-bottom: 10px;
 }
 .header-group h1 {
-  text-align: left; /* Текст заголовка слева */
+  text-align: left;
   margin: 0 0 10px 0;
   font-size: 28px;
 }
 .hint-text {
-  text-align: left; /* Подсказка слева */
+  text-align: left;
   font-size: 14px;
   color: var(--text-color);
   opacity: 0.7;
@@ -143,7 +121,7 @@ const handleSubmit = async () => {
   line-height: 1.4;
 }
 .bottom-link {
-  text-align: center; /* Ссылка возврата по центру */
+  text-align: center;
   font-size: 14px;
   margin: 5px 0 0 0;
 }
