@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useI18n } from 'vue-i18n'
 import SecondaryButton from "@/components/ui/SecondaryButton.vue";
@@ -13,6 +13,17 @@ const triggerFileInput = () => {
   validationError.value = null
   fileInput.value?.click()
 }
+
+const userInitials = computed(() => {
+  const name = authStore.user?.name ?? ''
+
+  return name
+      .split(' ')
+      .slice(0, 2)
+      .map(part => part.charAt(0))
+      .join('')
+      .toUpperCase()
+})
 
 const onFileSelected = async (event: Event) => {
   const target = event.target as HTMLInputElement
@@ -50,7 +61,7 @@ const onFileSelected = async (event: Event) => {
           class="avatar-img"
       />
       <div v-else class="avatar-placeholder">
-        {{ authStore.user?.name?.charAt(0).toUpperCase() }}
+        {{ userInitials }}
       </div>
     </div>
 
@@ -83,6 +94,19 @@ const onFileSelected = async (event: Event) => {
   align-items: flex-end;
   gap: 20px;
 }
+.avatar-placeholder {
+  background-color: var(--photo-bg);
+
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 48px;
+  font-weight: 700;
+}
 .avatar-preview {
   width: 200px;
   height: 200px;
@@ -98,12 +122,13 @@ const onFileSelected = async (event: Event) => {
   object-fit: cover;
 }
 .avatar-placeholder {
+  color: var(--text-color);
+
   font-size: 32px;
   font-weight: bold;
-  color: #666;
 }
 .error-text {
-  color: #ef4444;
+  color: var(--error-color);
   font-size: 12px;
   margin: 0;
 }

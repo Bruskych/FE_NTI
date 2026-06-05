@@ -27,11 +27,15 @@ const isAnyAdmin = computed(() => {
 })
 
 // Генерация аватара: если кастомного нет, берем красивый дефолтный по инициалам
-const userAvatar = computed(() => {
-  return (
-      user.value?.avatar_url ||
-      `https://ui-avatars.com/api/?name=${encodeURIComponent(userName.value)}`
-  )
+const userInitials = computed(() => {
+  const name = user.value?.name ?? ''
+
+  return name
+      .split(' ')
+      .slice(0, 2)
+      .map(part => part.charAt(0))
+      .join('')
+      .toUpperCase()
 })
 
 // Управление состоянием видимости меню
@@ -60,7 +64,15 @@ onBeforeUnmount(() => document.removeEventListener('click', handleOutside))
   <div class="user-dropdown" ref="dropdownRef">
 
     <div class="trigger" @click="toggle">
-      <img :src="userAvatar" class="avatar" alt="User Avatar" />
+      <img
+          v-if="user?.avatar_url"
+          :src="user.avatar_url"
+          class="avatar"
+          alt="User Avatar"
+      />
+      <div v-else class="avatar-placeholder">
+        {{ userInitials }}
+      </div>
       <span class="user-name">{{ userName }}</span>
       <ArrowIcon class="arrow" :class="{ open: isOpen }" />
     </div>
@@ -99,6 +111,26 @@ onBeforeUnmount(() => document.removeEventListener('click', handleOutside))
 </template>
 
 <style scoped>
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.avatar-placeholder {
+  background-color: var(--photo-bg);
+  color: var(--text-color);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 13px;
+  font-weight: 700;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+}
 .user-dropdown {
   position: relative;
   font-family: var(--font-main), sans-serif;
@@ -116,13 +148,6 @@ onBeforeUnmount(() => document.removeEventListener('click', handleOutside))
 }
 .trigger:hover {
   background: rgba(100, 116, 139, 0.06);
-}
-.avatar {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 1.5px solid var(--menu-border);
 }
 .user-name {
   color: var(--text-color);

@@ -113,6 +113,9 @@
     --table-row-bg-color: var(--main-light-2);
     --table-row-text-color: var(--main-dark-1);
     --table-row-text-color-unimp: var(--main-dark-3);
+
+    /* PROFILE PHOTO */
+    --photo-bg: var(--main-light-2);
 }
 
 .dark {
@@ -205,4 +208,7 @@
     --table-row-bg-color: var(--main-dark-4);
     --table-row-text-color: var(--main-light-1);
     --table-row-text-color-unimp: var(--main-light-3);
+
+    /* PROFILE PHOTO */
+    --photo-bg: var(--main-dark-5);
 }
