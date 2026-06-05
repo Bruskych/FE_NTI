@@ -20,10 +20,19 @@ const dropdownRef = ref<HTMLElement | null>(null)
 // Вычисляемые свойства данных текущего пользователя
 const user = computed(() => authStore.user)
 const userName = computed(() => user.value?.name || 'User')
+const userRole = computed(() => {
+  return user.value?.roles?.[0]?.name || 'visitor'
+})
 
 // Проверка наличия прав администратора
 const isAnyAdmin = computed(() => {
   return user.value?.roles?.some(r => ['admin', 'super_admin'].includes(r.name)) ?? false
+})
+
+// Проверка на роль Visitor
+const canAccessSettings = computed(() => {
+  const role = user.value?.roles?.[0]?.name
+  return role && role !== 'visitor'
 })
 
 // Генерация аватара: если кастомного нет, берем красивый дефолтный по инициалам
@@ -73,7 +82,12 @@ onBeforeUnmount(() => document.removeEventListener('click', handleOutside))
       <div v-else class="avatar-placeholder">
         {{ userInitials }}
       </div>
-      <span class="user-name">{{ userName }}</span>
+
+      <div class="user-meta">
+        <span class="user-name">{{ userName }}</span>
+        <span class="user-role">{{ userRole }}</span>
+      </div>
+
       <ArrowIcon class="arrow" :class="{ open: isOpen }" />
     </div>
 
@@ -92,6 +106,7 @@ onBeforeUnmount(() => document.removeEventListener('click', handleOutside))
       />
 
       <DropdownMenuItem
+          v-if="canAccessSettings"
           :label="$t('userPanel.settings')"
           :icon="SettingsIcon"
           to="/settings"
@@ -149,10 +164,23 @@ onBeforeUnmount(() => document.removeEventListener('click', handleOutside))
 .trigger:hover {
   background: rgba(100, 116, 139, 0.06);
 }
+.user-meta {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  line-height: 1.2;
+}
 .user-name {
   color: var(--text-color);
   font-weight: 600;
   font-size: 0.95rem;
+}
+.user-role {
+  color: var(--text-color);
+  opacity: 0.55;
+  font-size: 0.75rem;
+  font-weight: 450;
+  letter-spacing: 0.3px;
 }
 .arrow {
   color: var(--text-color);

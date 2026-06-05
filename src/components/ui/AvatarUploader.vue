@@ -75,21 +75,24 @@ const onFileSelected = async (event: Event) => {
         @change="onFileSelected"
     />
 
-    <SecondaryButton
-        type="button"
-        :disabled="authStore.loading"
-        @click="triggerFileInput"
-    >
-      <template #icon>
-        <SaveIcon />
-      </template>
+    <div class="actions">
+      <SecondaryButton
+          type="button"
+          :disabled="authStore.loading"
+          @click="triggerFileInput"
+      >
+        <template #icon>
+          <SaveIcon />
+        </template>
 
-      {{ authStore.loading ? $t('error.avatar.loading') : $t('error.avatar.change_btn') }}
-    </SecondaryButton>
+        {{ authStore.loading ? $t('error.avatar.loading') : $t('error.avatar.change_btn') }}
+      </SecondaryButton>
 
-    <p v-if="validationError" class="error-text">
-      {{ validationError }}
-    </p>
+      <p v-if="validationError" class="error-text">
+        {{ validationError }}
+      </p>
+    </div>
+
   </div>
 </template>
 
@@ -132,6 +135,12 @@ const onFileSelected = async (event: Event) => {
 
   font-size: 32px;
   font-weight: bold;
+}
+.actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
 }
 .error-text {
   color: var(--error-color);

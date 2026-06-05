@@ -3,9 +3,9 @@
 -->
 
 <script setup lang="ts">
-// ICONS + THEME
 import SunIcon from '@/assets/icons/sun.svg'
 import MoonIcon from '@/assets/icons/moon.svg'
+
 defineProps<{ isDark: boolean }>()
 defineEmits<{ (e: 'toggle'): void }>()
 </script>
@@ -19,6 +19,8 @@ defineEmits<{ (e: 'toggle'): void }>()
 
 <style scoped>
 .icon {
+  width: 24px;
+  height: 24px;
   color: var(--text-color);
 }
 .theme-toggle {

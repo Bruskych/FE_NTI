@@ -64,6 +64,8 @@ onBeforeUnmount(() => {
   position: relative;
 }
 .icon {
+  width: 24px;
+  height: 24px;
   color: var(--text-color);
 }
 .notifications-button {

@@ -38,7 +38,7 @@ const router = createRouter({
             path: '/settings',
             name: 'settings',
             component: SettingsView,
-            meta: { requiresAuth: true, isWhitePage: true },
+            meta: { requiresAuth: true, isWhitePage: true, blockRoles: ['visitor'] },
             children: [
                 {
                     path: '',
@@ -110,18 +110,27 @@ router.beforeEach(async (to, from, next) => {
         }
     }
     const isAuthenticated = authStore.isAuthenticated
+    const blockRoles = to.meta.blockRoles as string[] | undefined
 
-    // 1. ТОЛЬКО ДЛЯ ГОСТЕЙ (Страницы входа и регистрации)
+    // ЗАПРЕТ НА КОНКРЕТНУЮ РОЛЬ
+    if (blockRoles?.length) {
+        const userRole = authStore.user?.roles?.[0]?.name
+        if (userRole && blockRoles.includes(userRole)) {
+            return next({ name: 'home' })
+        }
+    }
+
+    // ТОЛЬКО ДЛЯ ГОСТЕЙ (Страницы входа и регистрации)
     if (to.meta.guestOnly && isAuthenticated) {
         return next({ name: 'not-found' })
     }
 
-    // 2. ТРЕБУЕТСЯ АВТОРИЗАЦИЯ
+    // ТРЕБУЕТСЯ АВТОРИЗАЦИЯ
     if (to.meta.requiresAuth && !isAuthenticated) {
         return next({ name: 'login' })
     }
 
-    // 3. ПРОВЕРКА ПРАВ АДМИНИСТРАТОРА
+    // ПРОВЕРКА ПРАВ АДМИНИСТРАТОРА
     if (to.meta.requiresAdmin) {
         const isAdmin = authStore.hasAnyRole(['admin', 'super_admin'])
 
