@@ -17,7 +17,6 @@ import AppFooter from '@/components/layout/AppFooter.vue'
 </template>
 
 <style>
-/* 1. Глобальні налаштування для всієї сторінки */
 html, body {
   margin: 0;
   padding: 0;
@@ -29,12 +28,10 @@ html, body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* 2. Кореневий контейнер Vue програми */
 #app {
   height: 100%;
 }
 
-/* 3. Головна обгортка компонентів сайту - Розумний Sticky Layout */
 .app-layout {
   display: flex;
   flex-direction: column;
@@ -42,22 +39,19 @@ html, body {
   background-color: #090d10;
 }
 
-/* 4. Секція контенту */
 .app-main {
-  flex: 1; /* Розумно займає простір, але НЕ створює дірок між секціями контенту */
+  flex: 1;
   width: 100%;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
 }
 
-/* 5. Захист футера від стискання */
 footer, .custom-footer {
   margin-top: auto; /* Надійно штовхає футер до низу екрана, якщо контенту мало */
   flex-shrink: 0;
 }
 
-/* Глобальний фікс для плавної зміни фону */
 body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }

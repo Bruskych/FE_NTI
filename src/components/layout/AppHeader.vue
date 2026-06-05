@@ -5,10 +5,8 @@ import { useAuthStore } from '@/stores/auth'
 import { useLanguage } from '@/composables/useLanguage'
 import { useTheme } from '@/composables/useTheme'
 
-// Імпорт логотипу (шлях на основі вашої структури папок)
 import ntiLogo from '@/assets/images/nti_logo.png'
 
-// Імпорт UI компонентів
 import LanguageToggle from '@/components/ui/LanguageToggle.vue'
 import BaseButton from '@/components/ui/BaseButton.vue'
 import SecondaryButton from '@/components/ui/SecondaryButton.vue'
@@ -132,7 +130,7 @@ const isSectionActive = (sectionId: string) => {
   align-items: center;
   gap: 32px;
 }
-/* Стилі для гарного вирівнювання іконки та тексту лого */
+
 .logo-wrapper {
   display: flex;
   align-items: center;

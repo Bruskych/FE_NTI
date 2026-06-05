@@ -3,21 +3,17 @@ import { computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 
-// Імпорт базових UI-компонентів
 import BaseButton from '@/components/ui/BaseButton.vue'
 import SecondaryButton from '@/components/ui/SecondaryButton.vue'
 
 const router = useRouter()
 const authStore = useAuthStore()
 
-// Перевірка статуса авторизації користувача
 const isLoggedIn = computed(() => authStore.isAuthenticated)
 
-// Методи навігації
 const goRegister = () => router.push('/register')
 const goLogin    = () => router.push('/login')
 
-// Екземпляр IntersectionObserver для керування анімацією появи блоків при скролі
 let observer: IntersectionObserver | null = null
 
 onMounted(() => {
@@ -47,16 +43,12 @@ onUnmounted(() => {
   }
 })
 
-/**
- * Масив локалізованих новин інкубатора
- */
 const mockNews = [
   { id: 1, date: '15. 05. 2026', labelKey: 'home.newsTagCall',    titleKey: 'home.news1Title', excerptKey: 'home.news1Excerpt' },
   { id: 2, date: '28. 04. 2026', labelKey: 'home.newsTagPartner', titleKey: 'home.news2Title', excerptKey: 'home.news2Excerpt' },
   { id: 3, date: '10. 04. 2026', labelKey: 'home.newsTagEvent',   titleKey: 'home.news3Title', excerptKey: 'home.news3Excerpt' },
 ]
 
-// Список партнерів для безкінечного рухомого рядка (Marquee)
 const partnersList = ['UKF Nitra', 'ESET', 'T-Systems', 'Slovensko.Digital', 'Accenture', 'Tempest']
 </script>
 
@@ -347,7 +339,6 @@ const partnersList = ['UKF Nitra', 'ESET', 'T-Systems', 'Slovensko.Digital', 'Ac
   width: 100%;
 }
 
-/* ===== СТИЛИ ДЛЯ СКРОЛЛ-АНІМАЦІЙ ===== */
 .reveal-node {
   opacity: 0;
   transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
@@ -360,7 +351,6 @@ const partnersList = ['UKF Nitra', 'ESET', 'T-Systems', 'Slovensko.Digital', 'Ac
   transform: scale(1) translateY(0);
 }
 
-/* ===== ШАПКИ СЕКЦІЙ ===== */
 .section-header { text-align: center; margin-bottom: 60px; }
 .section-label {
   font-size: 11px;
@@ -386,7 +376,6 @@ const partnersList = ['UKF Nitra', 'ESET', 'T-Systems', 'Slovensko.Digital', 'Ac
   line-height: 1.65;
 }
 
-/* ===== СЕКЦИЯ ABOUT US ===== */
 .about-us { padding: 120px 24px; }
 .about-inner {
   max-width: 1200px;
@@ -430,7 +419,6 @@ const partnersList = ['UKF Nitra', 'ESET', 'T-Systems', 'Slovensko.Digital', 'Ac
 .value-mini-card h4 { margin: 0; font-size: 17px; font-weight: 700; color: var(--text-color, #f8fafc); }
 .value-mini-card p { margin: 0; font-size: 14px; color: var(--text-color, #f8fafc); opacity: 0.75; line-height: 1.5; }
 
-/* ===== HERO СЕКЦІЯ ===== */
 .hero { padding: 120px 24px 90px; position: relative; }
 .hero-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 60px; align-items: center; }
 .hero-content { display: flex; flex-direction: column; align-items: flex-start; gap: 28px; }
@@ -449,7 +437,6 @@ const partnersList = ['UKF Nitra', 'ESET', 'T-Systems', 'Slovensko.Digital', 'Ac
 .hero-subtitle { font-size: 18px; line-height: 1.7; color: var(--text-color, #f8fafc); opacity: 0.85; margin: 0; max-width: 540px; }
 .hero-actions { display: flex; gap: 16px; flex-wrap: wrap; }
 
-/* Карточки в Hero */
 .hero-visual { position: relative; display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; padding: 20px; }
 .visual-glow { position: absolute; width: 320px; height: 320px; background: var(--main-color, #3b82f6); filter: blur(130px); opacity: 0.18; top: 10%; left: 20%; pointer-events: none; }
 .visual-card {
@@ -473,7 +460,6 @@ const partnersList = ['UKF Nitra', 'ESET', 'T-Systems', 'Slovensko.Digital', 'Ac
 .float-anim-fast { animation: floatKey 4s ease-in-out infinite alternate; }
 @keyframes floatKey { 0% { transform: translateY(0px); } 100% { transform: translateY(-14px); } }
 
-/* ===== СЕКЦІЯ СТАТИСТИКИ ===== */
 .stats { padding: 50px 24px; background: transparent; border-top: 1px solid var(--menu-border, rgba(255, 255, 255, 0.05)); border-bottom: 1px solid var(--menu-border, rgba(255, 255, 255, 0.05)); }
 .stats-grid { max-width: 1000px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
 .stat-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 10px; }
@@ -481,7 +467,6 @@ const partnersList = ['UKF Nitra', 'ESET', 'T-Systems', 'Slovensko.Digital', 'Ac
 .stat-number { font-size: clamp(30px, 3.8vw, 44px); font-weight: 800; color: var(--main-color, #3b82f6); letter-spacing: -1px; line-height: 1; }
 .stat-label { font-size: 11.5px; color: var(--text-color, #f8fafc); opacity: 0.8; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; text-align: center; }
 
-/* ===== СЕКЦІЯ ПРОГРАМ ===== */
 .programs { padding: 120px 24px; }
 .programs-grid { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 40px; }
 .program-card {
@@ -503,7 +488,6 @@ const partnersList = ['UKF Nitra', 'ESET', 'T-Systems', 'Slovensko.Digital', 'Ac
 .program-footer { display: flex; gap: 10px; flex-wrap: wrap; }
 .program-tag { padding: 5px 14px; border-radius: 100px; font-size: 12px; font-weight: 600; color: var(--text-color, #f8fafc); background: var(--bg-color, #0b0f12); border: 1px solid var(--menu-border, rgba(255, 255, 255, 0.05)); opacity: 0.95; }
 
-/* ===== СЕКЦІЯ ЯК ЦЕ ПРАЦЮЄ ===== */
 .how-it-works { padding: 120px 24px; background: transparent; border-top: 1px solid var(--menu-border, rgba(0, 0, 0, 0.05)); border-bottom: 1px solid var(--menu-border, rgba(0, 0, 0, 0.05)); }
 .steps-container { max-width: 1140px; margin: 0 auto; position: relative; }
 .steps-connecting-line { position: absolute; top: 56px; left: 8%; right: 8%; height: 2px; background: linear-gradient(90deg, transparent, var(--text-color, #334155) 15%, var(--text-color, #334155) 85%, transparent); opacity: 0.15; z-index: 0; }
@@ -515,7 +499,6 @@ const partnersList = ['UKF Nitra', 'ESET', 'T-Systems', 'Slovensko.Digital', 'Ac
 .step-card h4 { font-size: 17px; font-weight: 700; color: var(--text-color, #0f172a); margin: 4px 0 0 0; }
 .step-card p { font-size: 14px; line-height: 1.6; color: var(--text-color, #334155); opacity: 0.8; margin: 0; }
 
-/* ===== ЛЕНТА ПАРТНЕРОВ ===== */
 .partners { padding: 100px 0; }
 .marquee-wrapper { overflow: hidden; width: 100%; position: relative; padding: 15px 0; }
 .marquee-wrapper::before, .marquee-wrapper::after { content: ''; position: absolute; top: 0; bottom: 0; width: 200px; z-index: 2; pointer-events: none; }
@@ -527,7 +510,6 @@ const partnersList = ['UKF Nitra', 'ESET', 'T-Systems', 'Slovensko.Digital', 'Ac
 .partner-dot { color: var(--main-color, #3b82f6); font-size: 16px; }
 @keyframes marqueeRun { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
-/* ===== СЕКЦІЯ НОВОСТЕЙ ===== */
 .news { padding: 120px 24px; background: transparent; border-top: 1px solid var(--menu-border, rgba(255, 255, 255, 0.05)); }
 .news-grid { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 32px; }
 .news-card {
@@ -543,11 +525,9 @@ const partnersList = ['UKF Nitra', 'ESET', 'T-Systems', 'Slovensko.Digital', 'Ac
 .news-arrow { margin-top: auto; font-size: 13.5px; font-weight: 700; color: var(--main-color, #3b82f6); display: flex; align-items: center; gap: 8px; opacity: 0; transform: translateX(-6px); transition: opacity 0.3s ease, transform 0.3s ease; }
 .news-card:hover .news-arrow { opacity: 1; transform: translateX(0); }
 
-/* ===== ІНТЕГРОВАНА СЕКЦІЯ CTA (Класичний колір як у всього сайту) ===== */
 .cta {
   position: relative;
   width: 100%;
-  /* Колір тепер строго відповідає фону інших секцій лендінгу */
   background: var(--bg-color, #0b0f12);
   padding: 100px 24px;
   box-sizing: border-box;
@@ -555,7 +535,6 @@ const partnersList = ['UKF Nitra', 'ESET', 'T-Systems', 'Slovensko.Digital', 'Ac
   display: flex;
   justify-content: center;
   align-items: center;
-  /* Легке преміальне розділення між секціями */
   border-top: 1px solid rgba(255, 255, 255, 0.04);
 }
 
@@ -589,7 +568,6 @@ const partnersList = ['UKF Nitra', 'ESET', 'T-Systems', 'Slovensko.Digital', 'Ac
   max-width: 620px;
 }
 
-/* Контейнер кнопок: вирівнювання строго в один рядок */
 .cta-actions {
   display: flex;
   flex-direction: row;
@@ -601,7 +579,6 @@ const partnersList = ['UKF Nitra', 'ESET', 'T-Systems', 'Slovensko.Digital', 'Ac
   flex-wrap: wrap;
 }
 
-/* Кастомні класи кнопок всередині CTA */
 .cta-btn-primary {
   min-width: 160px;
   font-weight: 600;
@@ -621,7 +598,6 @@ const partnersList = ['UKF Nitra', 'ESET', 'T-Systems', 'Slovensko.Digital', 'Ac
   border-color: rgba(255, 255, 255, 0.2) !important;
 }
 
-/* Сяяння по центру */
 .cta-glow {
   position: absolute;
   width: 500px;
@@ -634,7 +610,6 @@ const partnersList = ['UKF Nitra', 'ESET', 'T-Systems', 'Slovensko.Digital', 'Ac
   z-index: 1;
 }
 
-/* Анімація для головної кнопки */
 .pulse-btn:hover {
   animation: pulseEff 1.4s infinite;
 }
@@ -644,7 +619,6 @@ const partnersList = ['UKF Nitra', 'ESET', 'T-Systems', 'Slovensko.Digital', 'Ac
   100% { box-shadow: 0 0 0 0 rgba(224, 110, 117, 0); }
 }
 
-/* ===== АДАПТИВНІСТЬ ===== */
 @media (max-width: 1100px) {
   .hero-inner { grid-template-columns: 1fr; gap: 50px; text-align: center; }
   .hero-content { align-items: center; }
