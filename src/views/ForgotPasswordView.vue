@@ -148,7 +148,7 @@ const handleSubmit = async () => {
   margin: 5px 0 0 0;
 }
 .bottom-link a {
-  color: var(--main-color, #ea6d7e);
+  color: var(--main-color, --main-color);
   text-decoration: none;
 }
 @media (hover: hover) and (pointer: fine) {
