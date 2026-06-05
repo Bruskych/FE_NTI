@@ -79,6 +79,14 @@ const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
     const authStore = useAuthStore()
+    if (authStore.token && !authStore.user) {
+        try {
+            await authStore.fetchMe()
+        } catch (error) {
+            console.error("Не удалось загрузить профиль при перезагрузке:", error)
+            return next({ name: 'login' })
+        }
+    }
     const isAuthenticated = authStore.isAuthenticated
 
     // 1. ТОЛЬКО ДЛЯ ГОСТЕЙ (Страницы входа и регистрации)

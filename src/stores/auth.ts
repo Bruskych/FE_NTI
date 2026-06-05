@@ -51,6 +51,7 @@ interface AuthState {
     token: string | null
     user: User | null
     notifications: Notification[]
+    isInitialized: boolean // Добавь это поле
     loading: boolean
     error: string | null
 }
@@ -71,10 +72,12 @@ type LoginResponse = {
     notifications: Notification[]
 }
 
+const cachedUser = localStorage.getItem('cached_user')
 export const useAuthStore = defineStore('auth', {
     state: (): AuthState => ({
         token: localStorage.getItem('token'),
-        user: null,
+        user: cachedUser ? JSON.parse(cachedUser) : null,
+        isInitialized: false,
         notifications: [],
         loading: false,
         error: null,
@@ -106,6 +109,7 @@ export const useAuthStore = defineStore('auth', {
 
                 this.token = data.token
                 this.user = data.user
+                localStorage.setItem('cached_user', JSON.stringify(data.user))
                 this.notifications = data.notifications
                 localStorage.setItem('token', data.token)
 
@@ -135,7 +139,6 @@ export const useAuthStore = defineStore('auth', {
                     password:              userData.password,
                     password_confirmation: userData.password_confirmation,
                     role:                  userData.role,
-                    gdpr_consent:          '1',
                 }
 
                 if (userData.role === 'company') {
@@ -150,6 +153,7 @@ export const useAuthStore = defineStore('auth', {
 
                 this.token = data.token
                 this.user = data.user
+                localStorage.setItem('cached_user', JSON.stringify(data.user))
                 this.notifications = data.notifications || []
 
                 localStorage.setItem('token', data.token)
@@ -194,10 +198,14 @@ export const useAuthStore = defineStore('auth', {
 
         // Получение профиля - Исправлен путь на /auth/me
         async fetchMe(): Promise<void> {
-            if (!this.token) return
+            if (!this.token) {
+                this.isInitialized = true
+                return
+            }
             try {
                 const { data } = await api.get('/auth/me')
                 this.user = data.user
+                localStorage.setItem('cached_user', JSON.stringify(data.user))
             } catch (error: unknown) {
                 const err = error as AxiosError
                 const status = err.response?.status
@@ -206,10 +214,10 @@ export const useAuthStore = defineStore('auth', {
                     return
                 }
                 console.warn('fetchMe failed but user stays logged in:', status)
+            } finally {
+                this.isInitialized = true
             }
         },
-
-        // Выход из системы - Исправлен путь на /auth/logout
         async logout(): Promise<void> {
             try {
                 await api.post('/auth/logout')
@@ -219,10 +227,12 @@ export const useAuthStore = defineStore('auth', {
                 this.token = null
                 this.user = null
                 localStorage.removeItem('token')
+                localStorage.removeItem('cached_user')
+                this.isInitialized = false
             }
         },
 
-        // Загрузка фото в профиль пользователя (Тут всё было ок)
+        // Загрузка фото в профиль пользователя
         async uploadAvatar(file: File): Promise<void> {
             this.loading = true;
             this.error = null;
@@ -237,6 +247,7 @@ export const useAuthStore = defineStore('auth', {
                 });
                 if (data.user) {
                     this.user = data.user;
+                    localStorage.setItem('cached_user', JSON.stringify(data.user))
                 }
             } catch (error: unknown) {
                 console.error('Avatar upload failed:', error);
