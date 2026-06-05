@@ -21,6 +21,9 @@ import enUserPanel from './en/user_panel.json'
 import skAdminPanel from './sk/admin_panel.json'
 import enAdminPanel from './en/admin_panel.json'
 
+import skSettingsPanel from './sk/settings_panel.json'
+import enSettingsPanel from './en/settings_panel.json'
+
 import skError from './sk/error.json'
 import enError from './en/error.json'
 
@@ -43,6 +46,7 @@ const messages = {
         role: skRole,
         userPanel: skUserPanel,
         adminPanel: skAdminPanel,
+        settingsPanel: skSettingsPanel,
         error: skError,
         actions: skActions,
         adminTable: skAdminTable,
@@ -56,6 +60,7 @@ const messages = {
         role: enRole,
         userPanel: enUserPanel,
         adminPanel: enAdminPanel,
+        settingsPanel: enSettingsPanel,
         error: enError,
         actions: enActions,
         adminTable: enAdminTable,

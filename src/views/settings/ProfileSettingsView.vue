@@ -31,14 +31,15 @@ const saveProfileData = async (newValue: string | number) => {
 <template>
   <div class="profile-settings">
 
-    <h2 class="section-title">{{ $t('settingsPanel.profile_settings_title', 'Profile Settings') }}</h2>
+    <h2 class="section-title">{{ $t('settingsPanel.profile_settings_title') }}</h2>
 
     <div class="settings-card avatar-section">
+      <h3 class="card-title">{{ $t('settingsPanel.photo') }}</h3>
       <AvatarUploader />
     </div>
 
     <div class="settings-card info-section">
-      <h3 class="card-title">{{ $t('settingsPanel.personal_info', 'Personal Information') }}</h3>
+      <h3 class="card-title">{{ $t('settingsPanel.personal_info') }}</h3>
 
       <div class="info-grid">
 
@@ -46,7 +47,7 @@ const saveProfileData = async (newValue: string | number) => {
           <BaseInput
               v-model="nameInput"
               showSaveToggle
-              :label="$t('settingsPanel.label_name', 'Full Name')"
+              :label="$t('settingsPanel.label_name')"
               :disabled="userStore.loading"
               @save="saveProfileData"
           />

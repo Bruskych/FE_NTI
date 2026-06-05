@@ -2,8 +2,10 @@
 import { ref, computed } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useI18n } from 'vue-i18n'
-import SecondaryButton from "@/components/ui/SecondaryButton.vue";
 const { t } = useI18n()
+
+import SecondaryButton from "@/components/ui/SecondaryButton.vue";
+import SaveIcon from '@/assets/icons/empty.svg'
 
 const authStore = useAuthStore()
 const fileInput = ref<HTMLInputElement | null>(null)
@@ -78,6 +80,10 @@ const onFileSelected = async (event: Event) => {
         :disabled="authStore.loading"
         @click="triggerFileInput"
     >
+      <template #icon>
+        <SaveIcon />
+      </template>
+
       {{ authStore.loading ? $t('error.avatar.loading') : $t('error.avatar.change_btn') }}
     </SecondaryButton>
 

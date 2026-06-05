@@ -22,7 +22,13 @@ const isLink = computed(() => !!props.to)
       class="base-button"
       v-bind="$attrs"
   >
-    <slot />
+    <span class="btn-content">
+      <slot />
+    </span>
+
+    <span v-if="$slots.icon" class="btn-icon">
+      <slot name="icon" />
+    </span>
   </component>
 </template>
 
@@ -43,8 +49,9 @@ const isLink = computed(() => !!props.to)
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 8px;
 
-  @media (hover:hover) and (pointer: fine){
+  @media (hover:hover) and (pointer: fine) {
     &:hover {
       background-color: var(--button-bg-hover-unimp);
     }
@@ -53,13 +60,14 @@ const isLink = computed(() => !!props.to)
     transform: scale(0.95);
   }
 }
-@media (max-width: 768px) {
-  .base-button {
-    white-space: nowrap;
-    min-width: fit-content;
-
-    font-size: 13px;
-    padding: 12px 14px;
-  }
+.btn-content {
+  display: inline-flex;
+  align-items: center;
+}
+.btn-icon {
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
 }
 </style>
