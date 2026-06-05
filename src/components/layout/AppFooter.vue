@@ -95,7 +95,7 @@ const navigateToSection = async (sectionId: string) => {
 
 <style scoped>
 .custom-footer {
-  background: #090d10;
+  background: var(--menu-color);
   border-top: 1px solid rgba(255, 255, 255, 0.05);
   color: #8c9ba5;
   padding-top: 40px;
@@ -148,7 +148,7 @@ const navigateToSection = async (sectionId: string) => {
 .footer-logo-text {
   font-size: 1.4rem;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--text-color);
   letter-spacing: -0.5px;
 }
 
@@ -156,7 +156,7 @@ const navigateToSection = async (sectionId: string) => {
   font-size: 0.88rem;
   line-height: 1.5;
   margin: 0 0 16px 0;
-  color: #8c9ba5;
+  color: var(--text-color);
 }
 
 .footer-socials {
@@ -166,7 +166,7 @@ const navigateToSection = async (sectionId: string) => {
 }
 
 .social-icon-only {
-  color: #8c9ba5;
+  color: var(--text-color);
   text-decoration: none;
   transition: color 0.2s ease, transform 0.2s ease;
   display: flex;
@@ -175,7 +175,7 @@ const navigateToSection = async (sectionId: string) => {
 }
 
 .social-icon-only:hover {
-  color: #ffffff;
+  color: var(--text-color);
   transform: translateY(-1px);
 }
 
@@ -184,7 +184,7 @@ const navigateToSection = async (sectionId: string) => {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1.2px;
-  color: #ffffff;
+  color: var(--text-color);
   margin: 0 0 16px 0;
 }
 
@@ -202,7 +202,7 @@ const navigateToSection = async (sectionId: string) => {
   font-family: inherit;
   cursor: pointer;
   font-size: 0.88rem;
-  color: #8c9ba5;
+  color: var(--text-color);
   text-align: left;
   line-height: 1.4;
   display: inline-flex;
@@ -220,7 +220,7 @@ const navigateToSection = async (sectionId: string) => {
   height: 1px;
   bottom: -1px;
   left: 0;
-  background-color: #ffffff;
+  background-color: var(--text-color);
   transform-origin: bottom left;
   transition: transform 0.2s ease-out;
 }
@@ -230,11 +230,13 @@ const navigateToSection = async (sectionId: string) => {
   transform: scaleX(1);
 }
 
-.interactive-link-btn:hover, .contact-link:hover { color: #ffffff; }
+.interactive-link-btn:hover, .contact-link:hover {
+  color: var(--text-color);
+}
 
 .contact-link {
   font-size: 0.88rem;
-  color: #8c9ba5;
+  color: var(--text-color-unimp);
   text-decoration: none;
   line-height: 1.4;
   display: inline-flex;
@@ -253,9 +255,9 @@ const navigateToSection = async (sectionId: string) => {
   transition: color 0.2s ease;
 }
 
-.contact-link:hover .contact-icon { color: #ffffff; }
-.email-highlight { font-weight: 500; color: #cdd7de !important; }
-.email-highlight:hover { color: #ffffff !important; }
+.contact-link:hover .contact-icon { color: var(--text-color); }
+.email-highlight { font-weight: 500; color: var(--text-color-unimp); }
+.email-highlight:hover { color: var(--text-color); }
 .address-layout { display: flex; align-items: flex-start; }
 .address-icon-align { margin-top: 4px; }
 
