@@ -1,20 +1,18 @@
 <script setup lang="ts">
 import { nextTick } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { useTheme } from '@/composables/useTheme'
+
+import ntiLogo from '@/assets/images/nti_logo.png'
 
 const router = useRouter()
 const route = useRoute()
+const { isDark } = useTheme()
 
-/**
- * Интеллектуальная навигация по секциям.
- * Если пользователь находится не на главной странице ('/'),
- * скрипт сначала перенаправляет его на главную, дожидается обновления DOM
- * через nextTick(), а затем плавно скроллит к нужному элементу по ID.
- */
 const navigateToSection = async (sectionId: string) => {
   if (route.path !== '/') {
     await router.push('/')
-    await nextTick() // Ожидание полной отрисовки страницы во Vue
+    await nextTick()
   }
   const element = document.getElementById(sectionId)
   if (element) {
@@ -29,7 +27,11 @@ const navigateToSection = async (sectionId: string) => {
       <div class="footer-grid-system">
 
         <div class="footer-block block-main">
-          <span class="footer-logo-text">NTI Portal</span>
+          <div class="footer-branding">
+            <img :src="ntiLogo" alt="NTI Logo" class="footer-logo-img" :class="{ 'light-logo': !isDark }" />
+            <span class="footer-logo-text">NTI Portal</span>
+          </div>
+
           <p class="footer-description">
             {{ $t('footer.description') }}
           </p>
@@ -132,12 +134,22 @@ const navigateToSection = async (sectionId: string) => {
 .block-center { padding-left: 40px; }
 .block-right { justify-self: end; min-width: 260px; }
 
+.footer-branding {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.footer-logo-img {
+  height: 32px;
+  width: auto;
+  object-fit: contain;
+}
 .footer-logo-text {
   font-size: 1.4rem;
   font-weight: 700;
   color: #ffffff;
   letter-spacing: -0.5px;
-  margin-bottom: 12px;
 }
 
 .footer-description {
@@ -284,5 +296,13 @@ const navigateToSection = async (sectionId: string) => {
   .footer-wrap { padding: 0 24px; }
   .footer-grid-system { grid-template-columns: 1fr; gap: 24px; padding-bottom: 20px; }
   .copyright-flex { flex-direction: column; text-align: center; gap: 8px; }
+}
+
+:global(.light) .footer-logo-img {
+  filter: invert(1) brightness(0.2);
+}
+
+.light-logo {
+  filter: invert(1) brightness(0.1);
 }
 </style>

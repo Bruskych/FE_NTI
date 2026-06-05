@@ -65,7 +65,6 @@ const partnersList = ['UKF Nitra', 'ESET', 'T-Systems', 'Slovensko.Digital', 'Ac
 
     <section class="hero reveal-node reveal-fade-in" aria-labelledby="hero-title">
       <div class="hero-inner">
-
         <div class="hero-content">
           <div class="hero-badge-wrapper">
             <span class="hero-label">{{ $t('home.heroLabel') }}</span>
@@ -103,7 +102,6 @@ const partnersList = ['UKF Nitra', 'ESET', 'T-Systems', 'Slovensko.Digital', 'Ac
             <p>{{ $t('home.visualCardC') }}</p>
           </div>
         </div>
-
       </div>
     </section>
 
@@ -319,19 +317,18 @@ const partnersList = ['UKF Nitra', 'ESET', 'T-Systems', 'Slovensko.Digital', 'Ac
     </section>
 
     <section class="cta reveal-node reveal-fade-in" v-if="!isLoggedIn" aria-labelledby="cta-title">
-      <div class="cta-card">
-        <div class="cta-glow"></div>
-        <div class="cta-inner">
-          <h2 id="cta-title">{{ $t('home.ctaTitle') }}</h2>
-          <p>{{ $t('home.ctaSubtitle') }}</p>
-          <div class="cta-actions">
-            <BaseButton size="large" @click="goRegister" class="pulse-btn">
-              {{ $t('home.getStarted') }}
-            </BaseButton>
-            <SecondaryButton size="large" variant="dark" @click="goLogin">
-              {{ $t('header.log_in') }}
-            </SecondaryButton>
-          </div>
+      <div class="cta-glow" aria-hidden="true"></div>
+      <div class="cta-container">
+        <h2 id="cta-title">{{ $t('home.ctaTitle', 'Ready to Launch Your Project?') }}</h2>
+        <p class="cta-desc">{{ $t('home.ctaSubtitle', 'Register today and transform your knowledge into a successful technology product under expert guidance.') }}</p>
+
+        <div class="cta-actions">
+          <BaseButton size="large" @click="goRegister" class="pulse-btn cta-btn-primary">
+            {{ $t('home.getStarted', 'Get Started') }}
+          </BaseButton>
+          <SecondaryButton size="large" @click="goLogin" class="cta-btn-secondary">
+            {{ $t('header.log_in', 'Log In') }}
+          </SecondaryButton>
         </div>
       </div>
     </section>
@@ -345,7 +342,9 @@ const partnersList = ['UKF Nitra', 'ESET', 'T-Systems', 'Slovensko.Digital', 'Ac
   color: var(--text-color, #f8fafc);
   background: var(--bg-color, #0b0f12);
   overflow-x: hidden;
-  padding-bottom: 60px; /* М'який і чистий перехід перед футером */
+  display: flex;
+  flex-direction: column;
+  width: 100%;
 }
 
 /* ===== СТИЛИ ДЛЯ СКРОЛЛ-АНІМАЦІЙ ===== */
@@ -388,9 +387,7 @@ const partnersList = ['UKF Nitra', 'ESET', 'T-Systems', 'Slovensko.Digital', 'Ac
 }
 
 /* ===== СЕКЦИЯ ABOUT US ===== */
-.about-us {
-  padding: 120px 24px;
-}
+.about-us { padding: 120px 24px; }
 .about-inner {
   max-width: 1200px;
   margin: 0 auto;
@@ -399,36 +396,11 @@ const partnersList = ['UKF Nitra', 'ESET', 'T-Systems', 'Slovensko.Digital', 'Ac
   gap: 60px;
   align-items: stretch;
 }
-.about-info {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  text-align: left;
-  justify-content: center;
-}
-.about-info h2 {
-  font-size: clamp(26px, 3vw, 36px);
-  font-weight: 800;
-  letter-spacing: -0.5px;
-  margin: 8px 0 20px 0;
-  line-height: 1.2;
-}
-.about-text {
-  font-size: 16px;
-  line-height: 1.65;
-  color: var(--text-color, #f8fafc);
-  opacity: 0.9;
-  margin: 0 0 16px 0;
-}
-.about-text.text-secondary {
-  opacity: 0.7;
-}
-.about-values-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  justify-content: center;
-}
+.about-info { display: flex; flex-direction: column; align-items: flex-start; text-align: left; justify-content: center; }
+.about-info h2 { font-size: clamp(26px, 3vw, 36px); font-weight: 800; letter-spacing: -0.5px; margin: 8px 0 20px 0; line-height: 1.2; }
+.about-text { font-size: 16px; line-height: 1.65; color: var(--text-color, #f8fafc); opacity: 0.9; margin: 0 0 16px 0; }
+.about-text.text-secondary { opacity: 0.7; }
+.about-values-grid { display: flex; flex-direction: column; gap: 20px; justify-content: center; }
 .value-mini-card {
   background: var(--card-bg-color, #11161a);
   border: 1px solid var(--menu-border, rgba(255, 255, 255, 0.05));
@@ -440,10 +412,7 @@ const partnersList = ['UKF Nitra', 'ESET', 'T-Systems', 'Slovensko.Digital', 'Ac
   text-align: left;
   transition: transform 0.2s, border-color 0.2s;
 }
-.value-mini-card:hover {
-  transform: translateX(6px);
-  border-color: var(--main-color, #3b82f6);
-}
+.value-mini-card:hover { transform: translateX(6px); border-color: var(--main-color, #3b82f6); }
 .value-icon {
   color: var(--main-color, #3b82f6);
   background: var(--main-color-light, rgba(59, 130, 246, 0.1));
@@ -456,118 +425,63 @@ const partnersList = ['UKF Nitra', 'ESET', 'T-Systems', 'Slovensko.Digital', 'Ac
   flex-shrink: 0;
   transition: transform 0.3s ease, background-color 0.3s ease, color 0.3s ease;
 }
-.value-mini-card:hover .value-icon {
-  transform: scale(1.05);
-  background: var(--main-color, #3b82f6);
-  color: #ffffff;
-}
-.value-content {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-.value-mini-card h4 {
-  margin: 0;
-  font-size: 17px;
-  font-weight: 700;
-  color: var(--text-color, #f8fafc);
-}
-.value-mini-card p {
-  margin: 0;
-  font-size: 14px;
-  color: var(--text-color, #f8fafc);
-  opacity: 0.75;
-  line-height: 1.5;
-}
+.value-mini-card:hover .value-icon { transform: scale(1.05); background: var(--main-color, #3b82f6); color: #ffffff; }
+.value-content { display: flex; flex-direction: column; gap: 4px; }
+.value-mini-card h4 { margin: 0; font-size: 17px; font-weight: 700; color: var(--text-color, #f8fafc); }
+.value-mini-card p { margin: 0; font-size: 14px; color: var(--text-color, #f8fafc); opacity: 0.75; line-height: 1.5; }
 
-/* ===== ГЛАВНЫЙ ЭКРАН (HERO СЕКЦИЯ) ===== */
+/* ===== HERO СЕКЦІЯ ===== */
 .hero { padding: 120px 24px 90px; position: relative; }
-.hero-inner {
-  max-width: 1200px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: 1.1fr 0.9fr;
-  gap: 60px;
-  align-items: center;
-}
+.hero-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 60px; align-items: center; }
 .hero-content { display: flex; flex-direction: column; align-items: flex-start; gap: 28px; }
 .hero-badge-wrapper {
   background: var(--main-color-light, rgba(59, 130, 246, 0.1));
-  padding: 6px 16px;
-  border-radius: 100px;
-  border: 1px solid color-mix(in srgb, var(--main-color, #3b82f6) 15%, transparent);
+  padding: 6px 16px; border-radius: 100px; border: 1px solid color-mix(in srgb, var(--main-color, #3b82f6) 15%, transparent);
 }
 .dark .hero-badge-wrapper { background: var(--menu-border, rgba(255, 255, 255, 0.05)); border-color: var(--main-color-dark, #1d4ed8); }
 .hero-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--main-color-dark, #1d4ed8); }
 .dark .hero-label { color: var(--main-color, #3b82f6); }
 .hero-title {
-  font-size: clamp(36px, 4.8vw, 58px);
-  font-weight: 800;
-  line-height: 1.1;
-  letter-spacing: -1.8px;
-  margin: 0;
+  font-size: clamp(36px, 4.8vw, 58px); font-weight: 800; line-height: 1.1; letter-spacing: -1.8px; margin: 0;
   background: linear-gradient(135deg, var(--text-color, #f8fafc) 30%, var(--main-color, #3b82f6) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
 }
 .hero-subtitle { font-size: 18px; line-height: 1.7; color: var(--text-color, #f8fafc); opacity: 0.85; margin: 0; max-width: 540px; }
 .hero-actions { display: flex; gap: 16px; flex-wrap: wrap; }
 
 /* Карточки в Hero */
 .hero-visual { position: relative; display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; padding: 20px; }
-.visual-glow {
-  position: absolute; width: 320px; height: 320px; background: var(--main-color, #3b82f6);
-  filter: blur(130px); opacity: 0.18; top: 10%; left: 20%; pointer-events: none;
-}
+.visual-glow { position: absolute; width: 320px; height: 320px; background: var(--main-color, #3b82f6); filter: blur(130px); opacity: 0.18; top: 10%; left: 20%; pointer-events: none; }
 .visual-card {
   position: relative; background: color-mix(in srgb, var(--card-bg-color, #11161a) 75%, transparent);
   backdrop-filter: blur(16px); border: 1px solid var(--menu-border, rgba(255, 255, 255, 0.05));
-  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.03); border-radius: 20px; padding: 24px;
-  z-index: 1; color: var(--text-color, #f8fafc);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.03); border-radius: 20px; padding: 24px; z-index: 1; color: var(--text-color, #f8fafc);
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease, border-color 0.3s;
 }
-.visual-card:hover {
-  transform: scale(1.03) translateY(-8px) !important;
-  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.08); border-color: var(--main-color, #3b82f6);
-}
+.visual-card:hover { transform: scale(1.03) translateY(-8px) !important; box-shadow: 0 20px 45px rgba(0, 0, 0, 0.08); border-color: var(--main-color, #3b82f6); }
 .visual-card--a { grid-column: 1; transform: translateY(-15px); }
 .visual-card--b { grid-column: 2; transform: translateY(15px); }
 .visual-card--c { grid-column: 1 / -1; margin-top: 10px; }
-
-.visual-badge {
-  font-size: 10px; font-weight: 700; text-transform: uppercase;
-  padding: 4px 10px; border-radius: 8px; letter-spacing: 1px;
-  display: inline-block; margin-bottom: 12px;
-}
-.badge-a { background: var(--main-color-light, rgba(59, 130, 246, 0.1)); color: var(--main-color-dark, #1d4ed8); }
+.visual-badge { font-size: 10px; font-weight: 700; text-transform: uppercase; padding: 4px 10px; border-radius: 8px; letter-spacing: 1px; display: inline-block; margin-bottom: 12px; }
 .dark .badge-a { background: var(--menu-border, rgba(255, 255, 255, 0.05)); color: var(--main-color, #3b82f6); }
 .badge-b { background: color-mix(in srgb, #10b981 15%, transparent); color: #10b981; }
 .visual-stat { font-size: 28px; font-weight: 800; color: var(--main-color, #3b82f6); display: block; margin-bottom: 6px; }
 .visual-card p { font-size: 13.5px; color: var(--text-color, #f8fafc); opacity: 0.9; margin: 0; line-height: 1.5; }
 
-/* Анимации покачивания */
 .float-anim-slow { animation: floatKey 6s ease-in-out infinite alternate; }
 .float-anim-mid { animation: floatKey 5s ease-in-out infinite alternate-reverse; }
 .float-anim-fast { animation: floatKey 4s ease-in-out infinite alternate; }
-@keyframes floatKey {
-  0% { transform: translateY(0px); }
-  100% { transform: translateY(-14px); }
-}
+@keyframes floatKey { 0% { transform: translateY(0px); } 100% { transform: translateY(-14px); } }
 
 /* ===== СЕКЦІЯ СТАТИСТИКИ ===== */
-.stats {
-  padding: 50px 24px;
-  background: transparent;
-  border-top: 1px solid var(--menu-border, rgba(255, 255, 255, 0.05));
-  border-bottom: 1px solid var(--menu-border, rgba(255, 255, 255, 0.05));
-}
+.stats { padding: 50px 24px; background: transparent; border-top: 1px solid var(--menu-border, rgba(255, 255, 255, 0.05)); border-bottom: 1px solid var(--menu-border, rgba(255, 255, 255, 0.05)); }
 .stats-grid { max-width: 1000px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
 .stat-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 10px; }
 .stat-divider { width: 1px; height: 52px; background: var(--menu-border, rgba(255, 255, 255, 0.05)); }
 .stat-number { font-size: clamp(30px, 3.8vw, 44px); font-weight: 800; color: var(--main-color, #3b82f6); letter-spacing: -1px; line-height: 1; }
 .stat-label { font-size: 11.5px; color: var(--text-color, #f8fafc); opacity: 0.8; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; text-align: center; }
 
-/* ===== СЕКЦІЯ ПРОГРАМ (Пункт 1) ===== */
+/* ===== СЕКЦІЯ ПРОГРАМ ===== */
 .programs { padding: 120px 24px; }
 .programs-grid { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 40px; }
 .program-card {
@@ -575,17 +489,10 @@ const partnersList = ['UKF Nitra', 'ESET', 'T-Systems', 'Slovensko.Digital', 'Ac
   padding: 44px; display: flex; flex-direction: column; gap: 32px; overflow: hidden;
   transition: border-color 0.4s ease, box-shadow 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.3s;
 }
-.program-card:hover {
-  transform: translateY(-6px); background: var(--card-bg-color-hover, #1e293b);
-  border-color: color-mix(in srgb, var(--main-color, #3b82f6) 35%, transparent); box-shadow: 0 25px 50px rgba(0, 0, 0, 0.06);
-}
-.program-card-glow {
-  position: absolute; width: 200px; height: 200px; background: var(--main-color, #3b82f6);
-  filter: blur(90px); opacity: 0; top: -65px; right: -65px; transition: opacity 0.4s ease; pointer-events: none;
-}
+.program-card:hover { transform: translateY(-6px); background: var(--card-bg-color-hover, #1e293b); border-color: color-mix(in srgb, var(--main-color, #3b82f6) 35%, transparent); box-shadow: 0 25px 50px rgba(0, 0, 0, 0.06); }
+.program-card-glow { position: absolute; width: 200px; height: 200px; background: var(--main-color, #3b82f6); filter: blur(90px); opacity: 0; top: -65px; right: -65px; transition: opacity 0.4s ease; pointer-events: none; }
 .program-card:hover .program-card-glow { opacity: 0.15; }
 .program-badge { display: inline-flex; padding: 5px 16px; border-radius: 100px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 16px; }
-.program-badge--a { background: var(--main-color-light, rgba(59, 130, 246, 0.1)); color: var(--main-color-dark, #1d4ed8); }
 .dark .program-badge--a { background: var(--menu-border, rgba(255, 255, 255, 0.05)); color: var(--main-color, #3b82f6); }
 .program-badge--b { background: color-mix(in srgb, #10b981 15%, transparent); color: #10b981; }
 .program-card h3 { font-size: 24px; font-weight: 800; color: var(--text-color, #f8fafc); margin: 0 0 12px 0; }
@@ -596,29 +503,17 @@ const partnersList = ['UKF Nitra', 'ESET', 'T-Systems', 'Slovensko.Digital', 'Ac
 .program-footer { display: flex; gap: 10px; flex-wrap: wrap; }
 .program-tag { padding: 5px 14px; border-radius: 100px; font-size: 12px; font-weight: 600; color: var(--text-color, #f8fafc); background: var(--bg-color, #0b0f12); border: 1px solid var(--menu-border, rgba(255, 255, 255, 0.05)); opacity: 0.95; }
 
-/* ===== СЕКЦІЯ ЯК ЦЕ ПРАЦЮЄ (Пункт 2) ===== */
-.how-it-works {
-  padding: 120px 24px;
-  background: transparent;
-  border-top: 1px solid var(--menu-border, rgba(255, 255, 255, 0.05));
-  border-bottom: 1px solid var(--menu-border, rgba(255, 255, 255, 0.05));
-}
+/* ===== СЕКЦІЯ ЯК ЦЕ ПРАЦЮЄ ===== */
+.how-it-works { padding: 120px 24px; background: transparent; border-top: 1px solid var(--menu-border, rgba(0, 0, 0, 0.05)); border-bottom: 1px solid var(--menu-border, rgba(0, 0, 0, 0.05)); }
 .steps-container { max-width: 1140px; margin: 0 auto; position: relative; }
-.steps-connecting-line {
-  position: absolute; top: 56px; left: 8%; right: 8%; height: 2px;
-  background: linear-gradient(90deg, transparent, var(--menu-border, rgba(255, 255, 255, 0.05)) 15%, var(--menu-border, rgba(255, 255, 255, 0.05)) 85%, transparent); z-index: 0;
-}
+.steps-connecting-line { position: absolute; top: 56px; left: 8%; right: 8%; height: 2px; background: linear-gradient(90deg, transparent, var(--text-color, #334155) 15%, var(--text-color, #334155) 85%, transparent); opacity: 0.15; z-index: 0; }
 .steps-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; position: relative; z-index: 1; }
 .step-card { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 16px; padding: 0 12px; }
-.step-dot {
-  width: 14px; height: 14px; border-radius: 50%; background: var(--bg-color, #0b0f12);
-  border: 3.5px solid var(--main-color, #3b82f6); box-shadow: 0 0 0 6px var(--bg-color, #0b0f12);
-  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
+.step-dot { width: 14px; height: 14px; border-radius: 50%; background: var(--bg-color, #ffffff); border: 3.5px solid var(--main-color, #3b82f6); box-shadow: 0 0 0 6px var(--bg-color, #ffffff); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
 .step-card:hover .step-dot { transform: scale(1.4); }
-.step-number-flow { font-size: 38px; font-weight: 800; color: var(--main-color, #3b82f6); opacity: 0.35; font-variant-numeric: tabular-nums; line-height: 1; }
-.step-card h4 { font-size: 17px; font-weight: 700; color: var(--text-color, #f8fafc); margin: 4px 0 0 0; }
-.step-card p { font-size: 14px; line-height: 1.6; color: var(--text-color, #f8fafc); opacity: 0.8; margin: 0; }
+.step-number-flow { font-size: 38px; font-weight: 800; color: var(--main-color, #3b82f6); opacity: 0.4; font-variant-numeric: tabular-nums; line-height: 1; }
+.step-card h4 { font-size: 17px; font-weight: 700; color: var(--text-color, #0f172a); margin: 4px 0 0 0; }
+.step-card p { font-size: 14px; line-height: 1.6; color: var(--text-color, #334155); opacity: 0.8; margin: 0; }
 
 /* ===== ЛЕНТА ПАРТНЕРОВ ===== */
 .partners { padding: 100px 0; }
@@ -630,17 +525,10 @@ const partnersList = ['UKF Nitra', 'ESET', 'T-Systems', 'Slovensko.Digital', 'Ac
 .partner-item { font-size: 20px; font-weight: 700; letter-spacing: -0.5px; color: var(--text-color, #f8fafc); opacity: 0.6; display: flex; align-items: center; gap: 14px; transition: opacity 0.3s ease, transform 0.3s ease; }
 .partner-item:hover { opacity: 0.95; transform: scale(1.04); }
 .partner-dot { color: var(--main-color, #3b82f6); font-size: 16px; }
-@keyframes marqueeRun {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
+@keyframes marqueeRun { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
-/* ===== СЕКЦІЯ НОВОСТЕЙ (Пункт 3) ===== */
-.news {
-  padding: 120px 24px;
-  background: transparent;
-  border-top: 1px solid var(--menu-border, rgba(255, 255, 255, 0.05));
-}
+/* ===== СЕКЦІЯ НОВОСТЕЙ ===== */
+.news { padding: 120px 24px; background: transparent; border-top: 1px solid var(--menu-border, rgba(255, 255, 255, 0.05)); }
 .news-grid { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 32px; }
 .news-card {
   background: var(--card-bg-color, #11161a); border: 1px solid var(--menu-border, rgba(255, 255, 255, 0.05)); border-radius: 24px; padding: 36px;
@@ -652,32 +540,108 @@ const partnersList = ['UKF Nitra', 'ESET', 'T-Systems', 'Slovensko.Digital', 'Ac
 .news-date { font-size: 12.5px; color: var(--text-color, #f8fafc); opacity: 0.6; }
 .news-card h4 { font-size: 18px; font-weight: 700; line-height: 1.45; color: var(--text-color, #f8fafc); margin: 0; }
 .news-card p { font-size: 14.5px; line-height: 1.65; color: var(--text-color, #f8fafc); opacity: 0.8; margin: 0; }
-.news-arrow {
-  margin-top: auto; font-size: 13.5px; font-weight: 700; color: var(--main-color, #3b82f6);
-  display: flex; align-items: center; gap: 8px; opacity: 0; transform: translateX(-6px);
-  transition: opacity 0.3s ease, transform 0.3s ease;
-}
+.news-arrow { margin-top: auto; font-size: 13.5px; font-weight: 700; color: var(--main-color, #3b82f6); display: flex; align-items: center; gap: 8px; opacity: 0; transform: translateX(-6px); transition: opacity 0.3s ease, transform 0.3s ease; }
 .news-card:hover .news-arrow { opacity: 1; transform: translateX(0); }
 
-/* ===== СЕКЦІЯ CTA ===== */
-.cta { padding: 100px 24px; }
-.cta-card {
-  max-width: 1000px; margin: 0 auto; background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-  border-radius: 36px; padding: 70px 40px; position: relative; overflow: hidden; text-align: center;
-  border: 1px solid var(--menu-border, rgba(255, 255, 255, 0.05)); box-shadow: 0 25px 60px rgba(0, 0, 0, 0.16);
+/* ===== ІНТЕГРОВАНА СЕКЦІЯ CTA (Класичний колір як у всього сайту) ===== */
+.cta {
+  position: relative;
+  width: 100%;
+  /* Колір тепер строго відповідає фону інших секцій лендінгу */
+  background: var(--bg-color, #0b0f12);
+  padding: 100px 24px;
+  box-sizing: border-box;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* Легке преміальне розділення між секціями */
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
 }
-.cta-glow { position: absolute; width: 280px; height: 280px; background: var(--main-color, #3b82f6); filter: blur(110px); opacity: 0.22; bottom: -60px; right: -60px; }
-.cta-inner { position: relative; z-index: 1; max-width: 620px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 24px; }
-.cta-card h2 { color: var(--text-color, #f8fafc); font-size: clamp(26px, 3.8vw, 40px); font-weight: 800; letter-spacing: -0.6px; margin: 0; }
-.cta-card p { color: var(--text-color, #f8fafc); opacity: 0.8; font-size: 17px; line-height: 1.65; margin: 0; }
-.cta-actions { display: flex; gap: 18px; margin-top: 10px; }
 
-/* Кнопка з ефектом пульсації */
-.pulse-btn:hover { animation: pulseEff 1.4s infinite; }
+.cta-container {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 24px;
+  position: relative;
+  z-index: 2;
+}
+
+.cta-container h2 {
+  color: #ffffff;
+  font-size: clamp(32px, 4vw, 46px);
+  font-weight: 800;
+  letter-spacing: -1px;
+  margin: 0;
+  line-height: 1.15;
+}
+
+.cta-desc {
+  color: #8c9ba5;
+  font-size: clamp(15px, 1.5vw, 17.5px);
+  line-height: 1.6;
+  margin: 0;
+  max-width: 620px;
+}
+
+/* Контейнер кнопок: вирівнювання строго в один рядок */
+.cta-actions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 12px;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+/* Кастомні класи кнопок всередині CTA */
+.cta-btn-primary {
+  min-width: 160px;
+  font-weight: 600;
+}
+
+.cta-btn-secondary {
+  background-color: rgba(255, 255, 255, 0.03) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  min-width: 160px;
+  font-weight: 600;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.cta-btn-secondary:hover {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Сяяння по центру */
+.cta-glow {
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.08) 0%, transparent 70%);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Анімація для головної кнопки */
+.pulse-btn:hover {
+  animation: pulseEff 1.4s infinite;
+}
 @keyframes pulseEff {
-  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--main-color, #3b82f6) 45%, transparent); }
-  70% { box-shadow: 0 0 0 14px color-mix(in srgb, var(--main-color, #3b82f6) 0%, transparent); }
-  100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--main-color, #3b82f6) 0%, transparent); }
+  0% { box-shadow: 0 0 0 0 rgba(224, 110, 117, 0.4); }
+  70% { box-shadow: 0 0 0 12px rgba(224, 110, 117, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(224, 110, 117, 0); }
 }
 
 /* ===== АДАПТИВНІСТЬ ===== */
@@ -687,11 +651,12 @@ const partnersList = ['UKF Nitra', 'ESET', 'T-Systems', 'Slovensko.Digital', 'Ac
   .hero-visual { max-width: 540px; margin: 0 auto; }
   .about-inner { grid-template-columns: 1fr; gap: 40px; }
   .about-info { align-items: center; text-align: center; }
+
   .steps-connecting-line { display: none; }
   .steps-grid { grid-template-columns: 1fr; gap: 36px; }
-  .step-card { flex-direction: row; text-align: left; gap: 24px; padding: 0; }
-  .step-dot { box-shadow: none; flex-shrink: 0; }
-  .step-number-flow { font-size: 32px; width: 45px; }
+  .step-card { flex-direction: row; text-align: left; gap: 24px; padding: 0; align-items: flex-start; }
+  .step-dot { box-shadow: none; flex-shrink: 0; margin-top: 10px; }
+  .step-number-flow { font-size: 32px; width: 45px; flex-shrink: 0; }
 }
 
 @media (max-width: 768px) {
@@ -700,8 +665,8 @@ const partnersList = ['UKF Nitra', 'ESET', 'T-Systems', 'Slovensko.Digital', 'Ac
   .programs-grid { grid-template-columns: 1fr; }
   .stats-grid { flex-direction: column; gap: 32px; }
   .stat-divider { display: none; }
-  .cta-card { padding: 50px 24px; }
-  .cta-actions { flex-direction: column; width: 100%; }
-  .cta-actions > * { width: 100%; }
+  .cta { padding: 80px 20px; }
+  .cta-actions { flex-direction: column; width: 100%; gap: 12px; }
+  .cta-actions > * { width: 100% !important; }
 }
 </style>

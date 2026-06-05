@@ -5,7 +5,10 @@ import { useAuthStore } from '@/stores/auth'
 import { useLanguage } from '@/composables/useLanguage'
 import { useTheme } from '@/composables/useTheme'
 
-// Импорт UI компонентов
+// Імпорт логотипу (шлях на основі вашої структури папок)
+import ntiLogo from '@/assets/images/nti_logo.png'
+
+// Імпорт UI компонентів
 import LanguageToggle from '@/components/ui/LanguageToggle.vue'
 import BaseButton from '@/components/ui/BaseButton.vue'
 import SecondaryButton from '@/components/ui/SecondaryButton.vue'
@@ -17,23 +20,16 @@ const router = useRouter()
 const route = useRoute()
 const authStore = useAuthStore()
 
-// Логика смены языка локализации
 const { currentLang, setLanguage } = useLanguage()
 const toggleLang = () => {
   setLanguage(currentLang.value === 'en' ? 'sk' : 'en')
 }
 
-// Переключение темной/светлой темы
 const { isDark, toggleTheme } = useTheme()
 
-// Быстрые переходы по авторизации
 const goLogin = () => { router.push('/login') }
 const goRegister = () => { router.push('/register') }
 
-/**
- * Плавный скролл к секциям. Если роут отличается от главной —
- * сначала возвращает на главную, затем скроллит.
- */
 const navigateToSection = async (sectionId: string) => {
   if (route.path !== '/') {
     await router.push('/')
@@ -45,10 +41,6 @@ const navigateToSection = async (sectionId: string) => {
   }
 }
 
-/**
- * Проверка, является ли секция активной (по хэшу урла),
- * используется для динамической подсветки активной кнопки.
- */
 const isSectionActive = (sectionId: string) => {
   return route.path === '/' && route.hash === `#${sectionId}`
 }
@@ -59,7 +51,10 @@ const isSectionActive = (sectionId: string) => {
     <div class="container">
 
       <div class="header-left">
-        <router-link to="/" class="logo">NTI Portal</router-link>
+        <router-link to="/" class="logo-wrapper">
+          <img :src="ntiLogo" alt="NTI Logo" class="header-logo-img" :class="{ 'light-logo': !isDark }" />
+          <span class="logo-text">NTI Portal</span>
+        </router-link>
 
         <nav class="nav-links">
           <button
@@ -137,14 +132,23 @@ const isSectionActive = (sectionId: string) => {
   align-items: center;
   gap: 32px;
 }
-.logo {
-  font-size: 1.4rem;
-  font-weight: 700;
-  text-decoration: none;
-  color: var(--text-color);
+/* Стилі для гарного вирівнювання іконки та тексту лого */
+.logo-wrapper {
   display: flex;
   align-items: center;
-  height: 100%;
+  gap: 12px;
+  text-decoration: none;
+}
+.header-logo-img {
+  height: 36px;
+  width: auto;
+  object-fit: contain;
+}
+.logo-text {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text-color);
+  letter-spacing: -0.5px;
 }
 .nav-links {
   display: flex;
@@ -191,4 +195,14 @@ const isSectionActive = (sectionId: string) => {
 @media (max-width: 992px) {
   .nav-links { display: none; }
 }
+
+:global(.light) .header-logo-img,
+:global(.light) .footer-logo-img {
+  filter: invert(1) brightness(0.2);
+}
+
+.light-logo {
+  filter: invert(1) brightness(0.1);
+}
+
 </style>
