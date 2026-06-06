@@ -1,6 +1,8 @@
 import { defineStore } from 'pinia'
 import type { AxiosError } from 'axios'
 import api from '@/core/api/axios'
+// Импортируем стор уведомлений (тостов) для вывода красивых плашек успеха/ошибки
+import { useNotificationStore } from '@/stores/notifications'
 
 // Интерфейс для данных, поступающих из формы регистрации
 export interface RegisterFormData {
@@ -10,7 +12,6 @@ export interface RegisterFormData {
     password: string
     password_confirmation: string
     role: 'student' | 'company'
-    // Необязательные поля для компании
     company_name?: string
     company_tax_id?: string
     sector?: string
@@ -25,13 +26,14 @@ interface RegisterResponse {
     notifications?: Notification[]
 }
 
-// Структура уведомлений пользователя
+// Структура уведомлений пользователя (соответствует тому, что возвращает TeamController@myNotifications)
 interface Notification {
     id: number
     title: string
     message: string
-    type: string
+    type: string // Например: 'team_invite', 'company_registration_rejected'
     read_at: string | null
+    data?: Record<string, unknown>
 }
 
 // Интерфейс пользователя согласно техническим требованиям проекта
@@ -51,7 +53,7 @@ interface AuthState {
     token: string | null
     user: User | null
     notifications: Notification[]
-    isInitialized: boolean // Добавь это поле
+    isInitialized: boolean
     loading: boolean
     error: string | null
 }
@@ -110,7 +112,7 @@ export const useAuthStore = defineStore('auth', {
                 this.token = data.token
                 this.user = data.user
                 localStorage.setItem('cached_user', JSON.stringify(data.user))
-                this.notifications = data.notifications
+                this.notifications = data.notifications || []
                 localStorage.setItem('token', data.token)
 
             } catch (error: unknown) {
@@ -218,6 +220,7 @@ export const useAuthStore = defineStore('auth', {
                 this.isInitialized = true
             }
         },
+
         async logout(): Promise<void> {
             try {
                 await api.post('/auth/logout')
@@ -226,6 +229,7 @@ export const useAuthStore = defineStore('auth', {
             } finally {
                 this.token = null
                 this.user = null
+                this.notifications = [] // Очищаем уведомления при выходе
                 localStorage.removeItem('token')
                 localStorage.removeItem('cached_user')
                 this.isInitialized = false
@@ -273,6 +277,67 @@ export const useAuthStore = defineStore('auth', {
                 throw error;
             } finally {
                 this.loading = false;
+            }
+        },
+
+        // =========================================================
+        // НОВЫЕ ЭКШЕНЫ ДЛЯ РАБОТЫ С УВЕДОМЛЕНИЯМИ И ИНВАЙТАМИ
+        // =========================================================
+
+        /**
+         * 1. Загрузка списка уведомлений с бэкенда.
+         * Вызывает эндпоинт GET /api/v1/notifications (TeamController@myNotifications)
+         */
+        async fetchNotifications(): Promise<void> {
+            try {
+                const { data } = await api.get<Notification[]>('/notifications')
+                this.notifications = data
+            } catch (error) {
+                console.error('Failed to fetch notifications:', error)
+            }
+        },
+
+        /**
+         * 2. Принятие инвайта в команду.
+         * Вызывает эндпоинт POST /api/v1/invite/{notification}/accept (TeamController@acceptInvite)
+         */
+        async acceptInvite(notificationId: number): Promise<void> {
+            const toastStore = useNotificationStore()
+            try {
+                const { data } = await api.post<{ message?: string }>(`/invite/${notificationId}/accept`)
+
+                // Вызываем добавление тоста из твоего useNotificationStore
+                toastStore.add(data.message || 'Вы успешно вступили в команду!', 'success')
+
+                // Удаляем уведомление из списка, чтобы оно исчезло из выпадающего меню
+                this.notifications = this.notifications.filter(n => n.id !== notificationId)
+
+                // Перезапрашиваем профиль, так как у пользователя мог измениться organization_id или список команд
+                await this.fetchMe()
+            } catch (error: unknown) {
+                const err = error as AxiosError<{ message?: string }>
+                const errorMessage = err.response?.data?.message || 'Не удалось принять приглашение'
+                toastStore.add(errorMessage, 'error')
+            }
+        },
+
+        /**
+         * 3. Отклонение инвайта в команду.
+         * Вызывает эндпоинт POST /api/v1/invite/{notification}/decline (TeamController@declineInvite)
+         */
+        async declineInvite(notificationId: number): Promise<void> {
+            const toastStore = useNotificationStore()
+            try {
+                await api.post(`/invite/${notificationId}/decline`)
+
+                toastStore.add('Приглашение отклонено', 'success')
+
+                // Удаляем уведомление из списка на фронтенде
+                this.notifications = this.notifications.filter(n => n.id !== notificationId)
+            } catch (error: unknown) {
+                const err = error as AxiosError<{ message?: string }>
+                const errorMessage = err.response?.data?.message || 'Не удалось отклонить приглашение'
+                toastStore.add(errorMessage, 'error')
             }
         }
     },
