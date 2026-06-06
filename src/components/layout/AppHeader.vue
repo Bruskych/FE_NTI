@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { nextTick } from 'vue'
+import { nextTick, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { useLanguage } from '@/composables/useLanguage'
@@ -17,6 +17,13 @@ import ntiLogo from '@/assets/images/nti_logo.png'
 const router = useRouter()
 const route = useRoute()
 const authStore = useAuthStore()
+
+// При монтировании шапки, если пользователь вошел в систему, запрашиваем список его уведомлений
+onMounted(() => {
+  if (authStore.isAuthenticated) {
+    authStore.fetchNotifications()
+  }
+})
 
 const { currentLang, setLanguage } = useLanguage()
 const toggleLang = () => {
@@ -201,5 +208,4 @@ const isSectionActive = (sectionId: string) => {
 .light-logo {
   filter: invert(1) brightness(0.1);
 }
-
 </style>

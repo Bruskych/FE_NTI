@@ -96,8 +96,8 @@ const navigateToSection = async (sectionId: string) => {
 <style scoped>
 .custom-footer {
   background: var(--menu-color);
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
-  color: #8c9ba5;
+  border-top: 1px solid var(--menu-border, rgba(255, 255, 255, 0.08));
+  color: var(--text-color);
   padding-top: 40px;
   margin-top: auto;
   width: 100%;
@@ -157,6 +157,7 @@ const navigateToSection = async (sectionId: string) => {
   line-height: 1.5;
   margin: 0 0 16px 0;
   color: var(--text-color);
+  opacity: 0.8;
 }
 
 .footer-socials {
@@ -172,9 +173,11 @@ const navigateToSection = async (sectionId: string) => {
   display: flex;
   align-items: center;
   justify-content: center;
+  opacity: 0.8;
 }
 
 .social-icon-only:hover {
+  opacity: 1;
   color: var(--text-color);
   transform: translateY(-1px);
 }
@@ -210,6 +213,7 @@ const navigateToSection = async (sectionId: string) => {
   transition: color 0.2s ease;
   position: relative;
   width: fit-content;
+  opacity: 0.85;
 }
 
 .interactive-link-btn::after, .contact-link .link-text::after {
@@ -232,18 +236,20 @@ const navigateToSection = async (sectionId: string) => {
 
 .interactive-link-btn:hover, .contact-link:hover {
   color: var(--text-color);
+  opacity: 1;
 }
 
 .contact-link {
   font-size: 0.88rem;
-  color: var(--text-color-unimp);
+  color: var(--text-color);
   text-decoration: none;
   line-height: 1.4;
   display: inline-flex;
   align-items: center;
-  transition: color 0.2s ease;
+  transition: opacity 0.2s ease, color 0.2s ease;
   position: relative;
   width: fit-content;
+  opacity: 0.85;
 }
 
 .link-text { position: relative; padding-bottom: 2px; }
@@ -251,21 +257,32 @@ const navigateToSection = async (sectionId: string) => {
 .contact-icon {
   margin-right: 10px;
   flex-shrink: 0;
-  color: #52626d;
-  transition: color 0.2s ease;
+  color: currentColor;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
 }
 
-.contact-link:hover .contact-icon { color: var(--text-color); }
-.email-highlight { font-weight: 500; color: var(--text-color-unimp); }
-.email-highlight:hover { color: var(--text-color); }
+.contact-link:hover {
+  opacity: 1;
+}
+
+.contact-link:hover .contact-icon {
+  opacity: 1;
+}
+
+.email-highlight {
+  font-weight: 500;
+}
+
 .address-layout { display: flex; align-items: flex-start; }
 .address-icon-align { margin-top: 4px; }
 
 .legal-bottom-link {
   font-size: 0.8rem;
-  color: #52626d;
+  color: var(--text-color);
+  opacity: 0.6;
   text-decoration: none;
-  transition: color 0.2s ease;
+  transition: opacity 0.2s ease;
   position: relative;
 }
 
@@ -277,16 +294,30 @@ const navigateToSection = async (sectionId: string) => {
   height: 1px;
   bottom: -1px;
   left: 0;
-  background-color: #8c9ba5;
+  background-color: var(--text-color);
   transform-origin: bottom left;
   transition: transform 0.2s ease-out;
 }
 
-.legal-bottom-link:hover { color: #8c9ba5; }
+.legal-bottom-link:hover {
+  opacity: 1;
+}
 .legal-bottom-link:hover::after { transform: scaleX(1); }
-.footer-copyright-line { border-top: 1px solid rgba(255, 255, 255, 0.04); padding: 16px 0; margin-top: 10px; }
+
+.footer-copyright-line {
+  border-top: 1px solid var(--menu-border, rgba(255, 255, 255, 0.06));
+  padding: 16px 0;
+  margin-top: 10px;
+}
+
 .copyright-flex { display: flex; justify-content: space-between; align-items: center; }
-.copyright-text { font-size: 0.8rem; margin: 0; color: #52626d; }
+
+.copyright-text {
+  font-size: 0.8rem;
+  margin: 0;
+  color: var(--text-color);
+  opacity: 0.6;
+}
 
 @media (max-width: 992px) {
   .footer-grid-system { grid-template-columns: 1.2fr 1fr; gap: 30px; }

@@ -1,6 +1,8 @@
 import { defineStore } from 'pinia'
 import type { AxiosError } from 'axios'
 import api from '@/core/api/axios'
+// Импортируем стор уведомлений (тостов) для вывода красивых плашек успеха/ошибки
+import { useNotificationStore } from '@/stores/notifications'
 
 // Интерфейс для данных, поступающих из формы регистрации
 export interface RegisterFormData {
@@ -10,7 +12,6 @@ export interface RegisterFormData {
     password: string
     password_confirmation: string
     role: 'student' | 'company'
-    // Необязательные поля для компании
     company_name?: string
     company_tax_id?: string
     sector?: string
@@ -25,13 +26,19 @@ interface RegisterResponse {
     notifications?: Notification[]
 }
 
-// Структура уведомлений пользователя
+// Структура уведомлений пользователя (соответствует тому, что возвращает TeamController@myNotifications)
 interface Notification {
     id: number
     title: string
     message: string
-    type: string
+    type: string // Например: 'team_invite', 'company_registration_rejected'
     read_at: string | null
+    data?: {
+        team_id?: number
+        team_name?: string
+        invited_by?: string
+        organization_id?: number
+    }
 }
 
 // Интерфейс пользователя согласно техническим требованиям проекта
@@ -51,7 +58,7 @@ interface AuthState {
     token: string | null
     user: User | null
     notifications: Notification[]
-    isInitialized: boolean // Добавь это поле
+    isInitialized: boolean
     loading: boolean
     error: string | null
 }
@@ -100,28 +107,17 @@ export const useAuthStore = defineStore('auth', {
         async login(email: string, password: string): Promise<void> {
             this.loading = true
             this.error = null
-
             try {
-                const { data } = await api.post<LoginResponse>('/auth/login', {
-                    email,
-                    password,
-                })
-
+                const { data } = await api.post<LoginResponse>('/auth/login', { email, password })
                 this.token = data.token
                 this.user = data.user
                 localStorage.setItem('cached_user', JSON.stringify(data.user))
-                this.notifications = data.notifications
+                this.notifications = data.notifications || []
                 localStorage.setItem('token', data.token)
-
             } catch (error: unknown) {
                 const err = error as AxiosError<LoginErrorResponse>
-
-                this.error =
-                    err.response?.data?.errors?.email?.[0] ||
-                    err.response?.data?.message ||
-                    'Login failed'
+                this.error = err.response?.data?.errors?.email?.[0] || err.response?.data?.message || 'Login failed'
                 throw error
-
             } finally {
                 this.loading = false
             }
@@ -131,7 +127,6 @@ export const useAuthStore = defineStore('auth', {
         async register(userData: RegisterFormData): Promise<void> {
             this.loading = true
             this.error = null
-
             try {
                 const payload: Record<string, string | undefined> = {
                     name:                  `${userData.first_name} ${userData.last_name}`.trim(),
@@ -150,19 +145,15 @@ export const useAuthStore = defineStore('auth', {
                 }
 
                 const { data } = await api.post<RegisterResponse>('/auth/register', payload)
-
                 this.token = data.token
                 this.user = data.user
                 localStorage.setItem('cached_user', JSON.stringify(data.user))
                 this.notifications = data.notifications || []
-
                 localStorage.setItem('token', data.token)
-
             } catch (error: unknown) {
                 const err = error as AxiosError<{ message?: string }>
                 this.error = err.response?.data?.message || 'Register failed'
                 throw error
-
             } finally {
                 this.loading = false
             }
@@ -172,12 +163,10 @@ export const useAuthStore = defineStore('auth', {
         async forgotPassword(email: string): Promise<void> {
             this.loading = true
             this.error = null
-
             try {
                 await api.post('/auth/forgot-password', { email })
             } catch (error: unknown) {
                 const err = error as AxiosError<{ errors?: Record<string, string[]>; message?: string }>
-
                 if (err.response?.data) {
                     const responseData = err.response.data
                     if (responseData.errors) {
@@ -218,6 +207,7 @@ export const useAuthStore = defineStore('auth', {
                 this.isInitialized = true
             }
         },
+
         async logout(): Promise<void> {
             try {
                 await api.post('/auth/logout')
@@ -226,6 +216,7 @@ export const useAuthStore = defineStore('auth', {
             } finally {
                 this.token = null
                 this.user = null
+                this.notifications = [] // Очищаем уведомления при выходе
                 localStorage.removeItem('token')
                 localStorage.removeItem('cached_user')
                 this.isInitialized = false
@@ -236,14 +227,11 @@ export const useAuthStore = defineStore('auth', {
         async uploadAvatar(file: File): Promise<void> {
             this.loading = true;
             this.error = null;
-
             try {
                 const formData = new FormData();
                 formData.append('photo', file);
                 const { data } = await api.post('/auth/store', formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    }
+                    headers: { 'Content-Type': 'multipart/form-data' }
                 });
                 if (data.user) {
                     this.user = data.user;
@@ -263,7 +251,6 @@ export const useAuthStore = defineStore('auth', {
             this.error = null;
             try {
                 const { data } = await api.put('/settings/update-profile', payload);
-
                 if (data.user) {
                     this.user = data.user;
                     localStorage.setItem('cached_user', JSON.stringify(data.user));
@@ -273,6 +260,64 @@ export const useAuthStore = defineStore('auth', {
                 throw error;
             } finally {
                 this.loading = false;
+            }
+        },
+
+        // =========================================================
+        // ЭКШЕНЫ ДЛЯ РАБОТЫ С УВЕДОМЛЕНИЯМИ И ИНВАЙТАМИ (СИНХРОНИЗИРОВАНО С БЭКЕНДОМ)
+        // =========================================================
+
+        /**
+         * 1. Загрузка списка уведомлений с бэкенда.
+         * Вызывает эндпоинт GET /api/v1/notifications (TeamController@myNotifications)
+         */
+        async fetchNotifications(): Promise<void> {
+            try {
+                // Бэкенд возвращает ['data' => $notifications], поэтому забираем data.data
+                const { data } = await api.get<{ data: Notification[] }>('/v1/notifications')
+                this.notifications = data.data || []
+            } catch (error) {
+                console.error('Failed to fetch notifications:', error)
+            }
+        },
+
+        /**
+         * 2. Принятие инвайта в команду.
+         * Вызывает эндпоинт POST /api/v1/teams/invite/{notification}/accept (TeamController@acceptInvite)
+         */
+        async acceptInvite(notificationId: number): Promise<void> {
+            const toastStore = useNotificationStore()
+            try {
+                await api.post(`/v1/teams/invite/${notificationId}/accept`)
+                // Передаем системный ключ i18n для вывода успешного тоста
+                toastStore.add('notification.toast.accept_success', 'success')
+                // Удаляем уведомление из списка, чтобы оно исчезло из выпадающего меню
+                this.notifications = this.notifications.filter(n => n.id !== notificationId)
+                // Перезапрашиваем профиль, так как у пользователя изменился список команд или ролей
+                await this.fetchMe()
+            } catch (error: unknown) {
+                const err = error as AxiosError<{ message?: string }>
+                const errorMessage = err.response?.data?.message || 'notification.toast.error'
+                toastStore.add(errorMessage, 'error')
+            }
+        },
+
+        /**
+         * 3. Отклонение инвайта в команду.
+         * Вызывает эндпоинт POST /api/v1/teams/invite/{notification}/decline (TeamController@declineInvite)
+         */
+        async declineInvite(notificationId: number): Promise<void> {
+            const toastStore = useNotificationStore()
+            try {
+                await api.post(`/v1/teams/invite/${notificationId}/decline`)
+                // Передаем системный ключ i18n для вывода тоста об отклонении
+                toastStore.add('notification.toast.decline_success', 'success')
+                // Удаляем уведомление из списка на фронтенде
+                this.notifications = this.notifications.filter(n => n.id !== notificationId)
+            } catch (error: unknown) {
+                const err = error as AxiosError<{ message?: string }>
+                const errorMessage = err.response?.data?.message || 'notification.toast.error'
+                toastStore.add(errorMessage, 'error')
             }
         }
     },
