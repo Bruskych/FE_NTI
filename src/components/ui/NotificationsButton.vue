@@ -1,142 +1,95 @@
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { ref } from 'vue'
 import { useAuthStore } from '@/stores/auth'
-import BellIcon from '@/assets/icons/bell.svg'
 import NotificationsMenu from '@/components/ui/NotificationsMenu.vue'
 
 const authStore = useAuthStore()
-const isOpen = ref(false)
-const wrapperRef = ref<HTMLElement | null>(null)
+const isMenuOpen = ref(false)
 
 const toggleMenu = () => {
-  isOpen.value = !isOpen.value
-
-  // Если пользователь открывает меню, делаем запрос к бэкенду для актуализации списка
-  if (isOpen.value) {
-    authStore.fetchNotifications()
-  }
+  isMenuOpen.value = !isMenuOpen.value
 }
 
-// Закрытие меню при клике вне компонента
-const handleOutside = (e: MouseEvent) => {
-  if (
-      wrapperRef.value &&
-      !wrapperRef.value.contains(e.target as Node)
-  ) {
-    isOpen.value = false
-  }
+const closeMenu = () => {
+  isMenuOpen.value = false
 }
-
-// Обработчик события "Принять инвайт" из дочернего меню
-const handleAccept = (id: number) => {
-  authStore.acceptInvite(id)
-}
-
-// Обработчик события "Отклонить инвайт" из дочернего меню
-const handleDecline = (id: number) => {
-  authStore.declineInvite(id)
-}
-
-onMounted(() => {
-  document.addEventListener('click', handleOutside)
-
-  // Если пользователь уже авторизован на момент загрузки, сразу запрашиваем его уведомления
-  if (authStore.isAuthenticated) {
-    authStore.fetchNotifications()
-  }
-})
-
-onBeforeUnmount(() => {
-  document.removeEventListener('click', handleOutside)
-})
 </script>
 
 <template>
-  <div class="notifications-wrapper" ref="wrapperRef">
-    <button class="notifications-button" @click="toggleMenu">
-      <BellIcon class="icon" />
+  <div class="notifications-wrapper" v-click-outside="closeMenu">
 
-      <span v-if="authStore.notifications.length" class="badge"></span>
+    <button class="bell-btn" @click="toggleMenu" :class="{ 'is-active': isMenuOpen }">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
+        <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
+      </svg>
+
+      <span v-if="authStore.notifications.length > 0" class="bell-badge">
+        {{ authStore.notifications.length }}
+      </span>
     </button>
 
-    <transition name="dropdown">
-      <div v-if="isOpen" class="menu-container">
-        <NotificationsMenu
-            :notifications="authStore.notifications"
-            @accept="handleAccept"
-            @decline="handleDecline"
-        />
-      </div>
-    </transition>
+    <div v-if="isMenuOpen" class="menu-dropdown">
+      <NotificationsMenu
+          :notifications="authStore.notifications"
+          @accept="authStore.acceptInvite"
+          @decline="authStore.declineInvite"
+      />
+    </div>
   </div>
 </template>
 
 <style scoped>
 .notifications-wrapper {
   position: relative;
+  display: inline-block;
 }
-.icon {
-  width: 24px;
-  height: 24px;
-  color: var(--text-color);
-}
-.notifications-button {
-  position: relative; /* Необходим для позиционирования красного индикатора внутри кнопки */
-  width: 40px;
-  height: 40px;
 
+.bell-btn {
+  background: var(--button-bg-color-unimp);
   border: 1px solid var(--button-border-color-unimp);
+  color: var(--text-color);
+  width: 42px;
+  height: 42px;
   border-radius: 8px;
-  background-color: var(--button-bg-color-unimp);
 
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.1s ease;
+  position: relative;
 }
 
-@media (hover:hover) and (pointer: fine){
-  .notifications-button:hover {
-    background-color: var(--button-bg-hover-unimp);
-  }
-}
-.notifications-button:active {
-  transform: scale(0.95);
+.bell-btn:hover, .bell-btn.is-active {
+  background: var(--button-bg-hover-unimp);
 }
 
-/* Красная точка-индикатор для новых уведомлений */
-.badge {
+.bell-badge {
   position: absolute;
-  top: 5px;
-  right: 5px;
-  width: 8px;
-  height: 8px;
-  background-color: #ef4444;
+  top: -2px;
+  right: -2px;
+  background-color: var(--error-color);
+  color: var(--main-light-1);
+
+  font-size: 10px;
+  font-weight: 700;
+  min-width: 16px;
+  height: 16px;
   border-radius: 50%;
-  border: 2px solid var(--menu-color); /* Чтобы точка плавно отделялась от кнопки */
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  border: 1.5px solid var(--menu-color);
+  padding: 0 4px 1px 4px;
+  line-height: 1;
 }
 
-.menu-container {
+.menu-dropdown {
   position: absolute;
-  top: calc(100% + 10px);
-  right: 0; /* Изменил с left: 50% на right: 0, чтобы меню красиво выравнивалось по правому краю дзвоночка */
-  z-index: 1000;
-}
-
-/* Анимации выпадающего списка */
-.dropdown-enter-active,
-.dropdown-leave-active {
-  transition: opacity 0.2s ease, transform 0.2s ease;
-}
-.dropdown-enter-from,
-.dropdown-leave-to {
-  opacity: 0;
-  transform: translateY(-10px);
-}
-.dropdown-enter-to,
-.dropdown-leave-from {
-  opacity: 1;
-  transform: translateY(0);
+  top: 100%;
+  right: 0;
+  margin-top: 8px;
+  z-index: 1010;
 }
 </style>

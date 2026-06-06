@@ -1,39 +1,29 @@
-<!--
-  Меню уведомлений
--->
-
 <script setup lang="ts">
-// Описываем структуру уведомления. Сделали data? необязательным, чтобы соответствовать auth.ts
+// Описываем интерфейс элемента уведомления для типизации Props
 interface NotificationItem {
   id: number
   title: string
   message: string
-  type: string // Например: 'team_invite', 'company_registration_rejected'
+  type: string
   read_at: string | null
-  data?: Record<string, unknown> // Добавлен знак ?, теперь TypeScript полностью доволен
 }
 
+// Принимаем массив уведомлений от родительского компонента
 defineProps<{
   notifications: NotificationItem[]
 }>()
 
-// Объявляем события, которые мы отправляем кнопке-родителю при клике на "Принять" или "Отклонить"
-const emit = defineEmits<{
-  (e: 'accept', notificationId: number): void
-  (e: 'decline', notificationId: number): void
-}>()
+// Объявляем события для отправки наверх (в родительский компонент/стор)
+defineEmits(['accept', 'decline'])
 </script>
 
 <template>
   <div class="notifications-menu">
-
     <div class="menu-header">
-      Notifications
+      <h3>{{ $t('notification.title') }}</h3>
     </div>
 
-    <div class="divider"></div>
-
-    <div v-if="notifications.length" class="notifications-list">
+    <div class="menu-content custom-scrollbar">
       <div
           v-for="notification in notifications"
           :key="notification.id"
@@ -41,136 +31,162 @@ const emit = defineEmits<{
           :class="{ 'is-unread': !notification.read_at }"
       >
         <div class="notification-body">
-          <div class="notification-title">
-            {{ notification.title }}
-          </div>
-          <div class="notification-message">
-            {{ notification.message }}
-          </div>
-        </div>
+          <div class="notification-title">{{ $t(notification.title) }}</div>
+          <div class="notification-message">{{ $t(notification.message) }}</div>
 
-        <div v-if="notification.type === 'team_invite'" class="invite-actions">
-          <button
-              class="action-btn accept-btn"
-              @click.stop="emit('accept', notification.id)"
-          >
-            Принять
-          </button>
-          <button
-              class="action-btn decline-btn"
-              @click.stop="emit('decline', notification.id)"
-          >
-            Отклонить
-          </button>
+          <div v-if="notification.type === 'team_invite'" class="notification-actions">
+            <button class="btn-accept" @click="$emit('accept', notification.id)">
+              {{ $t('notification.accept') }}
+            </button>
+            <button class="btn-decline" @click="$emit('decline', notification.id)">
+              {{ $t('notification.decline') }}
+            </button>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div v-else class="empty-state">
-      Here you will see notifications about news and important events.
+      <div v-if="notifications.length === 0" class="empty-state">
+        <p>{{ $t('notification.empty') }}</p>
+      </div>
     </div>
-
   </div>
 </template>
 
 <style scoped>
 .notifications-menu {
-  background: var(--menu-color);
-  border: 1px solid var(--menu-border);
-  box-shadow: 0 6px 20px rgba(0,0,0,0.12);
-
-  width: 420px;
+  width: 340px;
+  max-height: 420px;
+  background: var(--menu-color, #1e1e24);
+  border: 1px solid var(--menu-border, #2d2d34);
   border-radius: 12px;
-  overflow: hidden;
-}
-.menu-header {
-  color: var(--text-color);
-
-  padding: 14px 16px;
-  font-size: 15px;
-  font-weight: 700;
-}
-.divider {
-  background: var(--menu-border);
-  height: 1px;
-}
-.notifications-list {
-  max-height: 380px;
-  overflow-y: auto;
-}
-.notification-item {
-  color: var(--text-color);
-  padding: 14px 16px;
-  border-bottom: 1px solid var(--menu-border);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  transition: background 0.2s ease;
+  overflow: hidden;
+}
+
+.menu-header {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--menu-border, #2d2d34);
+  background: rgba(255, 255, 255, 0.01);
+}
+
+.menu-header h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-color, #ffffff);
+}
+
+.menu-content {
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.notification-item {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--menu-border, #2d2d34);
+  transition: background-color 0.2s ease;
+  background: transparent;
 }
 
 .notification-item.is-unread {
-  background: var(--main-color-light, rgba(59, 130, 246, 0.04));
+  background: rgba(59, 130, 246, 0.03);
+  box-shadow: inset 3px 0 0 0 var(--main-color, #3b82f6);
 }
 
-.notification-item:last-child {
-  border-bottom: none;
-}
-
-@media (hover:hover) and (pointer: fine){
-  .notification-item:hover {
-    background: var(--select-bg-color-focus);
-  }
+.notification-item:hover {
+  background: rgba(255, 255, 255, 0.02);
 }
 
 .notification-title {
-  font-size: 14px;
-  font-weight: 700;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-color, #ffffff);
   margin-bottom: 4px;
 }
+
 .notification-message {
-  font-size: 13px;
-  opacity: 0.85;
+  font-size: 0.82rem;
+  color: var(--text-color, #ffffff);
+  opacity: 0.7;
   line-height: 1.4;
 }
 
-.invite-actions {
+.notification-actions {
   display: flex;
   gap: 8px;
-  margin-top: 2px;
+  margin-top: 10px;
 }
-.action-btn {
-  padding: 6px 14px;
-  font-size: 12px;
-  font-weight: 600;
+
+.notification-actions button {
+  flex: 1;
+  padding: 7px 10px;
   border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 600;
   cursor: pointer;
   border: none;
-  transition: all 0.2s ease;
+  transition: opacity 0.2s ease, transform 0.1s ease;
 }
-.accept-btn {
-  background-color: #22c55e;
-  color: white;
+
+.notification-actions button:active {
+  transform: scale(0.97);
 }
-.accept-btn:hover {
-  background-color: #16a34a;
+
+.btn-accept {
+  background-color: #10b981;
+  color: #ffffff;
 }
-.decline-btn {
-  background-color: var(--button-bg-color-unimp);
-  border: 1px solid var(--button-border-color-unimp);
-  color: var(--text-color);
+
+.btn-accept:hover {
+  opacity: 0.9;
 }
-.decline-btn:hover {
-  background-color: #ef4444;
-  color: white;
-  border-color: #ef4444;
+
+.btn-decline {
+  background-color: #2a2a32;
+  color: var(--text-color, #ffffff);
+  border: 1px solid var(--menu-border, #3a3a42) !important;
+}
+
+.btn-decline:hover {
+  background-color: #34343d;
 }
 
 .empty-state {
-  color: var(--text-color);
-  padding: 30px 16px;
-  font-size: 14px;
-  line-height: 1.5;
+  padding: 45px 20px;
   text-align: center;
-  opacity: 0.8;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.empty-icon {
+  font-size: 1.8rem;
+  opacity: 0.4;
+}
+
+.empty-state p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text-color, #ffffff);
+  opacity: 0.5;
+  line-height: 1.4;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.2);
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.4);
 }
 </style>

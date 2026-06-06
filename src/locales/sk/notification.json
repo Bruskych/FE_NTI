@@ -1,0 +1,10 @@
+{
+  "title": "Oznámenia",
+  "accept": "Prijať",
+  "decline": "Odmietnuť",
+  "empty": "Tu uvidíte oznámenia o novinkách a dôležitých udalostiach.",
+  "team_invite_title": "Pozvánka do tímu",
+  "team_invite_msg": "Tím 'WebDev Masters' vás pozýva pridať sa ako Frontend Developer.",
+  "system_info_title": "Systémové oznámenie",
+  "system_info_msg": "Váš profil bol úspešne overený administrátorom."
+}

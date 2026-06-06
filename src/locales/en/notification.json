@@ -1,0 +1,10 @@
+{
+  "title": "Notifications",
+  "accept": "Accept",
+  "decline": "Decline",
+  "empty": "Here you will see notifications about news and important events.",
+  "team_invite_title": "Team Invitation",
+  "team_invite_msg": "Team 'WebDev Masters' invites you to join as a Frontend Developer.",
+  "system_info_title": "System Notification",
+  "system_info_msg": "Your profile has been successfully verified by the administrator."
+}
