@@ -6,6 +6,11 @@ interface NotificationItem {
   message: string
   type: string
   read_at: string | null
+  data?: {
+    team_id?: number
+    team_name?: string
+    invited_by?: string
+  }
 }
 
 // Принимаем массив уведомлений от родительского компонента
@@ -31,8 +36,8 @@ defineEmits(['accept', 'decline'])
           :class="{ 'is-unread': !notification.read_at }"
       >
         <div class="notification-body">
-          <div class="notification-title">{{ $t(notification.title) }}</div>
-          <div class="notification-message">{{ $t(notification.message) }}</div>
+          <div class="notification-title">{{ notification.title }}</div>
+          <div class="notification-message">{{ notification.message }}</div>
 
           <div v-if="notification.type === 'team_invite'" class="notification-actions">
             <button class="btn-accept" @click="$emit('accept', notification.id)">
@@ -56,10 +61,10 @@ defineEmits(['accept', 'decline'])
 .notifications-menu {
   width: 340px;
   max-height: 420px;
-  background: var(--menu-color, #1e1e24);
-  border: 1px solid var(--menu-border, #2d2d34);
+  background: var(--menu-color);
+  border: 1px solid var(--menu-border);
   border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -67,7 +72,7 @@ defineEmits(['accept', 'decline'])
 
 .menu-header {
   padding: 14px 18px;
-  border-bottom: 1px solid var(--menu-border, #2d2d34);
+  border-bottom: 1px solid var(--menu-border);
   background: rgba(255, 255, 255, 0.01);
 }
 
@@ -75,7 +80,7 @@ defineEmits(['accept', 'decline'])
   margin: 0;
   font-size: 1rem;
   font-weight: 600;
-  color: var(--text-color, #ffffff);
+  color: var(--text-color);
 }
 
 .menu-content {
@@ -86,30 +91,29 @@ defineEmits(['accept', 'decline'])
 
 .notification-item {
   padding: 14px 18px;
-  border-bottom: 1px solid var(--menu-border, #2d2d34);
-  transition: background-color 0.2s ease;
+  border-bottom: 1px solid var(--menu-border);
   background: transparent;
 }
 
 .notification-item.is-unread {
-  background: rgba(59, 130, 246, 0.03);
-  box-shadow: inset 3px 0 0 0 var(--main-color, #3b82f6);
+  background: rgba(100, 116, 139, 0.03);
+  box-shadow: inset 3px 0 0 0 var(--main-color);
 }
 
 .notification-item:hover {
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(100, 116, 139, 0.05);
 }
 
 .notification-title {
   font-size: 0.9rem;
   font-weight: 600;
-  color: var(--text-color, #ffffff);
+  color: var(--text-color);
   margin-bottom: 4px;
 }
 
 .notification-message {
   font-size: 0.82rem;
-  color: var(--text-color, #ffffff);
+  color: var(--text-color);
   opacity: 0.7;
   line-height: 1.4;
 }
@@ -128,7 +132,6 @@ defineEmits(['accept', 'decline'])
   font-weight: 600;
   cursor: pointer;
   border: none;
-  transition: opacity 0.2s ease, transform 0.1s ease;
 }
 
 .notification-actions button:active {
@@ -136,44 +139,30 @@ defineEmits(['accept', 'decline'])
 }
 
 .btn-accept {
-  background-color: #10b981;
+  background-color: var(--good-color, #45c893);
   color: #ffffff;
 }
 
-.btn-accept:hover {
-  opacity: 0.9;
-}
-
 .btn-decline {
-  background-color: #2a2a32;
-  color: var(--text-color, #ffffff);
-  border: 1px solid var(--menu-border, #3a3a42) !important;
+  background: var(--button-bg-color-unimp);
+  color: var(--text-color);
+  border: 1px solid var(--button-border-color-unimp) !important;
 }
 
 .btn-decline:hover {
-  background-color: #34343d;
+  background: var(--button-bg-hover-unimp);
 }
 
 .empty-state {
   padding: 45px 20px;
   text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-}
-
-.empty-icon {
-  font-size: 1.8rem;
-  opacity: 0.4;
 }
 
 .empty-state p {
   margin: 0;
   font-size: 0.85rem;
-  color: var(--text-color, #ffffff);
+  color: var(--text-color);
   opacity: 0.5;
-  line-height: 1.4;
 }
 
 .custom-scrollbar::-webkit-scrollbar {
@@ -183,10 +172,7 @@ defineEmits(['accept', 'decline'])
   background: transparent;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(100, 116, 139, 0.2);
+  background: var(--scroll-color);
   border-radius: 10px;
-}
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(100, 116, 139, 0.4);
 }
 </style>

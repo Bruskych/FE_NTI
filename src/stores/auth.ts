@@ -33,7 +33,12 @@ interface Notification {
     message: string
     type: string // Например: 'team_invite', 'company_registration_rejected'
     read_at: string | null
-    data?: Record<string, unknown>
+    data?: {
+        team_id?: number
+        team_name?: string
+        invited_by?: string
+        organization_id?: number
+    }
 }
 
 // Интерфейс пользователя согласно техническим требованиям проекта
@@ -102,28 +107,17 @@ export const useAuthStore = defineStore('auth', {
         async login(email: string, password: string): Promise<void> {
             this.loading = true
             this.error = null
-
             try {
-                const { data } = await api.post<LoginResponse>('/auth/login', {
-                    email,
-                    password,
-                })
-
+                const { data } = await api.post<LoginResponse>('/auth/login', { email, password })
                 this.token = data.token
                 this.user = data.user
                 localStorage.setItem('cached_user', JSON.stringify(data.user))
                 this.notifications = data.notifications || []
                 localStorage.setItem('token', data.token)
-
             } catch (error: unknown) {
                 const err = error as AxiosError<LoginErrorResponse>
-
-                this.error =
-                    err.response?.data?.errors?.email?.[0] ||
-                    err.response?.data?.message ||
-                    'Login failed'
+                this.error = err.response?.data?.errors?.email?.[0] || err.response?.data?.message || 'Login failed'
                 throw error
-
             } finally {
                 this.loading = false
             }
@@ -133,7 +127,6 @@ export const useAuthStore = defineStore('auth', {
         async register(userData: RegisterFormData): Promise<void> {
             this.loading = true
             this.error = null
-
             try {
                 const payload: Record<string, string | undefined> = {
                     name:                  `${userData.first_name} ${userData.last_name}`.trim(),
@@ -152,19 +145,15 @@ export const useAuthStore = defineStore('auth', {
                 }
 
                 const { data } = await api.post<RegisterResponse>('/auth/register', payload)
-
                 this.token = data.token
                 this.user = data.user
                 localStorage.setItem('cached_user', JSON.stringify(data.user))
                 this.notifications = data.notifications || []
-
                 localStorage.setItem('token', data.token)
-
             } catch (error: unknown) {
                 const err = error as AxiosError<{ message?: string }>
                 this.error = err.response?.data?.message || 'Register failed'
                 throw error
-
             } finally {
                 this.loading = false
             }
@@ -174,12 +163,10 @@ export const useAuthStore = defineStore('auth', {
         async forgotPassword(email: string): Promise<void> {
             this.loading = true
             this.error = null
-
             try {
                 await api.post('/auth/forgot-password', { email })
             } catch (error: unknown) {
                 const err = error as AxiosError<{ errors?: Record<string, string[]>; message?: string }>
-
                 if (err.response?.data) {
                     const responseData = err.response.data
                     if (responseData.errors) {
@@ -240,14 +227,11 @@ export const useAuthStore = defineStore('auth', {
         async uploadAvatar(file: File): Promise<void> {
             this.loading = true;
             this.error = null;
-
             try {
                 const formData = new FormData();
                 formData.append('photo', file);
                 const { data } = await api.post('/auth/store', formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    }
+                    headers: { 'Content-Type': 'multipart/form-data' }
                 });
                 if (data.user) {
                     this.user = data.user;
@@ -267,7 +251,6 @@ export const useAuthStore = defineStore('auth', {
             this.error = null;
             try {
                 const { data } = await api.put('/settings/update-profile', payload);
-
                 if (data.user) {
                     this.user = data.user;
                     localStorage.setItem('cached_user', JSON.stringify(data.user));
@@ -281,7 +264,7 @@ export const useAuthStore = defineStore('auth', {
         },
 
         // =========================================================
-        // НОВЫЕ ЭКШЕНЫ ДЛЯ РАБОТЫ С УВЕДОМЛЕНИЯМИ И ИНВАЙТАМИ
+        // ЭКШЕНЫ ДЛЯ РАБОТЫ С УВЕДОМЛЕНИЯМИ И ИНВАЙТАМИ (СИНХРОНИЗИРОВАНО С БЭКЕНДОМ)
         // =========================================================
 
         /**
@@ -290,8 +273,9 @@ export const useAuthStore = defineStore('auth', {
          */
         async fetchNotifications(): Promise<void> {
             try {
-                const { data } = await api.get<Notification[]>('/notifications')
-                this.notifications = data
+                // Бэкенд возвращает ['data' => $notifications], поэтому забираем data.data
+                const { data } = await api.get<{ data: Notification[] }>('/v1/notifications')
+                this.notifications = data.data || []
             } catch (error) {
                 console.error('Failed to fetch notifications:', error)
             }
@@ -299,44 +283,40 @@ export const useAuthStore = defineStore('auth', {
 
         /**
          * 2. Принятие инвайта в команду.
-         * Вызывает эндпоинт POST /api/v1/invite/{notification}/accept (TeamController@acceptInvite)
+         * Вызывает эндпоинт POST /api/v1/teams/invite/{notification}/accept (TeamController@acceptInvite)
          */
         async acceptInvite(notificationId: number): Promise<void> {
             const toastStore = useNotificationStore()
             try {
-                const { data } = await api.post<{ message?: string }>(`/invite/${notificationId}/accept`)
-
-                // Вызываем добавление тоста из твоего useNotificationStore
-                toastStore.add(data.message || 'Вы успешно вступили в команду!', 'success')
-
+                await api.post(`/v1/teams/invite/${notificationId}/accept`)
+                // Передаем системный ключ i18n для вывода успешного тоста
+                toastStore.add('notification.toast.accept_success', 'success')
                 // Удаляем уведомление из списка, чтобы оно исчезло из выпадающего меню
                 this.notifications = this.notifications.filter(n => n.id !== notificationId)
-
-                // Перезапрашиваем профиль, так как у пользователя мог измениться organization_id или список команд
+                // Перезапрашиваем профиль, так как у пользователя изменился список команд или ролей
                 await this.fetchMe()
             } catch (error: unknown) {
                 const err = error as AxiosError<{ message?: string }>
-                const errorMessage = err.response?.data?.message || 'Не удалось принять приглашение'
+                const errorMessage = err.response?.data?.message || 'notification.toast.error'
                 toastStore.add(errorMessage, 'error')
             }
         },
 
         /**
          * 3. Отклонение инвайта в команду.
-         * Вызывает эндпоинт POST /api/v1/invite/{notification}/decline (TeamController@declineInvite)
+         * Вызывает эндпоинт POST /api/v1/teams/invite/{notification}/decline (TeamController@declineInvite)
          */
         async declineInvite(notificationId: number): Promise<void> {
             const toastStore = useNotificationStore()
             try {
-                await api.post(`/invite/${notificationId}/decline`)
-
-                toastStore.add('Приглашение отклонено', 'success')
-
+                await api.post(`/v1/teams/invite/${notificationId}/decline`)
+                // Передаем системный ключ i18n для вывода тоста об отклонении
+                toastStore.add('notification.toast.decline_success', 'success')
                 // Удаляем уведомление из списка на фронтенде
                 this.notifications = this.notifications.filter(n => n.id !== notificationId)
             } catch (error: unknown) {
                 const err = error as AxiosError<{ message?: string }>
-                const errorMessage = err.response?.data?.message || 'Не удалось отклонить приглашение'
+                const errorMessage = err.response?.data?.message || 'notification.toast.error'
                 toastStore.add(errorMessage, 'error')
             }
         }

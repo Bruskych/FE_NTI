@@ -6,5 +6,10 @@
   "team_invite_title": "Pozvánka do tímu",
   "team_invite_msg": "Tím 'WebDev Masters' vás pozýva pridať sa ako Frontend Developer.",
   "system_info_title": "Systémové oznámenie",
-  "system_info_msg": "Váš profil bol úspešne overený administrátorom."
+  "system_info_msg": "Váš profil bol úspešne overený administrátorom.",
+  "toast": {
+    "accept_success": "Úspešne ste sa pripojili k tímu!",
+    "decline_success": "Pozvanie bolo odmietnuté.",
+    "error": "Nepodarilo sa spracovať pozvanie."
+  }
 }

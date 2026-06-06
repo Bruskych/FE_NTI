@@ -46,6 +46,7 @@ const closeMenu = () => {
 }
 
 .bell-btn {
+  /* Системные переменные для фона, рамки и цвета текста */
   background: var(--button-bg-color-unimp);
   border: 1px solid var(--button-border-color-unimp);
   color: var(--text-color);
@@ -59,10 +60,12 @@ const closeMenu = () => {
   position: relative;
 }
 
+/* Эффект при наведении и при открытом меню */
 .bell-btn:hover, .bell-btn.is-active {
   background: var(--button-bg-hover-unimp);
 }
 
+/* Бейдж с цифрой */
 .bell-badge {
   position: absolute;
   top: -2px;
