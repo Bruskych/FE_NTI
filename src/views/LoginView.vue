@@ -2,6 +2,8 @@
 import { ref, onMounted } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useRouter } from 'vue-router'
+import type { AxiosError } from 'axios'
+
 import BaseInput from '@/components/ui/BaseInput.vue'
 import BaseButton from '@/components/ui/BaseButton.vue'
 import ErrorMessage from '@/components/ui/ErrorMessage.vue'
@@ -52,7 +54,14 @@ const handleLogin = async () => {
     await authStore.login(form.value.email, form.value.password)
     router.push({ name: 'home' })
   } catch (error) {
-    console.error('Login request failed:', error)
+    const err = error as AxiosError<{ errors?: Record<string, string[]> }>
+    if (err.response && err.response.status === 422 && err.response.data.errors) {
+      const serverErrors = err.response.data.errors
+
+      if (serverErrors.email) {
+        emailErrorKey.value = serverErrors.email[0]
+      }
+    }
   }
 }
 </script>
@@ -74,7 +83,6 @@ const handleLogin = async () => {
           type="email"
           :label="$t('login.email')"
           :placeholder="$t('login.emailPlaceholder')"
-          :error="emailErrorKey ? $t(emailErrorKey) : ''"
           @blur="validateEmail"
           @input="emailErrorKey = ''"
       />
@@ -85,7 +93,6 @@ const handleLogin = async () => {
           showPasswordToggle
           :label="$t('login.password')"
           :placeholder="$t('login.passwordPlaceholder')"
-          :error="passwordErrorKey ? $t(passwordErrorKey) : ''"
           @blur="validatePassword"
           @input="passwordErrorKey = ''"
       />

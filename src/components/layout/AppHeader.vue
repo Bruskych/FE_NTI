@@ -2,6 +2,7 @@
 import { nextTick, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
+import {useUserNotificationsStore} from '@/stores/userNotifications'
 import { useLanguage } from '@/composables/useLanguage'
 import { useTheme } from '@/composables/useTheme'
 
@@ -17,11 +18,12 @@ import ntiLogo from '@/assets/images/nti_logo.png'
 const router = useRouter()
 const route = useRoute()
 const authStore = useAuthStore()
+const authNotifications = useUserNotificationsStore()
 
 // При монтировании шапки, если пользователь вошел в систему, запрашиваем список его уведомлений
 onMounted(() => {
   if (authStore.isAuthenticated) {
-    authStore.fetchNotifications()
+    authNotifications.fetchNotifications()
   }
 })
 

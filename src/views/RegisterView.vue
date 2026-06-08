@@ -1,17 +1,20 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
+
 import { useAuthStore, type RegisterFormData } from '@/stores/auth'
+const authStore = useAuthStore()
+
 import { useRouter } from 'vue-router'
-import { useI18n } from 'vue-i18n'
+const router = useRouter()
+import type { AxiosError } from 'axios'
 
 import BaseInput from '@/components/ui/BaseInput.vue'
 import BaseButton from '@/components/ui/BaseButton.vue'
 import BaseSelect from '@/components/ui/BaseSelect.vue'
 import ErrorMessage from '@/components/ui/ErrorMessage.vue'
 
+import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
-const authStore = useAuthStore()
-const router = useRouter()
 
 // Переменные для хранения ошибок валидации
 const firstNameError = ref('')
@@ -32,7 +35,7 @@ const form = ref({
   email: '',
   password: '',
   password_confirmation: '',
-  role: 'student',
+  role: 'student' as 'student' | 'company' | 'mentor',
   company_name: '',
   company_tax_id: '',
   sector: '',
@@ -145,7 +148,8 @@ const validateDescription = () => {
 // Варианты регистрации
 const roleOptions = computed(() => [
   { label: t('role.student'), value: 'student' },
-  { label: t('role.company'), value: 'company' }
+  { label: t('role.company'), value: 'company' },
+  { label: t('role.mentor'), value: 'mentor' }
 ])
 
 // Сброс ошибок для полей компании при переключении
@@ -191,7 +195,22 @@ const handleRegister = async () => {
     await authStore.register(form.value as RegisterFormData)
     router.push({ name: 'home' })
   } catch (error) {
-    console.error('Error:', error)
+    const err = error as AxiosError<{ errors?: Record<string, string[]> }>
+    if (err.response && err.response.status === 422 && err.response.data.errors) {
+      const serverErrors = err.response.data.errors
+
+      // Маппинг ошибок Laravel на переменные Vue
+      if (serverErrors.email) emailError.value = serverErrors.email[0]
+      if (serverErrors.password) passwordError.value = serverErrors.password[0]
+      if (serverErrors.name) firstNameError.value = serverErrors.name[0] // Если бэк ругается на общее имя
+      if (serverErrors.company_name) companyNameError.value = serverErrors.company_name[0]
+      if (serverErrors.company_tax_id) companyTaxIdError.value = serverErrors.company_tax_id[0]
+      if (serverErrors.sector) sectorError.value = serverErrors.sector[0]
+      if (serverErrors.website_link) websiteError.value = serverErrors.website_link[0]
+      if (serverErrors.description) descriptionError.value = serverErrors.description[0]
+    } else {
+      console.error(t('error.error_save'), error)
+    }
   }
 }
 </script>

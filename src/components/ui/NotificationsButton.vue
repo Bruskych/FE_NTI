@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useAuthStore } from '@/stores/auth'
+import { ref, onMounted, onUnmounted } from 'vue'
+
+import { useUserNotificationsStore } from '@/stores/userNotifications'
 import NotificationsMenu from '@/components/ui/NotificationsMenu.vue'
 
-const authStore = useAuthStore()
+const userNotificationsStore = useUserNotificationsStore()
 const isMenuOpen = ref(false)
+const rootRef = ref<HTMLElement | null>(null)
 
 const toggleMenu = () => {
   isMenuOpen.value = !isMenuOpen.value
@@ -13,27 +15,41 @@ const toggleMenu = () => {
 const closeMenu = () => {
   isMenuOpen.value = false
 }
+
+const handleClickOutside = (event: MouseEvent) => {
+  if (rootRef.value && !rootRef.value.contains(event.target as Node)) {
+    closeMenu()
+  }
+}
+
+onMounted(() => {
+  userNotificationsStore.fetchNotifications()
+  document.addEventListener('click', handleClickOutside)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside)
+})
 </script>
 
 <template>
-  <div class="notifications-wrapper" v-click-outside="closeMenu">
-
+  <div ref="rootRef" class="notifications-wrapper">
     <button class="bell-btn" @click="toggleMenu" :class="{ 'is-active': isMenuOpen }">
       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
         <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
       </svg>
 
-      <span v-if="authStore.notifications.length > 0" class="bell-badge">
-        {{ authStore.notifications.length }}
+      <span v-if="userNotificationsStore.unreadCount > 0" class="bell-badge">
+        {{ userNotificationsStore.unreadCount }}
       </span>
     </button>
 
     <div v-if="isMenuOpen" class="menu-dropdown">
       <NotificationsMenu
-          :notifications="authStore.notifications"
-          @accept="authStore.acceptInvite"
-          @decline="authStore.declineInvite"
+          :notifications="userNotificationsStore.notifications"
+          @accept="userNotificationsStore.acceptInvite"
+          @decline="userNotificationsStore.declineInvite"
       />
     </div>
   </div>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import api from '@/core/api/axios'
+import { ref, onMounted, computed } from 'vue'
+import { useAdminStore } from '@/stores/admin'
 import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
 
@@ -11,18 +11,7 @@ import BaseInput from '@/components/ui/BaseInput.vue'
 import SortableTh from '@/components/ui/SortableTh.vue'
 import EmptyIcon from '@/assets/icons/empty.svg'
 
-interface StudentApplication {
-  application_id: number
-  status: string
-  submitted_at: string
-  student_name: string
-  student_email: string
-  user_id: number | null
-}
-
-const applications = ref<StudentApplication[]>([])
-const loading = ref(false)
-const actionLoading = ref<number | null>(null)
+const adminStore = useAdminStore()
 const commentText = ref<Record<number, string>>({})
 
 const sortKey = ref<string | null>(null)
@@ -35,58 +24,43 @@ const sortBy = (key: string) => {
     sortKey.value = key
     sortOrder.value = 'asc'
   }
-  applications.value = [...applications.value].sort((a, b) => {
-    const valA = a[key as keyof StudentApplication] ?? ''
-    const valB = b[key as keyof StudentApplication] ?? ''
+}
 
+const sortedApplications = computed(() => {
+  const list = [...adminStore.studentApplications]
+  if (!sortKey.value) return list
+
+  return list.sort((a, b) => {
+    const valA = String(a[sortKey.value as keyof typeof a] ?? '')
+    const valB = String(b[sortKey.value as keyof typeof b] ?? '')
     const modifier = sortOrder.value === 'asc' ? 1 : -1
     return valA > valB ? modifier : -modifier
   })
-}
-
-const fetchPendingApplications = async () => {
-  loading.value = true
-  try {
-    const { data } = await api.get('/admin/students/pending')
-    applications.value = data
-  } finally {
-    loading.value = false
-  }
-}
+})
 
 const handleApprove = async (appId: number) => {
-  actionLoading.value = appId
   try {
-    await api.post(`/admin/students/${appId}/approve`, {
-      comment: commentText.value[appId] || 'Schválené administrátorom.'
-    })
-    applications.value = applications.value.filter(
-        app => app.application_id !== appId
-    )
-  } finally {
-    actionLoading.value = null
+    await adminStore.approveStudent(appId, commentText.value[appId])
+    delete commentText.value[appId]
+  } catch (err) {
+    alert(err)
   }
 }
 
 const handleReject = async (appId: number) => {
   if (!commentText.value[appId]) {
-    alert('Prosím, uveďte dôvod zamietnutia žiadosti.')
+    alert(t('Prosím, uveďte dôvod zamietnutia žiadosti.'))
     return
   }
-  actionLoading.value = appId
   try {
-    await api.post(`/admin/students/${appId}/reject`, {
-      comment: commentText.value[appId]
-    })
-    applications.value = applications.value.filter(
-        app => app.application_id !== appId
-    )
-  } finally {
-    actionLoading.value = null
+    await adminStore.rejectStudent(appId, commentText.value[appId])
+    delete commentText.value[appId]
+  } catch (err) {
+    alert(err)
   }
 }
 
-const formatDate = (dateString: string) =>
+const formatDate = (dateString: string | null) =>
     dateString
         ? new Date(dateString).toLocaleDateString('sk-SK', {
           day: '2-digit',
@@ -97,18 +71,16 @@ const formatDate = (dateString: string) =>
         })
         : ''
 
-onMounted(fetchPendingApplications)
+onMounted(() => {
+  adminStore.fetchPendingStudents()
+})
 </script>
 
 <template>
   <div class="student-apps-page">
     <div class="page-header">
-      <h1>
-        {{ $t('adminTable.student_apps.title') }}
-      </h1>
-      <p class="subtitle">
-        {{ $t('adminTable.student_apps.subtitle') }}
-      </p>
+      <h1>{{ $t('adminTable.student_apps.title') }}</h1>
+      <p class="subtitle">{{ $t('adminTable.student_apps.subtitle') }}</p>
     </div>
 
     <div class="table-container">
@@ -129,28 +101,22 @@ onMounted(fetchPendingApplications)
           {{ $t('adminTable.student_apps.columns.date') }}
         </SortableTh>
 
-        <div class="th">
-          {{ $t('adminTable.student_apps.columns.comment') }}
-        </div>
-
-        <div class="th">
-          {{ $t('adminTable.student_apps.columns.actions') }}
-        </div>
+        <div class="th">{{ $t('adminTable.student_apps.columns.comment') }}</div>
+        <div class="th">{{ $t('adminTable.student_apps.columns.actions') }}</div>
       </div>
 
       <div class="table-body">
-        <div v-if="loading" class="table-loading">
+        <div v-if="adminStore.loading" class="table-loading">
           <div class="spinner"></div>
           <p>{{ $t('adminTable.student_apps.loading') }}</p>
         </div>
-        <div v-else-if="applications.length === 0" class="empty-state">
-          <div class="empty-icon">
-            <EmptyIcon class="icon" />
-          </div>
+
+        <div v-else-if="sortedApplications.length === 0" class="empty-state">
+          <div class="empty-icon"><EmptyIcon class="icon" /></div>
           <p>{{ $t('adminTable.student_apps.empty') }}</p>
         </div>
 
-        <div v-else v-for="app in applications" :key="app.application_id" class="table-row">
+        <div v-else v-for="app in sortedApplications" :key="app.application_id" class="table-row">
           <div class="td app-id">#{{ app.application_id }}</div>
           <div class="td student-name">{{ app.student_name }}</div>
           <div class="td email">{{ app.student_email }}</div>
@@ -158,10 +124,11 @@ onMounted(fetchPendingApplications)
 
           <div class="td">
             <BaseInput
-                v-model="commentText[app.application_id]"
+                :model-value="commentText[app.application_id] || ''"
+                @update:model-value="val => commentText[app.application_id] = val"
                 :placeholder="$t('adminTable.student_apps.comment_placeholder')"
                 no-margin
-                :disabled="actionLoading === app.application_id"
+                :disabled="adminStore.actionLoading === app.application_id"
                 variant="table"
             />
           </div>
@@ -170,20 +137,20 @@ onMounted(fetchPendingApplications)
             <div class="buttons-group">
               <IconButton
                   severity="success"
-                  :disabled="actionLoading !== null"
+                  :disabled="adminStore.actionLoading !== null"
                   @click="handleApprove(app.application_id)"
                   v-tooltip="$t('actions.submit_application')"
               >
-                <AcceptIcon v-if="actionLoading !== app.application_id" />
+                <AcceptIcon v-if="adminStore.actionLoading !== app.application_id" />
               </IconButton>
 
               <IconButton
                   severity="danger"
-                  :disabled="actionLoading !== null"
+                  :disabled="adminStore.actionLoading !== null"
                   @click="handleReject(app.application_id)"
                   v-tooltip="$t('actions.cancel_application')"
               >
-                <RejectIcon v-if="actionLoading !== app.application_id" />
+                <RejectIcon v-if="adminStore.actionLoading !== app.application_id" />
               </IconButton>
             </div>
           </div>

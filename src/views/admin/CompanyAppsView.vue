@@ -1,27 +1,18 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import api from '@/core/api/axios'
+import { ref, onMounted, computed } from 'vue'
+import { useAdminStore } from '@/stores/admin'
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 
 import IconButton from '@/components/ui/IconButton.vue'
 import AcceptIcon from '@/assets/icons/check.svg'
 import RejectIcon from '@/assets/icons/close.svg'
-import SortableTh from "@/components/ui/SortableTh.vue";
-import BaseInput from "@/components/ui/BaseInput.vue";
+import SortableTh from "@/components/ui/SortableTh.vue"
+import BaseInput from "@/components/ui/BaseInput.vue"
 import EmptyIcon from '@/assets/icons/empty.svg'
 
-interface CompanyApplication {
-  application_id: number
-  status: string
-  submitted_at: string
-  company_name: string
-  company_tax_id: string
-  sector: string
-  website_link: string | null
-  description: string
-  owner_name: string
-  owner_email: string
-  user_id: number | null
-}
+const adminStore = useAdminStore()
+const commentText = ref<Record<number, string>>({})
 
 const sortKey = ref<string | null>(null)
 const sortOrder = ref<'asc' | 'desc'>('asc')
@@ -33,72 +24,49 @@ const sortBy = (key: string) => {
     sortKey.value = key
     sortOrder.value = 'asc'
   }
+}
 
-  applications.value.sort((a, b) => {
-    let valA = a[key as keyof CompanyApplication] ?? ''
-    let valB = b[key as keyof CompanyApplication] ?? ''
+const sortedApplications = computed(() => {
+  const list = [...adminStore.companyApplications]
+  if (!sortKey.value) return list
 
-    const strA = valA.toString().toLowerCase()
-    const strB = valB.toString().toLowerCase()
+  return list.sort((a, b) => {
+    const valA = String(a[sortKey.value as keyof typeof a] ?? '')
+    const valB = String(b[sortKey.value as keyof typeof b] ?? '')
 
+    const strA = valA.toLowerCase()
+    const strB = valB.toLowerCase()
     const modifier = sortOrder.value === 'asc' ? 1 : -1
 
     if (strA < strB) return -1 * modifier
     if (strA > strB) return 1 * modifier
     return 0
   })
-}
-
-const applications = ref<CompanyApplication[]>([])
-const loading = ref(false)
-const actionLoading = ref<number | null>(null)
-const commentText = ref<Record<number, string>>({})
-
-const fetchPendingApplications = async () => {
-  loading.value = true
-  try {
-    const { data } = await api.get('/admin/companies/pending')
-    applications.value = data
-  } catch (error) {
-    console.error('Error loading company applications:', error)
-  } finally {
-    loading.value = false
-  }
-}
+})
 
 const handleApprove = async (appId: number) => {
-  actionLoading.value = appId
   try {
-    await api.post(`/admin/companies/${appId}/approve`, {
-      comment: commentText.value[appId] || 'Firma schválená administrátorom.'
-    })
-    applications.value = applications.value.filter(app => app.application_id !== appId)
-  } catch (error) {
-    console.error('Error approving company:', error)
-  } finally {
-    actionLoading.value = null
+    await adminStore.approveCompany(appId, commentText.value[appId])
+    delete commentText.value[appId]
+  } catch (err) {
+    alert(err)
   }
 }
 
 const handleReject = async (appId: number) => {
   if (!commentText.value[appId]) {
-    alert('Prosím, uveďte dôvod zamietnutia registrácie firmy.')
+    alert(t('Prosím, uveďte dôvod zamietnutia registrácie firmy.'))
     return
   }
-  actionLoading.value = appId
   try {
-    await api.post(`/admin/companies/${appId}/reject`, {
-      comment: commentText.value[appId]
-    })
-    applications.value = applications.value.filter(app => app.application_id !== appId)
-  } catch (error) {
-    console.error('Error rejecting company:', error)
-  } finally {
-    actionLoading.value = null
+    await adminStore.rejectCompany(appId, commentText.value[appId])
+    delete commentText.value[appId]
+  } catch (err) {
+    alert(err)
   }
 }
 
-const formatDate = (dateString: string) => {
+const formatDate = (dateString: string | null) => {
   if (!dateString) return ''
   const date = new Date(dateString)
   return date.toLocaleDateString('sk-SK', {
@@ -111,19 +79,15 @@ const formatDate = (dateString: string) => {
 }
 
 onMounted(() => {
-  fetchPendingApplications()
+  adminStore.fetchPendingCompanies()
 })
 </script>
 
 <template>
   <div class="company-apps-page">
     <div class="page-header">
-      <h1>
-        {{ $t('adminTable.company_apps.title') }}
-      </h1>
-      <p class="subtitle">
-        {{ $t('adminTable.company_apps.subtitle') }}
-      </p>
+      <h1>{{ $t('adminTable.company_apps.title') }}</h1>
+      <p class="subtitle">{{ $t('adminTable.company_apps.subtitle') }}</p>
     </div>
 
     <div class="table-container">
@@ -152,28 +116,22 @@ onMounted(() => {
           {{ $t('adminTable.company_apps.columns.date') }}
         </SortableTh>
 
-        <div class="th">
-          {{ $t('adminTable.company_apps.columns.comment') }}
-        </div>
-
-        <div class="th">
-          {{ $t('adminTable.company_apps.columns.actions') }}
-        </div>
+        <div class="th">{{ $t('adminTable.company_apps.columns.comment') }}</div>
+        <div class="th">{{ $t('adminTable.company_apps.columns.actions') }}</div>
       </div>
 
       <div class="table-body">
-        <div v-if="loading" class="table-loading">
+        <div v-if="adminStore.loading" class="table-loading">
           <div class="spinner"></div>
           <p>{{ $t('adminTable.company_apps.loading') }}</p>
         </div>
-        <div v-else-if="applications.length === 0" class="empty-state">
-          <div class="empty-icon">
-            <EmptyIcon class="icon" />
-          </div>
+
+        <div v-else-if="sortedApplications.length === 0" class="empty-state">
+          <div class="empty-icon"><EmptyIcon class="icon" /></div>
           <p>{{ $t('adminTable.company_apps.empty') }}</p>
         </div>
 
-        <div v-else v-for="app in applications" :key="app.application_id" class="table-row">
+        <div v-else v-for="app in sortedApplications" :key="app.application_id" class="table-row">
           <div class="td app-id">#{{ app.application_id }}</div>
 
           <div class="td company-info">
@@ -181,13 +139,8 @@ onMounted(() => {
             <div class="company-sector">{{ app.sector }}</div>
           </div>
 
-          <div class="td tax-id">
-            {{ app.company_tax_id }}
-          </div>
-
-          <div class="td description-text">
-            {{ app.description }}
-          </div>
+          <div class="td tax-id">{{ app.company_tax_id }}</div>
+          <div class="td description-text">{{ app.description }}</div>
 
           <div class="td owner-info">
             <div class="owner-name">{{ app.owner_name }}</div>
@@ -198,21 +151,22 @@ onMounted(() => {
 
           <div class="td">
             <BaseInput
-                v-model="commentText[app.application_id]"
+                :model-value="commentText[app.application_id] || ''"
+                @update:model-value="val => commentText[app.application_id] = val"
                 :placeholder="$t('adminTable.company_apps.comment_placeholder')"
                 no-margin
-                :disabled="actionLoading === app.application_id"
+                :disabled="adminStore.actionLoading === app.application_id"
                 variant="table"
             />
           </div>
 
           <div class="td actions-td">
             <div class="buttons-group">
-              <IconButton severity="success" :disabled="actionLoading !== null" @click="handleApprove(app.application_id)">
-                <AcceptIcon v-if="actionLoading !== app.application_id" />
+              <IconButton severity="success" :disabled="adminStore.actionLoading !== null" @click="handleApprove(app.application_id)">
+                <AcceptIcon v-if="adminStore.actionLoading !== app.application_id" />
               </IconButton>
-              <IconButton severity="danger" :disabled="actionLoading !== null" @click="handleReject(app.application_id)">
-                <RejectIcon v-if="actionLoading !== app.application_id" />
+              <IconButton severity="danger" :disabled="adminStore.actionLoading !== null" @click="handleReject(app.application_id)">
+                <RejectIcon v-if="adminStore.actionLoading !== app.application_id" />
               </IconButton>
             </div>
           </div>
