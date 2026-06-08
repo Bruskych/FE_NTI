@@ -24,6 +24,23 @@ const userRole = computed(() => {
   return user.value?.roles?.[0]?.name || 'visitor'
 })
 
+// Формирование правильной ссылки на аватарку
+const avatarSrc = computed(() => {
+  const path = user.value?.avatar_path
+  if (!path) return null
+
+  // Если бэкенд вдруг уже отдал полную ссылку
+  if (path.startsWith('http')) {
+    return `${path}?t=${Date.now()}`
+  }
+
+  // Собираем полный URL к локальному хранилищу Laravel
+  const envUrl = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000/api'
+  const baseUrl = envUrl.replace(/\/api$/, '')
+
+  return `${baseUrl}/storage/${path}?t=${Date.now()}`
+})
+
 // Проверка наличия прав администратора
 const isAnyAdmin = computed(() => {
   return user.value?.roles?.some(r => ['admin', 'super_admin'].includes(r.name)) ?? false
@@ -74,8 +91,8 @@ onBeforeUnmount(() => document.removeEventListener('click', handleOutside))
 
     <div class="trigger" @click="toggle">
       <img
-          v-if="user?.avatar_url"
-          :src="user.avatar_url"
+          v-if="avatarSrc"
+          :src="avatarSrc"
           class="avatar"
           alt="User Avatar"
       />

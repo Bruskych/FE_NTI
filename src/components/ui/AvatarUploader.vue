@@ -16,6 +16,21 @@ const triggerFileInput = () => {
   fileInput.value?.click()
 }
 
+// Формирование ссылки с динамическим очищением кэша браузера
+const avatarSrc = computed(() => {
+  const path = authStore.user?.avatar_path
+  if (!path) return null
+
+  if (path.startsWith('http')) {
+    return `${path}?t=${Date.now()}`
+  }
+
+  const envUrl = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000/api'
+  const baseUrl = envUrl.replace(/\/api$/, '')
+
+  return `${baseUrl}/storage/${path}?t=${Date.now()}`
+})
+
 const userInitials = computed(() => {
   const name = authStore.user?.name ?? ''
 
@@ -31,13 +46,15 @@ const onFileSelected = async (event: Event) => {
   const target = event.target as HTMLInputElement
   if (!target.files || target.files.length === 0) return
   const file = target.files[0]
-  const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg']
+
+  const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp']
 
   if (!allowedTypes.includes(file.type)) {
     validationError.value = t('error.avatar.error_invalid_type')
     return
   }
-  const maxSize = 10 * 1024 * 1024
+
+  const maxSize = 2 * 1024 * 1024
   if (file.size > maxSize) {
     validationError.value = t('error.avatar.error_too_large')
     return
@@ -57,8 +74,8 @@ const onFileSelected = async (event: Event) => {
   <div class="avatar-uploader">
     <div class="avatar-preview">
       <img
-          v-if="authStore.user?.avatar_url"
-          :src="authStore.user.avatar_url"
+          v-if="avatarSrc"
+          :src="avatarSrc"
           alt="Avatar"
           class="avatar-img"
       />
@@ -70,7 +87,7 @@ const onFileSelected = async (event: Event) => {
     <input
         ref="fileInput"
         type="file"
-        accept="image/jpeg, image/png, image/jpg"
+        accept="image/jpeg, image/png, image/jpg, image/webp"
         style="display: none"
         @change="onFileSelected"
     />

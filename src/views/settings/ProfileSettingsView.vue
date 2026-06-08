@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 import { useAuthStore } from '@/stores/auth'
-import { useUserStore } from '@/stores/user' // Импортируем новый стор
 import AvatarUploader from '@/components/ui/AvatarUploader.vue'
 import BaseInput from '@/components/ui/BaseInput.vue'
 
@@ -9,21 +8,46 @@ import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
 
 const authStore = useAuthStore()
-const userStore = useUserStore()
-const nameInput = ref(authStore.user?.name || '')
 
-watch(() => authStore.user?.name, (newVal) => {
-  if (newVal) nameInput.value = newVal
-})
+const nameInput = ref('')
+const surnameInput = ref('')
 
-const saveProfileData = async (newValue: string | number) => {
+// Разрезаем монолитную строку из базы "Имя Фамилия" на два инпута
+const parseUserData = () => {
+  const rawName = authStore.user?.name?.trim() || ''
+  const parts = rawName.split(/\s+/)
+
+  if (parts.length > 1) {
+    nameInput.value = parts[0]
+    surnameInput.value = parts.slice(1).join(' ')
+  } else {
+    nameInput.value = rawName
+    surnameInput.value = ''
+  }
+}
+
+watch(() => authStore.user?.name, parseUserData)
+onMounted(parseUserData)
+
+// Единая функция сохранения для обеих кнопок
+const saveProfileData = async () => {
+  const first = nameInput.value.trim()
+  const last = surnameInput.value.trim()
+
+  if (!first) {
+    alert(t('The name cannot be empty'))
+    return
+  }
+
+  // Склеиваем имя и фамилию обратно через пробел
+  const fullName = last ? `${first} ${last}` : first
+
   try {
-    const updatedName = String(newValue).trim()
-    if (!updatedName) return
-    await userStore.updateProfileInfo({ name: updatedName })
-    console.log('The profile has been successfully updated via the userStore.')
+    // Шлем склеенную строку в поле 'name'
+    await authStore.updateName(fullName)
+    console.log('Profile successfully updated with full name.')
   } catch (err) {
-    console.error('Error saving data:', err)
+    console.error(t('error.error_save'), err)
   }
 }
 </script>
@@ -42,17 +66,24 @@ const saveProfileData = async (newValue: string | number) => {
       <h3 class="card-title">{{ $t('settingsPanel.personal_info') }}</h3>
 
       <div class="info-grid">
-
         <div class="info-group">
           <BaseInput
-              v-model="nameInput"
+              :model-value="nameInput"
+              @update:model-value="val => nameInput = String(val)"
               showSaveToggle
               :label="$t('settingsPanel.label_name')"
-              :disabled="userStore.loading"
+              :disabled="authStore.loading"
+              @save="saveProfileData"
+          />
+          <BaseInput
+              :model-value="surnameInput"
+              @update:model-value="val => surnameInput = String(val)"
+              showSaveToggle
+              :label="$t('settingsPanel.label_surname')"
+              :disabled="authStore.loading"
               @save="saveProfileData"
           />
         </div>
-
       </div>
     </div>
 

@@ -10,7 +10,7 @@
     "change_btn": "Zmeniť avatar",
     "loading": "Nahráva sa...",
     "error_invalid_type": "Povolené sú iba obrázky (JPEG, JPG, PNG).",
-    "error_too_large": "Súbor je príliš veľký. Maximálna veľkosť je 10 MB.",
+    "error_too_large": "Súbor je príliš veľký. Maximálna veľkosť je 2 MB.",
     "success_message": "Avatar bol úspešne nahratý!"
   }
 }
