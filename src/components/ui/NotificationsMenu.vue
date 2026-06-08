@@ -8,6 +8,7 @@ interface NotificationItem {
   message: string
   type: string
   read_at: string | null
+  created_at?: string
   data?: {
     team_id?: number
     team_name?: string
@@ -38,6 +39,16 @@ const handleRead = async (id: number) => {
   if (readingId.value === id) {
     readingId.value = null
   }
+}
+
+// Функция для форматирования даты в формат "ДД.ММ"
+const formatDate = (dateString?: string) => {
+  if (!dateString) return ''
+  const date = new Date(dateString)
+  const day = String(date.getDate()).padStart(2, '0')
+  const month = String(date.getMonth() + 1).padStart(2, '0') // Месяцы в JS идут с 0 до 11
+
+  return `${day}.${month}`
 }
 
 // Функция для копирования текста уведомления
@@ -93,6 +104,9 @@ const copyNotification = (notification: NotificationItem) => {
                 {{ $t('notification.decline') }}
               </button>
             </div>
+            <div v-if="notification.created_at" class="notification-date">
+              {{ formatDate(notification.created_at) }}
+            </div>
           </template>
 
           <template v-else>
@@ -117,8 +131,9 @@ const copyNotification = (notification: NotificationItem) => {
 
 <style scoped>
 .notifications-menu {
-  width: 340px;
+  width: 550px;
   max-height: 420px;
+  max-width: 100%;
   background: var(--menu-color);
   border: 1px solid var(--menu-border);
   border-radius: 12px;
@@ -205,6 +220,27 @@ const copyNotification = (notification: NotificationItem) => {
     color: var(--text-color);
     opacity: 0.7;
     line-height: 1.4;
+  }
+
+  & .notification-body {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  & .notification-date {
+    align-self: flex-end;
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--text-color);
+    opacity: 0.4;
+    margin-top: 4px;
+    user-select: none;
+    transition: opacity 0.2s ease;
+  }
+
+  &:hover .notification-date {
+    opacity: 0.7;
   }
 
   & .btn-copy {

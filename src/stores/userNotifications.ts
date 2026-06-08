@@ -4,7 +4,6 @@ import api from '@/core/api/axios'
 import { useNotificationStore } from '@/stores/notifications'
 import { useAuthStore } from '@/stores/auth'
 
-// Интерфейс уведомления, полностью синхронизированный с твоей бэкенд-фабрикой
 export interface UserNotification {
   id: number
   user_id: number
@@ -35,14 +34,21 @@ export const useUserNotificationsStore = defineStore('userNotifications', {
   }),
 
   getters: {
-    unreadNotifications: (state): UserNotification[] => {
-      const list: UserNotification[] = Array.isArray(state.notifications)
-        ? state.notifications
-        : Object.values(state.notifications || {})
-      return list.filter((n: UserNotification) => n.read_at === null)
+    sortedNotifications(state): UserNotification[] {
+      if (!Array.isArray(state.notifications)) return []
+      return [...state.notifications].sort((a, b) => {
+        // Сначала непрочитанные (read_at === null)
+        if (a.read_at === null && b.read_at !== null) return -1
+        if (a.read_at !== null && b.read_at === null) return 1
+
+        const dateA = a.created_at ? new Date(a.created_at).getTime() : 0
+        const dateB = b.created_at ? new Date(b.created_at).getTime() : 0
+        return dateB - dateA
+      })
     },
-    unreadCount(): number {
-      return this.unreadNotifications.length
+    unreadCount(state): number {
+      if (!Array.isArray(state.notifications)) return 0
+      return state.notifications.filter(n => n.read_at === null).length
     }
   },
 
@@ -65,6 +71,23 @@ export const useUserNotificationsStore = defineStore('userNotifications', {
     },
 
     /**
+     * Пометка уведомления как прочитанного.
+     * POST /api/notifications/{id}/read
+     */
+    async markAsRead(notificationId: number): Promise<void> {
+      try {
+        await api.post(`/notifications/${notificationId}/read`)
+
+        const notification = this.notifications.find(n => n.id === notificationId)
+        if (notification) {
+          notification.read_at = new Date().toISOString()
+        }
+      } catch (error) {
+        console.error('Failed to mark notification as read:', error)
+      }
+    },
+
+    /**
      * Принятие инвайта/действия из уведомления.
      * POST /api/notifications/{id}/accept
      */
@@ -73,11 +96,12 @@ export const useUserNotificationsStore = defineStore('userNotifications', {
       const authStore = useAuthStore()
       try {
         await api.post(`/notifications/${notificationId}/accept`)
-
         toastStore.add('notification.toast.accept_success', 'success')
 
-        // Вместо удаления можно либо удалить, либо пометить прочитанным:
-        this.notifications = this.notifications.filter(n => n.id !== notificationId)
+        const notification = this.notifications.find(n => n.id === notificationId)
+        if (notification) {
+          notification.read_at = new Date().toISOString()
+        }
 
         await authStore.fetchMe()
       } catch (error: unknown) {
@@ -95,9 +119,12 @@ export const useUserNotificationsStore = defineStore('userNotifications', {
       const toastStore = useNotificationStore()
       try {
         await api.post(`/notifications/${notificationId}/reject`)
-
         toastStore.add('notification.toast.decline_success', 'success')
-        this.notifications = this.notifications.filter(n => n.id !== notificationId)
+
+        const notification = this.notifications.find(n => n.id === notificationId)
+        if (notification) {
+          notification.read_at = new Date().toISOString()
+        }
       } catch (error: unknown) {
         const err = error as AxiosError<{ message?: string }>
         const errorMessage = err.response?.data?.message || 'notification.toast.error'
@@ -110,25 +137,6 @@ export const useUserNotificationsStore = defineStore('userNotifications', {
      */
     clearNotifications() {
       this.notifications = []
-    },
-
-    /**
-     * Пометка уведомления как прочитанного.
-     * POST /api/notifications/{id}/read
-     */
-    async markAsRead(notificationId: number): Promise<void> {
-      try {
-        await api.post(`/notifications/${notificationId}/read`)
-
-        const notification = this.notifications.find(n => n.id === notificationId)
-        if (notification) {
-          notification.read_at = new Date().toISOString()
-        }
-        this.notifications = this.notifications.filter(n => n.id !== notificationId)
-
-      } catch (error) {
-        console.error('Failed to mark notification as read:', error)
-      }
-    },
+    }
   }
 })
