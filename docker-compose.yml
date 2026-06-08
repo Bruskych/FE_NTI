@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   frontend:
     build:
@@ -29,4 +27,5 @@ services:
 
 networks:
   nti-network:
+    name: nti-network
     external: true

@@ -62,4 +62,6 @@ api.interceptors.response.use(
   }
 )
 
+api.defaults.withCredentials = true;
+
 export default api
