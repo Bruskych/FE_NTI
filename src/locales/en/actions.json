@@ -3,6 +3,8 @@
 
   "submit": "Accept",
   "cancel": "Reject",
+  "copy": "Copy text",
+  "read_notification": "Read",
 
   "submit_application": "Accept the application",
   "cancel_application": "Reject the application"

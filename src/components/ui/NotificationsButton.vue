@@ -48,8 +48,9 @@ onUnmounted(() => {
     <div v-if="isMenuOpen" class="menu-dropdown">
       <NotificationsMenu
           :notifications="userNotificationsStore.notifications"
-          @accept="userNotificationsStore.acceptInvite"
-          @decline="userNotificationsStore.declineInvite"
+          @read="id => userNotificationsStore.markAsRead(id)"
+          @accept="id => userNotificationsStore.acceptInvite(id)"
+          @decline="id => userNotificationsStore.declineInvite(id)"
       />
     </div>
   </div>

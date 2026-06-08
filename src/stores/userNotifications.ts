@@ -110,6 +110,25 @@ export const useUserNotificationsStore = defineStore('userNotifications', {
      */
     clearNotifications() {
       this.notifications = []
-    }
+    },
+
+    /**
+     * Пометка уведомления как прочитанного.
+     * POST /api/notifications/{id}/read
+     */
+    async markAsRead(notificationId: number): Promise<void> {
+      try {
+        await api.post(`/notifications/${notificationId}/read`)
+
+        const notification = this.notifications.find(n => n.id === notificationId)
+        if (notification) {
+          notification.read_at = new Date().toISOString()
+        }
+        this.notifications = this.notifications.filter(n => n.id !== notificationId)
+
+      } catch (error) {
+        console.error('Failed to mark notification as read:', error)
+      }
+    },
   }
 })

@@ -1,5 +1,7 @@
 <script setup lang="ts">
-// Описываем интерфейс элемента уведомления для типизации Props
+import { ref } from 'vue'
+import CopyIcon from '@/assets/icons/copy.svg'
+
 interface NotificationItem {
   id: number
   title: string
@@ -13,13 +15,44 @@ interface NotificationItem {
   }
 }
 
-// Принимаем массив уведомлений от родительского компонента
-defineProps<{
+const props = defineProps<{
   notifications: NotificationItem[]
 }>()
 
-// Объявляем события для отправки наверх (в родительский компонент/стор)
-defineEmits(['accept', 'decline'])
+const emit = defineEmits(['accept', 'decline', 'read'])
+
+// Локальное состояние для анимации прочтения конкретного уведомления
+const readingId = ref<number | null>(null)
+
+// Функция для обработки клика по уведомлению
+const handleRead = async (id: number) => {
+  readingId.value = id
+
+  // Имитируем небольшую искусственную задержку в 800мс для красоты анимации,
+  // чтобы успели пробежать три точки, прежде чем бэкенд скроет уведомление
+  await new Promise(resolve => setTimeout(resolve, 800))
+
+  emit('read', id)
+
+  // Сбрасываем ID читаемого уведомления
+  if (readingId.value === id) {
+    readingId.value = null
+  }
+}
+
+// Функция для копирования текста уведомления
+const copyNotification = (notification: NotificationItem) => {
+  const textToCopy = `${notification.title}: ${notification.message}`
+
+  navigator.clipboard.writeText(textToCopy)
+      .then(() => {
+        // Здесь при желании можно вызвать твой toastStore, чтобы показать плашку "Скопировано!"
+        console.log('Текст уведомления скопирован!')
+      })
+      .catch(err => {
+        console.error('Не удалось скопировать текст: ', err)
+      })
+}
 </script>
 
 <template>
@@ -33,20 +66,45 @@ defineEmits(['accept', 'decline'])
           v-for="notification in notifications"
           :key="notification.id"
           class="notification-item"
-          :class="{ 'is-unread': !notification.read_at }"
+          :class="{
+            'is-unread': !notification.read_at,
+            'is-reading': readingId === notification.id
+          }"
+          @click.stop="!notification.read_at && readingId !== notification.id && handleRead(notification.id)"
       >
-        <div class="notification-body">
-          <div class="notification-title">{{ notification.title }}</div>
-          <div class="notification-message">{{ notification.message }}</div>
+        <button
+            class="btn-copy"
+            v-tooltip="$t('actions.copy')"
+            @click.stop="copyNotification(notification)"
+        >
+          <CopyIcon class="copy-icon" />
+        </button>
 
-          <div v-if="notification.type === 'team_invite'" class="notification-actions">
-            <button class="btn-accept" @click="$emit('accept', notification.id)">
-              {{ $t('notification.accept') }}
-            </button>
-            <button class="btn-decline" @click="$emit('decline', notification.id)">
-              {{ $t('notification.decline') }}
-            </button>
-          </div>
+        <div class="notification-body">
+          <template v-if="readingId !== notification.id">
+            <div class="notification-title">{{ notification.title }}</div>
+            <div class="notification-message">{{ notification.message }}</div>
+
+            <div v-if="notification.type === 'team_invite'" class="notification-actions">
+              <button class="btn-accept" @click.stop="$emit('accept', notification.id)">
+                {{ $t('notification.accept') }}
+              </button>
+              <button class="btn-decline" @click.stop="$emit('decline', notification.id)">
+                {{ $t('notification.decline') }}
+              </button>
+            </div>
+          </template>
+
+          <template v-else>
+            <div class="reading-state">
+              <span class="reading-text">{{ $t('actions.read_notification') }}</span>
+              <div class="dots">
+                <span class="dot">.</span>
+                <span class="dot">.</span>
+                <span class="dot">.</span>
+              </div>
+            </div>
+          </template>
         </div>
       </div>
 
@@ -69,110 +127,201 @@ defineEmits(['accept', 'decline'])
   flex-direction: column;
   overflow: hidden;
 }
-
 .menu-header {
   padding: 14px 18px;
   border-bottom: 1px solid var(--menu-border);
   background: rgba(255, 255, 255, 0.01);
-}
 
-.menu-header h3 {
-  margin: 0;
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--text-color);
+  & h3 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-color);
+  }
 }
-
 .menu-content {
   overflow-y: auto;
   display: flex;
   flex-direction: column;
+  padding: 4px 0;
+  gap: 2px;
 }
-
 .notification-item {
   padding: 14px 18px;
   border-bottom: 1px solid var(--menu-border);
   background: transparent;
-}
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  z-index: 1;
+  transition: all 0.2s ease-in-out;
 
-.notification-item.is-unread {
-  background: rgba(100, 116, 139, 0.03);
-  box-shadow: inset 3px 0 0 0 var(--main-color);
-}
+  &:last-child {
+    border-bottom: none;
+  }
 
-.notification-item:hover {
-  background: rgba(100, 116, 139, 0.05);
-}
+  &.is-unread {
+    background: rgba(100, 116, 139, 0.03);
+    box-shadow: inset 3px 0 0 0 var(--main-color);
+  }
 
-.notification-title {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--text-color);
-  margin-bottom: 4px;
-}
+  &:hover {
+    background: rgba(100, 116, 139, 0.07);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    z-index: 2;
 
-.notification-message {
-  font-size: 0.82rem;
-  color: var(--text-color);
-  opacity: 0.7;
-  line-height: 1.4;
-}
+    & .btn-copy {
+      opacity: 0.5;
+    }
+  }
 
+  &.is-unread:hover {
+    box-shadow: inset 3px 0 0 0 var(--main-color), 0 4px 12px rgba(0, 0, 0, 0.12);
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  }
+
+  &.is-reading {
+    background: rgba(100, 116, 139, 0.01) !important;
+    transform: scale(0.98);
+    opacity: 0.75;
+    pointer-events: none;
+  }
+
+  & .notification-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: 4px;
+    padding-right: 22px;
+  }
+
+  & .notification-message {
+    font-size: 0.82rem;
+    color: var(--text-color);
+    opacity: 0.7;
+    line-height: 1.4;
+  }
+
+  & .btn-copy {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: transparent;
+    border: none;
+    opacity: 0;
+    padding: 5px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.2s, background-color 0.2s;
+
+    &:hover {
+      opacity: 1 !important;
+      background: rgba(100, 116, 139, 0.15);
+
+      & .copy-icon {
+        color: var(--main-color);
+      }
+    }
+
+    & .copy-icon {
+      width: 16px;
+      height: 16px;
+      color: var(--text-color);
+      transition: color 0.2s;
+    }
+  }
+}
 .notification-actions {
   display: flex;
   gap: 8px;
   margin-top: 10px;
-}
 
-.notification-actions button {
-  flex: 1;
-  padding: 7px 10px;
-  border-radius: 6px;
-  font-size: 0.78rem;
-  font-weight: 600;
-  cursor: pointer;
-  border: none;
-}
+  & button {
+    flex: 1;
+    padding: 7px 10px;
+    border-radius: 6px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: transform 0.1s ease;
 
-.notification-actions button:active {
-  transform: scale(0.97);
+    &:active {
+      transform: scale(0.95);
+    }
+  }
 }
-
 .btn-accept {
   background-color: var(--good-color, #45c893);
   color: #ffffff;
 }
-
 .btn-decline {
   background: var(--button-bg-color-unimp);
   color: var(--text-color);
   border: 1px solid var(--button-border-color-unimp) !important;
-}
 
-.btn-decline:hover {
-  background: var(--button-bg-hover-unimp);
+  &:hover {
+    background: var(--button-bg-hover-unimp);
+  }
 }
+.reading-state {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.85rem;
+  font-weight: 550;
+  color: var(--main-color);
+  padding: 8px 0;
+}
+.dots {
+  & .dot {
+    font-size: 1.2rem;
+    line-height: 0;
+    animation: blink 1.4s infinite both;
 
+    &:nth-child(2) {
+      animation-delay: .2s;
+    }
+
+    &:nth-child(3) {
+      animation-delay: .4s;
+    }
+  }
+}
+@keyframes blink {
+  0% { opacity: .2; }
+  20% { opacity: 1; }
+  100% { opacity: .2; }
+}
 .empty-state {
   padding: 45px 20px;
   text-align: center;
-}
 
-.empty-state p {
-  margin: 0;
-  font-size: 0.85rem;
-  color: var(--text-color);
-  opacity: 0.5;
+  & p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--text-color);
+    opacity: 0.5;
+  }
 }
-
-.custom-scrollbar::-webkit-scrollbar {
-  width: 5px;
-}
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
-}
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: var(--scroll-color);
-  border-radius: 10px;
+.custom-scrollbar {
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: var(--scroll-color);
+    border-radius: 10px;
+  }
 }
 </style>
