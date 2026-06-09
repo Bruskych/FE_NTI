@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import axios from 'axios'
+import api from '@/core/api/axios'
 
 export interface PostStatus { is_published: boolean; published_at: string | null }
 export interface PostSeo { meta_title: string | null; meta_description: string | null; og_image: string | null }
@@ -40,7 +40,7 @@ export const useCmsStore = defineStore('cms', () => {
   async function fetchPosts() {
     postsLoading.value = true
     try {
-      const { data } = await axios.get('/posts')
+      const { data } = await api.get('/posts')
       posts.value = data.data ?? []
     } finally {
       postsLoading.value = false
@@ -50,7 +50,7 @@ export const useCmsStore = defineStore('cms', () => {
   async function fetchPages() {
     pagesLoading.value = true
     try {
-      const { data } = await axios.get('/pages')
+      const { data } = await api.get('/pages')
       pages.value = data.data ?? []
     } finally {
       pagesLoading.value = false
@@ -60,7 +60,7 @@ export const useCmsStore = defineStore('cms', () => {
   async function createPost(payload: object): Promise<Post> {
     saving.value = true
     try {
-      const { data } = await axios.post('/posts', payload)
+      const { data } = await api.post('/posts', payload)
       const p: Post = data.data ?? data
       posts.value.unshift(p)
       return p
@@ -72,7 +72,7 @@ export const useCmsStore = defineStore('cms', () => {
   async function updatePost(id: number, payload: object): Promise<Post> {
     saving.value = true
     try {
-      const { data } = await axios.put(`/posts/${id}`, payload)
+      const { data } = await api.put(`/posts/${id}`, payload)
       const p: Post = data.data ?? data
       const idx = posts.value.findIndex(x => x.id === id)
       if (idx !== -1) posts.value[idx] = p
@@ -83,14 +83,14 @@ export const useCmsStore = defineStore('cms', () => {
   }
 
   async function deletePost(id: number) {
-    await axios.delete(`/posts/${id}`)
+    await api.delete(`/posts/${id}`)
     posts.value = posts.value.filter(p => p.id !== id)
   }
 
   async function createPage(payload: object): Promise<Page> {
     saving.value = true
     try {
-      const { data } = await axios.post('/pages', payload)
+      const { data } = await api.post('/pages', payload)
       const p: Page = data.data ?? data
       pages.value.unshift(p)
       return p
@@ -102,7 +102,7 @@ export const useCmsStore = defineStore('cms', () => {
   async function updatePage(id: number, payload: object): Promise<Page> {
     saving.value = true
     try {
-      const { data } = await axios.put(`/pages/${id}`, payload)
+      const { data } = await api.put(`/pages/${id}`, payload)
       const p: Page = data.data ?? data
       const idx = pages.value.findIndex(x => x.id === id)
       if (idx !== -1) pages.value[idx] = p
@@ -113,7 +113,7 @@ export const useCmsStore = defineStore('cms', () => {
   }
 
   async function deletePage(id: number) {
-    await axios.delete(`/pages/${id}`)
+    await api.delete(`/pages/${id}`)
     pages.value = pages.value.filter(p => p.id !== id)
   }
 

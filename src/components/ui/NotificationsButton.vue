@@ -51,6 +51,8 @@ onUnmounted(() => {
           @read="id => userNotificationsStore.markAsRead(id)"
           @accept="id => userNotificationsStore.acceptInvite(id)"
           @decline="id => userNotificationsStore.declineInvite(id)"
+          @delete="id => userNotificationsStore.deleteNotification(id)"
+          @delete-all="userNotificationsStore.deleteAllNotifications()"
       />
     </div>
   </div>

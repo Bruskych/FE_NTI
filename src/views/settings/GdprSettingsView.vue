@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
-import axios from 'axios'
+import api from '@/core/api/axios'
 import { useNotificationStore } from '@/stores/notifications'
 import { useAuthStore } from '@/stores/auth'
 
@@ -21,7 +21,7 @@ const eraseConfirmText = ref('')
 async function handleExport() {
   exporting.value = true
   try {
-    await axios.post('/auth/gdpr/export')
+    await api.post('/auth/gdpr/export')
     exportDone.value = true
     notif.add(t('settingsPanel.gdpr_export_success'), 'success')
   } catch {
@@ -35,7 +35,7 @@ async function handleErase() {
   if (eraseConfirmText.value !== t('settingsPanel.gdpr_erase_confirm_word')) return
   erasing.value = true
   try {
-    await axios.delete('/auth/gdpr/erase')
+    await api.delete('/auth/gdpr/erase')
     notif.add(t('settingsPanel.gdpr_erase_success'), 'success')
     authStore.token = null
     authStore.user = null

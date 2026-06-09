@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import api from '@/core/api/axios'
-import axios from 'axios'
+import { isAxiosError } from 'axios'
 
 type Note = {
   id: number
@@ -52,7 +52,7 @@ export const useNotesStore = defineStore('notes', {
           total: payload.total,
         }
       } catch (error: unknown) {
-        if (axios.isAxiosError(error)) {
+        if (isAxiosError(error)) {
           this.error =
             error.response?.data?.message ||
             'Nepodarilo sa načítať poznámky.'
@@ -80,7 +80,7 @@ export const useNotesStore = defineStore('notes', {
           total: payload.total,
         }
       } catch (error: unknown) {
-        if (axios.isAxiosError(error)) {
+        if (isAxiosError(error)) {
           this.error =
             error.response?.data?.message ||
             'Nepodarilo sa načítať moje poznámky.'
@@ -101,7 +101,7 @@ export const useNotesStore = defineStore('notes', {
         const response = await api.get(`/notes/${id}`)
         this.selectedNote = response.data.note
       } catch (error: unknown) {
-        if (axios.isAxiosError(error)) {
+        if (isAxiosError(error)) {
           this.error =
             error.response?.data?.message ||
             'Nepodarilo sa načítať detail poznámky.'
@@ -118,7 +118,7 @@ export const useNotesStore = defineStore('notes', {
         const response = await api.get(`/attachments/${publicId}/link`)
         window.open(response.data.url, '_blank')
       } catch (error: unknown) {
-        if (axios.isAxiosError(error)) {
+        if (isAxiosError(error)) {
           this.error =
             error.response?.data?.message ||
             'Nepodarilo sa otvoriť prílohu.'

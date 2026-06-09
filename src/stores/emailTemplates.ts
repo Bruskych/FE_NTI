@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import axios from 'axios'
+import api from '@/core/api/axios'
 
 export interface EmailTemplate {
   id: number
@@ -27,7 +27,7 @@ export const useEmailTemplatesStore = defineStore('emailTemplates', () => {
   async function fetchTemplates() {
     loading.value = true
     try {
-      const { data } = await axios.get('/admin/email-templates')
+      const { data } = await api.get('/admin/email-templates')
       templates.value = data.data ?? []
     } finally {
       loading.value = false
@@ -37,7 +37,7 @@ export const useEmailTemplatesStore = defineStore('emailTemplates', () => {
   async function createTemplate(payload: EmailTemplatePayload): Promise<EmailTemplate> {
     saving.value = true
     try {
-      const { data } = await axios.post('/admin/email-templates', payload)
+      const { data } = await api.post('/admin/email-templates', payload)
       const t: EmailTemplate = data.data ?? data
       templates.value.unshift(t)
       return t
@@ -49,7 +49,7 @@ export const useEmailTemplatesStore = defineStore('emailTemplates', () => {
   async function updateTemplate(id: number, payload: Partial<EmailTemplatePayload>): Promise<EmailTemplate> {
     saving.value = true
     try {
-      const { data } = await axios.put(`/admin/email-templates/${id}`, payload)
+      const { data } = await api.put(`/admin/email-templates/${id}`, payload)
       const updated: EmailTemplate = data.data ?? data
       const idx = templates.value.findIndex(t => t.id === id)
       if (idx !== -1) templates.value[idx] = updated
@@ -60,7 +60,7 @@ export const useEmailTemplatesStore = defineStore('emailTemplates', () => {
   }
 
   async function deleteTemplate(id: number) {
-    await axios.delete(`/admin/email-templates/${id}`)
+    await api.delete(`/admin/email-templates/${id}`)
     templates.value = templates.value.filter(t => t.id !== id)
   }
 

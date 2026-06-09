@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import axios from 'axios'
+import api from '@/core/api/axios'
 
 export interface ExportLog {
   id: number
@@ -31,7 +31,7 @@ export const useExportsStore = defineStore('exports', () => {
 
   async function fetchTypes() {
     if (typesLoaded.value) return
-    const { data } = await axios.get('/admin/exports/types')
+    const { data } = await api.get('/admin/exports/types')
     types.value = data.data?.types ?? data.types ?? {}
     typesLoaded.value = true
   }
@@ -39,7 +39,7 @@ export const useExportsStore = defineStore('exports', () => {
   async function fetchLogs(page = 1) {
     loading.value = true
     try {
-      const { data } = await axios.get('/admin/exports', { params: { page } })
+      const { data } = await api.get('/admin/exports', { params: { page } })
       logs.value = data.data ?? []
       currentPage.value = data.meta?.current_page ?? page
       lastPage.value = data.meta?.last_page ?? 1
@@ -52,7 +52,7 @@ export const useExportsStore = defineStore('exports', () => {
   async function scheduleExport(exportType: string): Promise<ExportLog> {
     scheduling.value = exportType
     try {
-      const { data } = await axios.post('/admin/exports', { export_type: exportType })
+      const { data } = await api.post('/admin/exports', { export_type: exportType })
       const newLog: ExportLog = data.data?.export ?? data.export
       logs.value.unshift(newLog)
       total.value++

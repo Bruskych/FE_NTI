@@ -2,6 +2,8 @@
   "title": "Notifications",
   "accept": "Accept",
   "decline": "Decline",
+  "delete": "Delete",
+  "delete_all": "Clear all",
   "empty": "Here you will see notifications about news and important events.",
   "team_invite_title": "Team Invitation",
   "team_invite_msg": "Team 'WebDev Masters' invites you to join as a Frontend Developer.",

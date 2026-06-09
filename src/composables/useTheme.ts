@@ -1,4 +1,4 @@
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 import { getCookie, setCookie } from '@/utils/cookies'
 import api from '@/core/api/axios'
 
@@ -15,12 +15,10 @@ function syncToBackend(theme: 'dark' | 'light') {
   api.post('/set-theme', { theme }).catch(() => {/* fire-and-forget */})
 }
 
-export function useTheme() {
-  const initTheme = () => {
-    const saved = getCookie('theme')
-    applyTheme(saved === 'dark')
-  }
+// Apply theme immediately on module load — prevents flash of wrong theme
+applyTheme(getCookie('theme') === 'dark')
 
+export function useTheme() {
   const toggleTheme = () => {
     const next = !isDark.value
     applyTheme(next)
@@ -33,8 +31,6 @@ export function useTheme() {
     applyTheme(dark)
     setCookie('theme', dark ? 'dark' : 'light')
   }
-
-  onMounted(() => initTheme())
 
   return { isDark, toggleTheme, setTheme }
 }

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import CopyIcon from '@/assets/icons/copy.svg'
+import CloseIcon from '@/assets/icons/close.svg'
 
 interface NotificationItem {
   id: number
@@ -20,7 +21,7 @@ const props = defineProps<{
   notifications: NotificationItem[]
 }>()
 
-const emit = defineEmits(['accept', 'decline', 'read'])
+const emit = defineEmits(['accept', 'decline', 'read', 'delete', 'delete-all'])
 
 // Локальное состояние для анимации прочтения конкретного уведомления
 const readingId = ref<number | null>(null)
@@ -70,6 +71,14 @@ const copyNotification = (notification: NotificationItem) => {
   <div class="notifications-menu">
     <div class="menu-header">
       <h3>{{ $t('notification.title') }}</h3>
+      <button
+          v-if="notifications.length > 0"
+          class="btn-clear-all"
+          @click.stop="$emit('delete-all')"
+          v-tooltip="$t('notification.delete_all')"
+      >
+        {{ $t('notification.delete_all') }}
+      </button>
     </div>
 
     <div class="menu-content custom-scrollbar">
@@ -83,13 +92,22 @@ const copyNotification = (notification: NotificationItem) => {
           }"
           @click.stop="!notification.read_at && readingId !== notification.id && handleRead(notification.id)"
       >
-        <button
-            class="btn-copy"
-            v-tooltip="$t('actions.copy')"
-            @click.stop="copyNotification(notification)"
-        >
-          <CopyIcon class="copy-icon" />
-        </button>
+        <div class="btn-group">
+          <button
+              class="btn-copy"
+              v-tooltip="$t('actions.copy')"
+              @click.stop="copyNotification(notification)"
+          >
+            <CopyIcon class="copy-icon" />
+          </button>
+          <button
+              class="btn-delete"
+              v-tooltip="$t('notification.delete')"
+              @click.stop="$emit('delete', notification.id)"
+          >
+            <CloseIcon class="delete-icon" />
+          </button>
+        </div>
 
         <div class="notification-body">
           <template v-if="readingId !== notification.id">
@@ -146,12 +164,33 @@ const copyNotification = (notification: NotificationItem) => {
   padding: 14px 18px;
   border-bottom: 1px solid var(--menu-border);
   background: rgba(255, 255, 255, 0.01);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 
   & h3 {
     margin: 0;
     font-size: 1rem;
     font-weight: 600;
     color: var(--text-color);
+  }
+}
+.btn-clear-all {
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-color);
+  opacity: 0.45;
+  cursor: pointer;
+  padding: 3px 6px;
+  border-radius: 4px;
+  transition: opacity 0.15s;
+
+  &:hover {
+    opacity: 0.85;
+    color: var(--error-color);
   }
 }
 .menu-content {
@@ -241,14 +280,24 @@ const copyNotification = (notification: NotificationItem) => {
     opacity: 0.7;
   }
 
-  & .btn-copy {
+  & .btn-group {
     position: absolute;
-    top: 12px;
-    right: 12px;
+    top: 10px;
+    right: 10px;
     z-index: 10;
+    display: flex;
+    gap: 2px;
+    opacity: 0;
+  }
+
+  &:hover .btn-group {
+    opacity: 1;
+  }
+
+  & .btn-copy,
+  & .btn-delete {
     background: transparent;
     border: none;
-    opacity: 0;
     padding: 5px;
     border-radius: 6px;
     cursor: pointer;
@@ -257,20 +306,30 @@ const copyNotification = (notification: NotificationItem) => {
     justify-content: center;
 
     &:hover {
-      opacity: 1 !important;
       background: rgba(100, 116, 139, 0.15);
-
-      & .copy-icon {
-        color: var(--main-color);
-      }
     }
 
     & .copy-icon {
-      width: 16px;
-      height: 16px;
+      width: 15px;
+      height: 15px;
       color: var(--text-color);
-      transition: color 0.2s;
+      transition: color 0.15s;
     }
+
+    & .delete-icon {
+      width: 13px;
+      height: 13px;
+      color: var(--text-color);
+      transition: color 0.15s;
+    }
+  }
+
+  & .btn-copy:hover .copy-icon {
+    color: var(--main-color);
+  }
+
+  & .btn-delete:hover .delete-icon {
+    color: var(--error-color);
   }
 }
 .notification-actions {

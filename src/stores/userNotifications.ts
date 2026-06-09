@@ -5,10 +5,6 @@ import api from '@/core/api/axios'
 import { useNotificationStore } from '@/stores/notifications'
 import { useAuthStore } from '@/stores/auth'
 
-// ---------------------------------------------------------
-// Интерфейсы данных
-// ---------------------------------------------------------
-
 export interface UserNotification {
     id: number
     user_id: number
@@ -27,24 +23,16 @@ export interface UserNotification {
     updated_at?: string
 }
 
-// ---------------------------------------------------------
-// Стор уведомлений пользователя (Setup Store)
-// ---------------------------------------------------------
-
 export const useUserNotificationsStore = defineStore('userNotifications', () => {
-    // Dependencies
     const toastStore = useNotificationStore()
     const authStore = useAuthStore()
 
-    // State
     const notifications = ref<UserNotification[]>([])
     const loading = ref(false)
 
-    // Getters
     const sortedNotifications = computed(() => {
         if (!Array.isArray(notifications.value)) return []
         return [...notifications.value].sort((a, b) => {
-            // Сначала непрочитанные (read_at === null)
             if (a.read_at === null && b.read_at !== null) return -1
             if (a.read_at !== null && b.read_at === null) return 1
 
@@ -59,7 +47,6 @@ export const useUserNotificationsStore = defineStore('userNotifications', () => 
         return notifications.value.filter(n => n.read_at === null).length
     })
 
-    // Actions
     async function fetchNotifications(): Promise<void> {
         loading.value = true
         try {
@@ -120,6 +107,24 @@ export const useUserNotificationsStore = defineStore('userNotifications', () => 
         }
     }
 
+    async function deleteNotification(notificationId: number): Promise<void> {
+        try {
+            await api.delete(`/notifications/${notificationId}`)
+            notifications.value = notifications.value.filter(n => n.id !== notificationId)
+        } catch (error) {
+            console.error('Failed to delete notification:', error)
+        }
+    }
+
+    async function deleteAllNotifications(): Promise<void> {
+        try {
+            await api.delete('/notifications')
+            notifications.value = []
+        } catch (error) {
+            console.error('Failed to delete all notifications:', error)
+        }
+    }
+
     function clearNotifications(): void {
         notifications.value = []
     }
@@ -133,6 +138,8 @@ export const useUserNotificationsStore = defineStore('userNotifications', () => 
         markAsRead,
         acceptInvite,
         declineInvite,
+        deleteNotification,
+        deleteAllNotifications,
         clearNotifications,
     }
 })

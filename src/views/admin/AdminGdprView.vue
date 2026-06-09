@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import axios from 'axios'
+import api from '@/core/api/axios'
 import { useNotificationStore } from '@/stores/notifications'
 
 const { t } = useI18n()
@@ -21,7 +21,7 @@ async function handleExport() {
   if (!isValidId()) return
   exporting.value = true
   try {
-    await axios.post(`/admin/gdpr/users/${userId.value.trim()}/export`)
+    await api.post(`/admin/gdpr/users/${userId.value.trim()}/export`)
     notif.add(t('adminGdpr.export_success'), 'success')
   } catch {
     // interceptor
@@ -39,7 +39,7 @@ async function handleErase() {
   if (confirmInput.value !== t('adminGdpr.confirm_word')) return
   erasing.value = true
   try {
-    await axios.delete(`/admin/gdpr/users/${userId.value.trim()}`)
+    await api.delete(`/admin/gdpr/users/${userId.value.trim()}`)
     notif.add(t('adminGdpr.erase_success'), 'success')
     userId.value = ''
     showConfirm.value = false
