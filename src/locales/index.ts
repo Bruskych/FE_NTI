@@ -66,6 +66,9 @@ import enOrganizations from './en/organizations.json'
 import skMentorships from './sk/mentorships.json'
 import enMentorships from './en/mentorships.json'
 
+import skDocuments from './sk/documents.json'
+import enDocuments from './en/documents.json'
+
 const messages = {
     sk: {
         header: skHeader,
@@ -90,6 +93,7 @@ const messages = {
         challenges: skChallenges,
         organizations: skOrganizations,
         mentorships: skMentorships,
+        documents: skDocuments,
     },
     en: {
         header: enHeader,
@@ -114,6 +118,7 @@ const messages = {
         challenges: enChallenges,
         organizations: enOrganizations,
         mentorships: enMentorships,
+        documents: enDocuments,
     }
 }
 

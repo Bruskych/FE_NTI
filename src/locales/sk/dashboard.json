@@ -19,6 +19,8 @@
   "card_mentorships_desc": "Zobraz svoje aktívne mentorované projekty",
   "card_admin": "Administrácia",
   "card_admin_desc": "Spravuj používateľov, výzvy a nastavenia platformy",
+  "card_documents": "Dokumenty",
+  "card_documents_desc": "Súbory a zmluvy k prihláškami a projektmi",
   "card_settings": "Nastavenia",
   "card_settings_desc": "Aktualizuj profil a preferencie"
 }

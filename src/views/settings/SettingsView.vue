@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import NavCardItem from '@/components/ui/NavCardItem.vue'
 import UserIcon from '@/assets/icons/user.svg'
+import BellIcon from '@/assets/icons/bell.svg'
 </script>
 
 <template>
@@ -22,6 +23,21 @@ import UserIcon from '@/assets/icons/user.svg'
                 'student'
             ]"
             :icon="UserIcon"
+        />
+        <NavCardItem
+            :label="$t('settingsPanel.notif_title')"
+            to="/settings/notifications"
+            :roles="[
+                'super_admin',
+                'admin',
+                'content_editor',
+                'evaluator',
+                'company',
+                'mentor',
+                'team_leader',
+                'student'
+            ]"
+            :icon="BellIcon"
         />
       </div>
     </aside>

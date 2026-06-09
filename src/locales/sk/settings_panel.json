@@ -23,5 +23,16 @@
   "label_has_carried": "Má opakované predmety",
   "skills_placeholder": "Pridaj zručnosť a stlač Enter",
   "year_placeholder": "napr. 2",
-  "program_placeholder": "napr. Informatika"
+  "program_placeholder": "napr. Informatika",
+  "notif_title": "Nastavenia oznámení",
+  "notif_channels": "Kanály",
+  "notif_content": "Obsah",
+  "notif_email": "E-mailové oznámenia",
+  "notif_email_desc": "Dostávajte aktualizácie a upozornenia e-mailom",
+  "notif_system": "Oznámenia v aplikácii",
+  "notif_system_desc": "Zobrazovať oznámenia priamo na platforme",
+  "notif_deadlines": "Pripomienky termínov",
+  "notif_deadlines_desc": "Dostávajte upozornenia na blížiace sa termíny",
+  "notif_marketing": "Novinky a aktualizácie",
+  "notif_marketing_desc": "Novinky platformy, tipy a nové funkcie"
 }

@@ -19,6 +19,8 @@
   "card_mentorships_desc": "View your active mentored projects",
   "card_admin": "Admin Panel",
   "card_admin_desc": "Manage users, calls, and platform settings",
+  "card_documents": "Documents",
+  "card_documents_desc": "Files and agreements linked to your applications and projects",
   "card_settings": "Settings",
   "card_settings_desc": "Update your profile and preferences"
 }

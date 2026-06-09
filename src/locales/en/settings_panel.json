@@ -23,5 +23,16 @@
   "label_has_carried": "Has carried subjects",
   "skills_placeholder": "Add skill and press Enter",
   "year_placeholder": "e.g. 2",
-  "program_placeholder": "e.g. Computer Science"
+  "program_placeholder": "e.g. Computer Science",
+  "notif_title": "Notification Preferences",
+  "notif_channels": "Channels",
+  "notif_content": "Content",
+  "notif_email": "Email notifications",
+  "notif_email_desc": "Receive updates and alerts via email",
+  "notif_system": "In-app notifications",
+  "notif_system_desc": "Show notifications inside the platform",
+  "notif_deadlines": "Deadline reminders",
+  "notif_deadlines_desc": "Get reminders about upcoming deadlines",
+  "notif_marketing": "News & updates",
+  "notif_marketing_desc": "Platform news, tips and new features"
 }

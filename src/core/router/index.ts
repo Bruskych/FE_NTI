@@ -12,6 +12,7 @@ const RegisterView = () => import('@/views/RegisterView.vue')
 const SettingsView = () => import('@/views/settings/SettingsView.vue')
 const ErrorView = () => import('@/views/ErrorView.vue')
 const ProfileSettingsView = () => import('@/views/settings/ProfileSettingsView.vue')
+const NotificationSettingsView = () => import('@/views/settings/NotificationSettingsView.vue')
 const AdminView = () => import('@/views/admin/AdminView.vue')
 const StudentAppsView = () => import('@/views/admin/StudentAppsView.vue')
 const CompanyAppsView = () => import('@/views/admin/CompanyAppsView.vue')
@@ -22,6 +23,7 @@ const VerifyEmailView = () => import('@/views/VerifyEmailView.vue')
 const ChallengesView = () => import('@/views/ChallengesView.vue')
 const OrganizationView = () => import('@/views/OrganizationView.vue')
 const MentorshipsView = () => import('@/views/MentorshipsView.vue')
+const DocumentsView = () => import('@/views/DocumentsView.vue')
 
 const router = createRouter({
     history: createWebHistory(), // Используем WebHistory для красивых URL без хэша
@@ -80,6 +82,12 @@ const router = createRouter({
             meta: { requiresAuth: true, blockRoles: ['visitor', 'student', 'team_leader', 'company', 'evaluator', 'content_editor'] }
         },
         {
+            path: '/documents',
+            name: 'documents',
+            component: DocumentsView,
+            meta: { requiresAuth: true, blockRoles: ['visitor'] }
+        },
+        {
             path: '/login',
             name: 'login',
             component: LoginView,
@@ -105,6 +113,11 @@ const router = createRouter({
                     path: 'profile',
                     name: 'settings-profile',
                     component: ProfileSettingsView
+                },
+                {
+                    path: 'notifications',
+                    name: 'settings-notifications',
+                    component: NotificationSettingsView
                 }
             ]
         },
