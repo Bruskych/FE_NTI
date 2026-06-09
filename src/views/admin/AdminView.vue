@@ -2,6 +2,10 @@
 import NavCardItem from '@/components/ui/NavCardItem.vue'
 import UsersIcon from '@/assets/icons/users.svg'
 import AdminIcon from '@/assets/icons/admin.svg'
+import BellIcon from '@/assets/icons/bell.svg'
+import DownloadIcon from '@/assets/icons/download.svg'
+import MailIcon from '@/assets/icons/mail.svg'
+import ShieldIcon from '@/assets/icons/shield.svg'
 </script>
 
 <template>
@@ -26,6 +30,30 @@ import AdminIcon from '@/assets/icons/admin.svg'
             to="/admin/calls"
             :roles="['admin', 'super_admin']"
             :icon="AdminIcon"
+        />
+        <NavCardItem
+            :label="$t('adminPanel.bulk_messages')"
+            to="/admin/bulk-messages"
+            :roles="['admin', 'super_admin']"
+            :icon="BellIcon"
+        />
+        <NavCardItem
+            :label="$t('adminPanel.exports')"
+            to="/admin/exports"
+            :roles="['admin', 'super_admin']"
+            :icon="DownloadIcon"
+        />
+        <NavCardItem
+            :label="$t('adminPanel.email_templates')"
+            to="/admin/email-templates"
+            :roles="['admin', 'super_admin']"
+            :icon="MailIcon"
+        />
+        <NavCardItem
+            :label="$t('adminPanel.gdpr')"
+            to="/admin/gdpr"
+            :roles="['admin', 'super_admin']"
+            :icon="ShieldIcon"
         />
       </div>
     </aside>

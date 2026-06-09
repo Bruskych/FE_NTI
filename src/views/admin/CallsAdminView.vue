@@ -105,12 +105,7 @@ async function handleSave() {
 
 async function handleDelete(call: Call) {
   if (!confirm(t('adminPanel.delete_call_confirm', { title: call.title }))) return
-  try {
-    await callsStore.deleteCall(call.id)
-  } catch (err: unknown) {
-    const e = err as string
-    alert(e)
-  }
+  await callsStore.deleteCall(call.id)
 }
 
 async function handleOpen(call: Call) {
@@ -424,7 +419,8 @@ onMounted(async () => {
   position: fixed; inset: 0;
   background: rgba(0,0,0,0.45);
   display: flex; align-items: center; justify-content: center;
-  z-index: 999; padding: 20px;
+  z-index: 1001; padding: 20px;
+  color: var(--text-color);
 }
 .modal-box {
   background: var(--menu-color);

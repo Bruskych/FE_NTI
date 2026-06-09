@@ -64,11 +64,7 @@ async function handleAddMember() {
 async function handleRemoveMember(userId: number) {
   if (!org.value) return
   if (!confirm(t('organizations.remove_confirm'))) return
-  try {
-    await orgStore.removeMember(org.value.id, userId)
-  } catch (err: unknown) {
-    alert((err as Error).message ?? 'Error')
-  }
+  await orgStore.removeMember(org.value.id, userId)
 }
 
 const formatDate = (d: string | null) => {
@@ -426,7 +422,8 @@ onMounted(() => {
 .modal-overlay {
   position: fixed; inset: 0; background: rgba(0,0,0,0.45);
   display: flex; align-items: center; justify-content: center;
-  z-index: 999; padding: 20px;
+  z-index: 1001; padding: 20px;
+  color: var(--text-color);
 }
 .modal-box {
   background: var(--menu-color); border: 1px solid var(--menu-border);

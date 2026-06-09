@@ -1,0 +1,19 @@
+{
+  "title": "GDPR — Data Management",
+  "subtitle": "Export or anonymize personal data of a specific user",
+  "lookup_title": "User action",
+  "lookup_desc": "Enter a user ID and choose an action. You can find user IDs in the student or company applications list.",
+  "id_placeholder": "User ID",
+  "export_btn": "Export data",
+  "exporting": "Exporting...",
+  "export_success": "Personal data export has been queued",
+  "erase_btn": "Anonymize data",
+  "confirm_title": "Confirm anonymization",
+  "confirm_warning": "IRREVERSIBLE action: personal data of user #{id} will be anonymized. This cannot be undone.",
+  "confirm_label": "Type \"{word}\" to confirm",
+  "confirm_word": "DELETE",
+  "confirm_btn": "Confirm",
+  "erasing": "Anonymizing...",
+  "erase_success": "User personal data has been anonymized",
+  "info": "This section is for GDPR compliance. Export creates a JSON file with all personal data. Anonymization replaces personal data with generic values and revokes all access."
+}

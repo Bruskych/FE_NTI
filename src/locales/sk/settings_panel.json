@@ -34,5 +34,25 @@
   "notif_deadlines": "Pripomienky termínov",
   "notif_deadlines_desc": "Dostávajte upozornenia na blížiace sa termíny",
   "notif_marketing": "Novinky a aktualizácie",
-  "notif_marketing_desc": "Novinky platformy, tipy a nové funkcie"
+  "notif_marketing_desc": "Novinky platformy, tipy a nové funkcie",
+
+  "gdpr_nav": "Ochrana údajov",
+  "gdpr_title": "Ochrana osobných údajov",
+  "gdpr_subtitle": "Spravujte svoje osobné údaje v súlade s GDPR",
+  "gdpr_export_title": "Exportovať moje dáta",
+  "gdpr_export_desc": "Stiahnite kópiu všetkých svojich osobných údajov uložených v systéme. Súbor bude pripravený a odoslaný na váš e-mail.",
+  "gdpr_export_btn": "Požiadať o export",
+  "gdpr_exporting": "Požadujem...",
+  "gdpr_export_queued": "Požiadavka prijatá — súbor bude odoslaný na váš e-mail",
+  "gdpr_export_success": "Export osobných dát bol zaradený do fronty",
+  "gdpr_erase_title": "Vymazať moje dáta",
+  "gdpr_erase_desc": "Trvalo anonymizujte a vymažte všetky svoje osobné údaje. Táto akcia je nevratná a váš účet prestane byť použiteľný.",
+  "gdpr_erase_btn": "Vymazať moje dáta",
+  "gdpr_erase_confirm_title": "Ste si istý?",
+  "gdpr_erase_warning": "Táto akcia je NEVRATNÁ. Všetky vaše osobné údaje budú anonymizované a stratíte prístup k účtu.",
+  "gdpr_erase_confirm_label": "Pre potvrdenie napíšte \"{word}\"",
+  "gdpr_erase_confirm_word": "VYMAZAT",
+  "gdpr_erasing": "Mažem...",
+  "gdpr_erase_confirm_btn": "Potvrdiť vymazanie",
+  "gdpr_erase_success": "Osobné dáta boli anonymizované"
 }

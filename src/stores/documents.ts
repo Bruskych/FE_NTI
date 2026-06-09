@@ -90,6 +90,11 @@ export const useDocumentsStore = defineStore('documents', () => {
     }
   }
 
+  async function getPreviewUrl(documentId: number): Promise<string> {
+    const res = await api.get(`/documents/${documentId}/preview`)
+    return res.data.data?.url ?? res.data.url
+  }
+
   async function downloadDocument(documentId: number, code?: string): Promise<void> {
     const params = code ? { code } : {}
     let res
@@ -136,5 +141,6 @@ export const useDocumentsStore = defineStore('documents', () => {
     deleteDocument,
     requestAccessCode,
     downloadDocument,
+    getPreviewUrl,
   }
 })

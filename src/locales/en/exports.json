@@ -1,0 +1,15 @@
+{
+  "title": "Data Exports",
+  "subtitle": "Generate and download system data in various formats",
+  "trigger_title": "Trigger Export",
+  "history_title": "Export history",
+  "loading": "Loading history...",
+  "empty": "No exports have been created yet",
+  "scheduled_success": "Export has been queued successfully",
+  "resource_users": "Users",
+  "resource_projects": "Projects",
+  "resource_applications": "Applications",
+  "resource_personal_data": "Personal data",
+  "status_done": "Done",
+  "status_pending": "Pending"
+}

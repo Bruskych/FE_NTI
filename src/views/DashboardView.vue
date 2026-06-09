@@ -100,6 +100,14 @@ const allCards: DashCard[] = [
     icon: 'evaluations',
     roles: ['evaluator', 'admin', 'super_admin'],
   },
+  // CMS
+  {
+    titleKey: 'dashboard.card_cms',
+    descKey: 'dashboard.card_cms_desc',
+    to: '/cms',
+    icon: 'cms',
+    roles: ['content_editor', 'admin', 'super_admin'],
+  },
   // Admin
   {
     titleKey: 'dashboard.card_admin',
@@ -229,6 +237,11 @@ const navigate = (to: string) => router.push(to)
             <!-- admin -->
             <svg v-else-if="card.icon === 'admin'" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
               <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+            <!-- cms -->
+            <svg v-else-if="card.icon === 'cms'" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
             </svg>
             <!-- settings -->
             <svg v-else xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">

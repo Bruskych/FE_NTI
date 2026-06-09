@@ -13,10 +13,16 @@ const SettingsView = () => import('@/views/settings/SettingsView.vue')
 const ErrorView = () => import('@/views/ErrorView.vue')
 const ProfileSettingsView = () => import('@/views/settings/ProfileSettingsView.vue')
 const NotificationSettingsView = () => import('@/views/settings/NotificationSettingsView.vue')
+const GdprSettingsView = () => import('@/views/settings/GdprSettingsView.vue')
 const AdminView = () => import('@/views/admin/AdminView.vue')
 const StudentAppsView = () => import('@/views/admin/StudentAppsView.vue')
 const CompanyAppsView = () => import('@/views/admin/CompanyAppsView.vue')
 const CallsAdminView = () => import('@/views/admin/CallsAdminView.vue')
+const BulkMessagesView = () => import('@/views/admin/BulkMessagesView.vue')
+const ExportsView = () => import('@/views/admin/ExportsView.vue')
+const EmailTemplatesView = () => import('@/views/admin/EmailTemplatesView.vue')
+const AdminGdprView = () => import('@/views/admin/AdminGdprView.vue')
+const CmsView = () => import('@/views/CmsView.vue')
 const ForgotPasswordView = () => import('@/views/ForgotPasswordView.vue')
 const ResetPasswordView = () => import('@/views/ResetPasswordView.vue')
 const VerifyEmailView = () => import('@/views/VerifyEmailView.vue')
@@ -102,6 +108,12 @@ const router = createRouter({
             meta: { requiresAuth: true, blockRoles: ['visitor', 'student', 'team_leader', 'company', 'mentor', 'content_editor'] }
         },
         {
+            path: '/cms',
+            name: 'cms',
+            component: CmsView,
+            meta: { requiresAuth: true, blockRoles: ['visitor', 'student', 'team_leader', 'company', 'mentor', 'evaluator'] }
+        },
+        {
             path: '/login',
             name: 'login',
             component: LoginView,
@@ -132,6 +144,11 @@ const router = createRouter({
                     path: 'notifications',
                     name: 'settings-notifications',
                     component: NotificationSettingsView
+                },
+                {
+                    path: 'gdpr',
+                    name: 'settings-gdpr',
+                    component: GdprSettingsView
                 }
             ]
         },
@@ -159,6 +176,26 @@ const router = createRouter({
                     path: 'calls',
                     name: 'admin-calls',
                     component: CallsAdminView
+                },
+                {
+                    path: 'bulk-messages',
+                    name: 'admin-bulk-messages',
+                    component: BulkMessagesView
+                },
+                {
+                    path: 'exports',
+                    name: 'admin-exports',
+                    component: ExportsView
+                },
+                {
+                    path: 'email-templates',
+                    name: 'admin-email-templates',
+                    component: EmailTemplatesView
+                },
+                {
+                    path: 'gdpr',
+                    name: 'admin-gdpr',
+                    component: AdminGdprView
                 },
             ]
         },

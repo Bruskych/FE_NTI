@@ -30,9 +30,34 @@ const uploadType = ref('')
 const uploadClass = ref<DocumentClassification>('public')
 const uploadError = ref<string | null>(null)
 const uploadSuccess = ref(false)
+const isDragging = ref(false)
+const fileInputRef = ref<HTMLInputElement | null>(null)
+
+const uploadFileExt = computed(() => {
+  if (!uploadFile.value) return ''
+  const parts = uploadFile.value.name.split('.')
+  return parts.length > 1 ? parts.at(-1)!.toUpperCase().slice(0, 4) : 'FILE'
+})
+
+function formatFileBytes(bytes: number): string {
+  if (bytes >= 1048576) return `${(bytes / 1048576).toFixed(1)} MB`
+  if (bytes >= 1024) return `${(bytes / 1024).toFixed(0)} KB`
+  return `${bytes} B`
+}
 
 function onFileChange(e: Event) {
   uploadFile.value = (e.target as HTMLInputElement).files?.[0] ?? null
+}
+
+function onDrop(e: DragEvent) {
+  isDragging.value = false
+  const file = e.dataTransfer?.files?.[0]
+  if (file) uploadFile.value = file
+}
+
+function removeFile() {
+  uploadFile.value = null
+  if (fileInputRef.value) fileInputRef.value.value = ''
 }
 
 async function submitUpload() {
@@ -100,13 +125,7 @@ async function handleDownload(id: number, classification: DocumentClassification
     }
     return
   }
-  try {
-    await store.downloadDocument(id)
-  } catch (err: unknown) {
-    const e = err as { message?: string }
-    console.error('Download error:', err)
-    alert(e.message ?? t('documents.download_error'))
-  }
+  await store.downloadDocument(id)
 }
 
 async function submitCode() {
@@ -126,6 +145,30 @@ function closeCodeModal() {
   codeValue.value = ''
   codeSent.value = false
   codeError.value = null
+}
+
+// Preview
+const previewDoc = ref<Document | null>(null)
+const previewUrl = ref<string | null>(null)
+const previewLoading = ref(false)
+
+async function handlePreview(doc: Document) {
+  previewDoc.value = doc
+  previewUrl.value = null
+  previewLoading.value = true
+  try {
+    previewUrl.value = await store.getPreviewUrl(doc.id)
+  } catch {
+    // interceptor shows error toast
+    previewDoc.value = null
+  } finally {
+    previewLoading.value = false
+  }
+}
+
+function closePreview() {
+  previewDoc.value = null
+  previewUrl.value = null
 }
 
 // Helpers
@@ -253,6 +296,16 @@ onMounted(() => store.fetchDocuments())
 
           <div class="doc-actions">
             <button
+              class="action-btn action-preview"
+              :disabled="store.actionLoading || previewLoading"
+              @click="handlePreview(doc)"
+              :title="$t('documents.action_preview')"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
+            <button
               v-if="canDownload(doc)"
               class="action-btn action-download"
               :disabled="store.actionLoading"
@@ -299,10 +352,40 @@ onMounted(() => store.fetchDocuments())
           </div>
 
           <div class="modal-body">
-            <label class="form-label">
-              {{ $t('documents.upload_file_label') }}
-              <input type="file" class="form-file" @change="onFileChange" />
-            </label>
+            <!-- File drop zone -->
+            <div
+              class="file-drop"
+              :class="{ 'has-file': uploadFile, 'is-dragging': isDragging }"
+              @dragover.prevent="isDragging = true"
+              @dragleave.prevent="isDragging = false"
+              @drop.prevent="onDrop"
+              @click="fileInputRef?.click()"
+            >
+              <input ref="fileInputRef" type="file" style="display:none" @change="onFileChange" />
+
+              <template v-if="!uploadFile">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="drop-icon">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="17 8 12 3 7 8"/>
+                  <line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+                <p class="drop-hint-text">{{ $t('documents.upload_drop_hint') }}</p>
+                <span class="drop-hint-sub">{{ $t('documents.upload_drop_sub') }}</span>
+              </template>
+
+              <div v-else class="file-preview" @click.stop>
+                <div class="file-ext-badge">{{ uploadFileExt }}</div>
+                <div class="file-info">
+                  <span class="file-name">{{ uploadFile.name }}</span>
+                  <span class="file-size">{{ formatFileBytes(uploadFile.size) }}</span>
+                </div>
+                <button class="file-remove" type="button" @click.stop="removeFile">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
 
             <label class="form-label">
               {{ $t('documents.upload_type_label') }}
@@ -323,7 +406,7 @@ onMounted(() => store.fetchDocuments())
           </div>
 
           <div class="modal-footer">
-            <button class="btn-cancel" @click="closeUpload">{{ $t('challenges.action_cancel') ?? 'Cancel' }}</button>
+            <button class="btn-cancel" @click="closeUpload">{{ $t('challenges.form_cancel') }}</button>
             <button
               class="btn-submit"
               :disabled="!uploadFile || store.actionLoading"
@@ -384,6 +467,67 @@ onMounted(() => store.fetchDocuments())
             >
               {{ $t('documents.code_submit') }}
             </button>
+          </div>
+        </div>
+      </div>
+    </transition>
+  </teleport>
+
+  <!-- Preview Modal -->
+  <teleport to="body">
+    <transition name="modal-fade">
+      <div v-if="previewDoc" class="modal-overlay preview-overlay" @click.self="closePreview">
+        <div class="modal-box preview-box">
+          <div class="modal-header">
+            <h3 class="preview-title">
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+              </svg>
+              {{ previewDoc.file_name }}
+            </h3>
+            <button class="modal-close" @click="closePreview">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </button>
+          </div>
+
+          <div class="preview-body">
+            <div v-if="previewLoading" class="preview-loading">
+              <div class="spinner"></div>
+              <p>{{ $t('documents.preview_loading') }}</p>
+            </div>
+            <template v-else-if="previewUrl">
+              <img
+                v-if="previewDoc.mime_type.startsWith('image/')"
+                :src="previewUrl"
+                class="preview-img"
+                :alt="previewDoc.file_name"
+              />
+              <iframe
+                v-else
+                :src="previewUrl"
+                class="preview-iframe"
+                :title="previewDoc.file_name"
+              />
+            </template>
+          </div>
+
+          <div class="modal-footer">
+            <a
+              v-if="previewUrl"
+              :href="previewUrl"
+              target="_blank"
+              rel="noopener"
+              class="btn-open-new"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                <polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
+              </svg>
+              {{ $t('documents.preview_open_new') }}
+            </a>
+            <button class="btn-cancel" @click="closePreview">{{ $t('challenges.form_cancel') }}</button>
           </div>
         </div>
       </div>
@@ -628,6 +772,7 @@ onMounted(() => store.fetchDocuments())
 
 .action-btn:disabled { opacity: 0.35; cursor: not-allowed; }
 
+.action-preview:not(:disabled):hover  { background: color-mix(in srgb, var(--main-color) 15%, transparent); border-color: var(--main-color); color: var(--main-color); }
 .action-download:not(:disabled):hover { background: var(--main-color); border-color: var(--main-color); color: #fff; }
 .action-delete:not(:disabled):hover   { background: var(--error-color); border-color: var(--error-color); color: #fff; }
 
@@ -640,6 +785,7 @@ onMounted(() => store.fetchDocuments())
   justify-content: center;
   z-index: 9000;
   padding: 20px;
+  color: var(--text-color);
 }
 
 .modal-box {
@@ -720,12 +866,77 @@ onMounted(() => store.fetchDocuments())
 
 .form-input:focus, .form-select:focus { border-color: var(--main-color); }
 
-.form-file {
-  padding: 7px 0;
-  font-family: inherit;
-  font-size: 13px;
-  color: var(--text-color);
+/* File drop zone */
+.file-drop {
+  border: 2px dashed var(--menu-border);
+  border-radius: 14px;
+  padding: 28px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  text-align: center;
+  user-select: none;
 }
+.file-drop:hover,
+.file-drop.is-dragging {
+  border-color: var(--main-color);
+  background: color-mix(in srgb, var(--main-color) 6%, transparent);
+}
+.file-drop.has-file {
+  border-style: solid;
+  padding: 14px 16px;
+  cursor: default;
+}
+.drop-icon { color: var(--main-color); opacity: 0.55; pointer-events: none; }
+.drop-hint-text { font-size: 14px; font-weight: 700; margin: 0; pointer-events: none; }
+.drop-hint-sub  { font-size: 12px; opacity: 0.5; margin: 0; pointer-events: none; }
+
+.file-preview {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+.file-ext-badge {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--main-color) 15%, transparent);
+  color: var(--main-color);
+  font-size: 9px; font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.file-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-align: left;
+}
+.file-name {
+  font-size: 13px; font-weight: 700;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.file-size { font-size: 12px; opacity: 0.55; }
+.file-remove {
+  flex-shrink: 0;
+  width: 28px; height: 28px;
+  border-radius: 8px;
+  background: transparent;
+  border: 1px solid var(--menu-border);
+  color: var(--text-color);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0.6;
+  transition: opacity 0.15s, border-color 0.15s, color 0.15s;
+}
+.file-remove:hover { opacity: 1; border-color: var(--error-color); color: var(--error-color); }
 
 .form-error   { font-size: 13px; color: var(--error-color); font-weight: 600; margin: 0; }
 .form-success { font-size: 13px; color: var(--good-color); font-weight: 600; margin: 0; }
@@ -775,4 +986,94 @@ onMounted(() => store.fetchDocuments())
   .doc-row { flex-wrap: wrap; }
   .doc-name { max-width: 200px; }
 }
+
+/* Preview modal */
+.preview-overlay { align-items: stretch; padding: 20px; }
+.preview-box {
+  width: 100%;
+  max-width: 960px;
+  max-height: calc(100vh - 40px);
+  display: flex;
+  flex-direction: column;
+}
+.preview-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.preview-body {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-color);
+  border-radius: 10px;
+  min-height: 300px;
+}
+.preview-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  opacity: 0.6;
+}
+.preview-img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 8px;
+}
+.preview-iframe {
+  width: 100%;
+  height: 100%;
+  min-height: 520px;
+  border: none;
+  border-radius: 8px;
+}
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  padding-top: 16px;
+  border-top: 1px solid var(--menu-border);
+  margin-top: 16px;
+}
+.btn-open-new {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: color-mix(in srgb, var(--main-color) 12%, transparent);
+  color: var(--main-color);
+  border: 1.5px solid var(--main-color);
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.btn-open-new:hover { background: color-mix(in srgb, var(--main-color) 20%, transparent); }
+.btn-cancel {
+  padding: 8px 18px;
+  border-radius: 8px;
+  border: 1.5px solid var(--menu-border);
+  background: transparent;
+  color: var(--text-color);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.btn-cancel:hover { border-color: var(--text-color); }
 </style>

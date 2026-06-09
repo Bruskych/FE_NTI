@@ -2,6 +2,7 @@
 import NavCardItem from '@/components/ui/NavCardItem.vue'
 import UserIcon from '@/assets/icons/user.svg'
 import BellIcon from '@/assets/icons/bell.svg'
+import ShieldIcon from '@/assets/icons/shield.svg'
 </script>
 
 <template>
@@ -38,6 +39,21 @@ import BellIcon from '@/assets/icons/bell.svg'
                 'student'
             ]"
             :icon="BellIcon"
+        />
+        <NavCardItem
+            :label="$t('settingsPanel.gdpr_nav')"
+            to="/settings/gdpr"
+            :roles="[
+                'super_admin',
+                'admin',
+                'content_editor',
+                'evaluator',
+                'company',
+                'mentor',
+                'team_leader',
+                'student'
+            ]"
+            :icon="ShieldIcon"
         />
       </div>
     </aside>

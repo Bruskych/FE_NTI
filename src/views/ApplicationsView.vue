@@ -60,22 +60,12 @@ function statusClass(status: string) {
 
 async function handleSubmit(app: Application) {
   if (!confirm(t('applications.submit_confirm'))) return
-  try {
-    await appsStore.submitApplication(app.id)
-  } catch (err: unknown) {
-    const e = err as { response?: { data?: { message?: string } } }
-    alert(e.response?.data?.message ?? 'Error submitting application')
-  }
+  await appsStore.submitApplication(app.id)
 }
 
 async function handleDelete(app: Application) {
   if (!confirm(t('applications.delete_confirm'))) return
-  try {
-    await appsStore.deleteApplication(app.id)
-  } catch (err: unknown) {
-    const e = err as { response?: { data?: { message?: string } } }
-    alert(e.response?.data?.message ?? 'Error deleting application')
-  }
+  await appsStore.deleteApplication(app.id)
 }
 
 async function handleCreate() {
@@ -461,12 +451,13 @@ onMounted(async () => {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.45);
+  background: rgba(0,0,0,0.5);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 999;
+  z-index: 1001;
   padding: 20px;
+  color: var(--text-color);
 }
 .modal-box {
   background: var(--menu-color);

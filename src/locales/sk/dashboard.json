@@ -25,6 +25,8 @@
   "card_consultations_desc": "Naplánované stretnutia s mentorom a ich záznamy",
   "card_evaluations": "Hodnotenie",
   "card_evaluations_desc": "Posudzuj a boduj prihlášky čakajúce na expertné hodnotenie",
+  "card_cms": "Správa obsahu",
+  "card_cms_desc": "Vytváraj a upravuj príspevky a stránky webu",
   "card_settings": "Nastavenia",
   "card_settings_desc": "Aktualizuj profil a preferencie"
 }
