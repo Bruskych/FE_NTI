@@ -54,6 +54,9 @@ import enApplications from './en/applications.json'
 import skProjects from './sk/projects.json'
 import enProjects from './en/projects.json'
 
+import skCookie from './sk/cookie.json'
+import enCookie from './en/cookie.json'
+
 const messages = {
     sk: {
         header: skHeader,
@@ -73,7 +76,8 @@ const messages = {
         calls: skCalls,
         team: skTeam,
         applications: skApplications,
-        projects: skProjects
+        projects: skProjects,
+        cookie: skCookie,
     },
     en: {
         header: enHeader,
@@ -93,7 +97,8 @@ const messages = {
         calls: enCalls,
         team: enTeam,
         applications: enApplications,
-        projects: enProjects
+        projects: enProjects,
+        cookie: enCookie,
     }
 }
 
