@@ -55,5 +55,17 @@
   "exports_desc": "Download system data in various formats",
 
   "email_templates": "Email Templates",
-  "gdpr": "GDPR"
+  "gdpr": "GDPR",
+
+  "dashboard": "Overview",
+  "dash_title": "System Overview",
+  "dash_users_total": "Total users",
+  "dash_pending_apps": "Pending applications",
+  "dash_latest_users": "Last 5 registrations",
+  "dash_col_name": "Name",
+  "dash_col_email": "Email",
+  "dash_col_role": "Role",
+  "dash_col_joined": "Joined",
+  "dash_loading": "Loading...",
+  "dash_no_users": "No users"
 }

@@ -55,5 +55,17 @@
   "exports_desc": "Stiahnite dáta systému v rôznych formátoch",
 
   "email_templates": "E-mailové šablóny",
-  "gdpr": "GDPR"
+  "gdpr": "GDPR",
+
+  "dashboard": "Prehľad",
+  "dash_title": "Prehľad systému",
+  "dash_users_total": "Celkový počet používateľov",
+  "dash_pending_apps": "Čakajúce prihlášky",
+  "dash_latest_users": "Posledných 5 registrácií",
+  "dash_col_name": "Meno",
+  "dash_col_email": "E-mail",
+  "dash_col_role": "Rola",
+  "dash_col_joined": "Registrovaný",
+  "dash_loading": "Načítavam...",
+  "dash_no_users": "Žiadni používatelia"
 }

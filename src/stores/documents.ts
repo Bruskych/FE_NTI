@@ -95,6 +95,53 @@ export const useDocumentsStore = defineStore('documents', () => {
     return res.data.data?.url ?? res.data.url
   }
 
+  async function generateInternshipAgreement(payload: Record<string, string>): Promise<Document> {
+    actionLoading.value = true
+    try {
+      const res = await api.post('/documents/generate/internship-agreement', payload)
+      const doc: Document = res.data.document ?? res.data.data ?? res.data
+      documents.value.unshift(doc)
+      return doc
+    } catch (err: unknown) {
+      const e = err as AxiosError<{ message?: string }>
+      throw new Error(e.response?.data?.message ?? 'Failed to generate agreement', { cause: err })
+    } finally {
+      actionLoading.value = false
+    }
+  }
+
+  async function uploadTemplate(formData: FormData): Promise<Document> {
+    actionLoading.value = true
+    try {
+      const res = await api.post('/documents/templates/upload', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      })
+      const doc: Document = res.data.document ?? res.data.data ?? res.data
+      documents.value.unshift(doc)
+      return doc
+    } catch (err: unknown) {
+      const e = err as AxiosError<{ message?: string }>
+      throw new Error(e.response?.data?.message ?? 'Failed to upload template', { cause: err })
+    } finally {
+      actionLoading.value = false
+    }
+  }
+
+  async function generateFromTemplate(templateId: number, data: Record<string, string>): Promise<Document> {
+    actionLoading.value = true
+    try {
+      const res = await api.post('/documents/templates/generate', { template_id: templateId, data })
+      const doc: Document = res.data.document ?? res.data.data ?? res.data
+      documents.value.unshift(doc)
+      return doc
+    } catch (err: unknown) {
+      const e = err as AxiosError<{ message?: string }>
+      throw new Error(e.response?.data?.message ?? 'Failed to generate from template', { cause: err })
+    } finally {
+      actionLoading.value = false
+    }
+  }
+
   async function downloadDocument(documentId: number, code?: string): Promise<void> {
     const params = code ? { code } : {}
     let res
@@ -142,5 +189,8 @@ export const useDocumentsStore = defineStore('documents', () => {
     requestAccessCode,
     downloadDocument,
     getPreviewUrl,
+    generateInternshipAgreement,
+    uploadTemplate,
+    generateFromTemplate,
   }
 })

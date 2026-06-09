@@ -65,18 +65,26 @@ async function submitUpload() {
   uploadError.value = null
   const fd = new FormData()
   fd.append('file', uploadFile.value)
+
+  if (uploadAsTemplate.value) {
+    if (templateName.value.trim()) fd.append('name', templateName.value.trim())
+    if (templateDesc.value.trim()) fd.append('description', templateDesc.value.trim())
+    try {
+      await store.uploadTemplate(fd)
+      uploadSuccess.value = true
+      setTimeout(() => { showUpload.value = false; uploadSuccess.value = false; closeUpload() }, 1200)
+    } catch (err: unknown) {
+      uploadError.value = (err as Error).message
+    }
+    return
+  }
+
   fd.append('classification', uploadClass.value)
   if (uploadType.value.trim()) fd.append('type', uploadType.value.trim())
   try {
     await store.uploadDocument(fd)
     uploadSuccess.value = true
-    setTimeout(() => {
-      showUpload.value = false
-      uploadSuccess.value = false
-      uploadFile.value = null
-      uploadType.value = ''
-      uploadClass.value = 'public'
-    }, 1200)
+    setTimeout(() => { showUpload.value = false; uploadSuccess.value = false; closeUpload() }, 1200)
   } catch (err: unknown) {
     uploadError.value = (err as Error).message
   }
@@ -89,6 +97,9 @@ function closeUpload() {
   uploadClass.value = 'public'
   uploadError.value = null
   uploadSuccess.value = false
+  uploadAsTemplate.value = false
+  templateName.value = ''
+  templateDesc.value = ''
 }
 
 // Delete
@@ -175,6 +186,95 @@ function closePreview() {
 import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
 
+// ─── Upload as template ───────────────────────────────────────────────────────
+const uploadAsTemplate = ref(false)
+const templateName = ref('')
+const templateDesc = ref('')
+
+// ─── Generate modal ───────────────────────────────────────────────────────────
+const showGenerate = ref(false)
+const genTab = ref<'agreement' | 'from_template'>('agreement')
+
+const agStudentName  = ref('')
+const agStudentEmail = ref('')
+const agStudentId    = ref('')
+const agUniversity   = ref('')
+const agProgram      = ref('')
+const agCompanyName  = ref('')
+const agCompanyAddr  = ref('')
+const agMentorName   = ref('')
+const agMentorEmail  = ref('')
+const agStartDate    = ref('')
+const agEndDate      = ref('')
+const agError        = ref<string | null>(null)
+const agSuccess      = ref(false)
+
+const templates = computed(() => store.documents.filter((d: Document) => d.type === 'template'))
+const selectedTplId = ref<number | null>(null)
+const tplPairs = ref<{ key: string; value: string }[]>([{ key: '', value: '' }])
+const tplError = ref<string | null>(null)
+const tplSuccess = ref(false)
+
+function addTplPair() { tplPairs.value.push({ key: '', value: '' }) }
+function removeTplPair(i: number) { tplPairs.value.splice(i, 1) }
+
+async function submitAgreement() {
+  agError.value = null
+  try {
+    await store.generateInternshipAgreement({
+      student_name: agStudentName.value,
+      student_email: agStudentEmail.value,
+      student_id_number: agStudentId.value,
+      university: agUniversity.value,
+      program: agProgram.value,
+      company_name: agCompanyName.value,
+      company_address: agCompanyAddr.value,
+      mentor_name: agMentorName.value,
+      mentor_email: agMentorEmail.value,
+      start_date: agStartDate.value,
+      end_date: agEndDate.value,
+    })
+    agSuccess.value = true
+    setTimeout(() => { showGenerate.value = false; agSuccess.value = false; resetAgreement() }, 1400)
+  } catch (err: unknown) {
+    agError.value = (err as Error).message
+  }
+}
+
+function resetAgreement() {
+  agStudentName.value = agStudentEmail.value = agStudentId.value = ''
+  agUniversity.value = agProgram.value = agCompanyName.value = agCompanyAddr.value = ''
+  agMentorName.value = agMentorEmail.value = agStartDate.value = agEndDate.value = ''
+}
+
+async function submitFromTemplate() {
+  if (!selectedTplId.value) return
+  tplError.value = null
+  const data: Record<string, string> = Object.fromEntries(
+    tplPairs.value
+      .filter((p: { key: string; value: string }) => p.key.trim())
+      .map((p: { key: string; value: string }) => [p.key.trim(), p.value])
+  )
+  try {
+    await store.generateFromTemplate(selectedTplId.value, data)
+    tplSuccess.value = true
+    setTimeout(() => {
+      showGenerate.value = false
+      tplSuccess.value = false
+      selectedTplId.value = null
+      tplPairs.value = [{ key: '', value: '' }]
+    }, 1400)
+  } catch (err: unknown) {
+    tplError.value = (err as Error).message
+  }
+}
+
+function closeGenerate() {
+  showGenerate.value = false
+  agError.value = null; agSuccess.value = false
+  tplError.value = null; tplSuccess.value = false
+}
+
 function formatSize(kb: number): string {
   if (kb >= 1024) return `${(kb / 1024).toFixed(1)} MB`
   return `${kb} KB`
@@ -205,12 +305,20 @@ onMounted(() => store.fetchDocuments())
           <h1>{{ $t('documents.title') }}</h1>
           <p class="subtitle">{{ $t('documents.subtitle') }}</p>
         </div>
-        <button class="btn-upload" @click="showUpload = true">
-          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
-          </svg>
-          {{ $t('documents.upload') }}
-        </button>
+        <div class="header-actions">
+          <button class="btn-generate" @click="showGenerate = true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+            </svg>
+            {{ $t('documents.generate') }}
+          </button>
+          <button class="btn-upload" @click="showUpload = true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            {{ $t('documents.upload') }}
+          </button>
+        </div>
       </div>
 
       <!-- Filters -->
@@ -392,7 +500,7 @@ onMounted(() => store.fetchDocuments())
               <input v-model="uploadType" type="text" class="form-input" :placeholder="$t('documents.upload_type_placeholder')" />
             </label>
 
-            <label class="form-label">
+            <label v-if="!uploadAsTemplate" class="form-label">
               {{ $t('documents.upload_class_label') }}
               <select v-model="uploadClass" class="form-select">
                 <option value="public">{{ $t('documents.class_public') }}</option>
@@ -401,8 +509,28 @@ onMounted(() => store.fetchDocuments())
               </select>
             </label>
 
+            <!-- Template toggle -->
+            <label class="toggle-row">
+              <input type="checkbox" v-model="uploadAsTemplate" class="toggle-checkbox" />
+              <span class="toggle-track"><span class="toggle-thumb"></span></span>
+              <span class="toggle-label">{{ $t('documents.upload_as_template') }}</span>
+            </label>
+
+            <template v-if="uploadAsTemplate">
+              <label class="form-label">
+                {{ $t('documents.upload_template_name') }}
+                <input v-model="templateName" type="text" class="form-input" />
+              </label>
+              <label class="form-label">
+                {{ $t('documents.upload_template_desc') }}
+                <input v-model="templateDesc" type="text" class="form-input" />
+              </label>
+            </template>
+
             <p v-if="uploadError" class="form-error">{{ uploadError }}</p>
-            <p v-if="uploadSuccess" class="form-success">{{ $t('documents.upload_success') }}</p>
+            <p v-if="uploadSuccess" class="form-success">
+              {{ uploadAsTemplate ? $t('documents.upload_template_success') : $t('documents.upload_success') }}
+            </p>
           </div>
 
           <div class="modal-footer">
@@ -466,6 +594,133 @@ onMounted(() => store.fetchDocuments())
               @click="submitCode"
             >
               {{ $t('documents.code_submit') }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </transition>
+  </teleport>
+
+  <!-- Generate Modal -->
+  <teleport to="body">
+    <transition name="modal-fade">
+      <div v-if="showGenerate" class="modal-overlay" @click.self="closeGenerate">
+        <div class="modal-box modal-box--lg">
+          <div class="modal-header">
+            <h3>{{ $t('documents.gen_title') }}</h3>
+            <button class="modal-close" @click="closeGenerate">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Tabs -->
+          <div class="gen-tabs">
+            <button class="gen-tab" :class="{ active: genTab === 'agreement' }" @click="genTab = 'agreement'">
+              {{ $t('documents.gen_tab_agreement') }}
+            </button>
+            <button class="gen-tab" :class="{ active: genTab === 'from_template' }" @click="genTab = 'from_template'">
+              {{ $t('documents.gen_tab_from_template') }}
+            </button>
+          </div>
+
+          <!-- Internship Agreement -->
+          <div v-if="genTab === 'agreement'" class="modal-body gen-body">
+            <div class="gen-grid">
+              <label class="form-label">
+                {{ $t('documents.gen_field_student_name') }}
+                <input v-model="agStudentName" type="text" class="form-input" />
+              </label>
+              <label class="form-label">
+                {{ $t('documents.gen_field_student_email') }}
+                <input v-model="agStudentEmail" type="email" class="form-input" />
+              </label>
+              <label class="form-label">
+                {{ $t('documents.gen_field_student_id') }}
+                <input v-model="agStudentId" type="text" class="form-input" />
+              </label>
+              <label class="form-label">
+                {{ $t('documents.gen_field_university') }}
+                <input v-model="agUniversity" type="text" class="form-input" />
+              </label>
+              <label class="form-label">
+                {{ $t('documents.gen_field_program') }}
+                <input v-model="agProgram" type="text" class="form-input" />
+              </label>
+              <label class="form-label">
+                {{ $t('documents.gen_field_company_name') }}
+                <input v-model="agCompanyName" type="text" class="form-input" />
+              </label>
+              <label class="form-label gen-col-2">
+                {{ $t('documents.gen_field_company_address') }}
+                <input v-model="agCompanyAddr" type="text" class="form-input" />
+              </label>
+              <label class="form-label">
+                {{ $t('documents.gen_field_mentor_name') }}
+                <input v-model="agMentorName" type="text" class="form-input" />
+              </label>
+              <label class="form-label">
+                {{ $t('documents.gen_field_mentor_email') }}
+                <input v-model="agMentorEmail" type="email" class="form-input" />
+              </label>
+              <label class="form-label">
+                {{ $t('documents.gen_field_start_date') }}
+                <input v-model="agStartDate" type="date" class="form-input" />
+              </label>
+              <label class="form-label">
+                {{ $t('documents.gen_field_end_date') }}
+                <input v-model="agEndDate" type="date" class="form-input" />
+              </label>
+            </div>
+            <p v-if="agError" class="form-error">{{ agError }}</p>
+            <p v-if="agSuccess" class="form-success">{{ $t('documents.gen_agreement_success') }}</p>
+          </div>
+
+          <!-- From Template -->
+          <div v-else class="modal-body gen-body">
+            <div v-if="!templates.length" class="gen-empty">{{ $t('documents.gen_template_empty') }}</div>
+            <template v-else>
+              <label class="form-label">
+                {{ $t('documents.gen_template_label') }}
+                <select v-model="selectedTplId" class="form-select">
+                  <option :value="null" disabled>{{ $t('documents.gen_template_placeholder') }}</option>
+                  <option v-for="tpl in templates" :key="tpl.id" :value="tpl.id">{{ tpl.file_name }}</option>
+                </select>
+              </label>
+              <p class="gen-data-title">{{ $t('documents.gen_data_title') }}</p>
+              <div v-for="(pair, i) in tplPairs" :key="i" class="tpl-pair">
+                <input v-model="pair.key" type="text" class="form-input" :placeholder="$t('documents.gen_data_key')" />
+                <input v-model="pair.value" type="text" class="form-input" :placeholder="$t('documents.gen_data_value')" />
+                <button v-if="tplPairs.length > 1" class="pair-remove" type="button" @click="removeTplPair(i)">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                  </svg>
+                </button>
+              </div>
+              <button class="btn-add-pair" type="button" @click="addTplPair">{{ $t('documents.gen_add_field') }}</button>
+            </template>
+            <p v-if="tplError" class="form-error">{{ tplError }}</p>
+            <p v-if="tplSuccess" class="form-success">{{ $t('documents.gen_from_template_success') }}</p>
+          </div>
+
+          <div class="modal-footer">
+            <button class="btn-cancel" @click="closeGenerate">{{ $t('documents.upload_submit') === '' ? 'Cancel' : $t('adminPanel.cancel') }}</button>
+            <button
+              v-if="genTab === 'agreement'"
+              class="btn-submit"
+              :disabled="store.actionLoading || agSuccess"
+              @click="submitAgreement"
+            >
+              {{ store.actionLoading ? $t('documents.gen_generating') : $t('documents.gen_tab_agreement') }}
+            </button>
+            <button
+              v-else
+              class="btn-submit"
+              :disabled="store.actionLoading || !selectedTplId || tplSuccess"
+              @click="submitFromTemplate"
+            >
+              {{ store.actionLoading ? $t('documents.gen_generating') : $t('documents.generate') }}
             </button>
           </div>
         </div>
@@ -1076,4 +1331,144 @@ onMounted(() => store.fetchDocuments())
   transition: border-color 0.15s;
 }
 .btn-cancel:hover { border-color: var(--text-color); }
+
+/* Header actions */
+.header-actions { display: flex; gap: 10px; align-items: center; flex-shrink: 0; }
+
+.btn-generate {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 18px;
+  border-radius: 11px;
+  background: transparent;
+  color: var(--main-color);
+  border: 1.5px solid var(--main-color);
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.18s, transform 0.15s;
+  flex-shrink: 0;
+}
+.btn-generate:hover { background: color-mix(in srgb, var(--main-color) 10%, transparent); transform: translateY(-1px); }
+
+/* Upload template toggle */
+.toggle-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-color);
+}
+.toggle-checkbox { display: none; }
+.toggle-track {
+  width: 36px; height: 20px;
+  border-radius: 100px;
+  background: var(--menu-border);
+  position: relative;
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+.toggle-checkbox:checked + .toggle-track { background: var(--main-color); }
+.toggle-thumb {
+  position: absolute;
+  top: 3px; left: 3px;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 0.2s;
+}
+.toggle-checkbox:checked + .toggle-track .toggle-thumb { transform: translateX(16px); }
+.toggle-label { opacity: 0.85; }
+
+/* Generate modal */
+.modal-box--lg { max-width: 640px; }
+
+.gen-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--menu-border);
+  padding: 0 24px;
+  gap: 4px;
+}
+.gen-tab {
+  padding: 10px 18px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--text-color);
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  opacity: 0.55;
+  transition: opacity 0.15s, border-color 0.15s, color 0.15s;
+  margin-bottom: -1px;
+}
+.gen-tab:hover { opacity: 0.85; }
+.gen-tab.active { opacity: 1; border-bottom-color: var(--main-color); color: var(--main-color); }
+
+.gen-body { max-height: 420px; overflow-y: auto; }
+
+.gen-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.gen-col-2 { grid-column: span 2; }
+
+.gen-empty {
+  font-size: 13.5px;
+  opacity: 0.6;
+  text-align: center;
+  padding: 24px 0;
+}
+
+.gen-data-title {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.5;
+  margin: 4px 0 2px;
+}
+
+.tpl-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.pair-remove {
+  width: 30px; height: 30px;
+  border-radius: 8px;
+  background: transparent;
+  border: 1px solid var(--menu-border);
+  color: var(--text-color);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  opacity: 0.5;
+  transition: opacity 0.15s, border-color 0.15s, color 0.15s;
+}
+.pair-remove:hover { opacity: 1; border-color: var(--error-color); color: var(--error-color); }
+
+.btn-add-pair {
+  align-self: flex-start;
+  background: none;
+  border: 1px dashed var(--menu-border);
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--main-color);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+.btn-add-pair:hover { border-color: var(--main-color); background: color-mix(in srgb, var(--main-color) 6%, transparent); }
 </style>

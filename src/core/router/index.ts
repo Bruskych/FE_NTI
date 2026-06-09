@@ -22,6 +22,7 @@ const BulkMessagesView = () => import('@/views/admin/BulkMessagesView.vue')
 const ExportsView = () => import('@/views/admin/ExportsView.vue')
 const EmailTemplatesView = () => import('@/views/admin/EmailTemplatesView.vue')
 const AdminGdprView = () => import('@/views/admin/AdminGdprView.vue')
+const AdminDashboardView = () => import('@/views/admin/AdminDashboardView.vue')
 const CmsView = () => import('@/views/CmsView.vue')
 const ForgotPasswordView = () => import('@/views/ForgotPasswordView.vue')
 const ResetPasswordView = () => import('@/views/ResetPasswordView.vue')
@@ -160,7 +161,12 @@ const router = createRouter({
             children: [
                 {
                     path: '',
-                    redirect: { name: 'admin-students' }
+                    redirect: { name: 'admin-dashboard' }
+                },
+                {
+                    path: 'dashboard',
+                    name: 'admin-dashboard',
+                    component: AdminDashboardView
                 },
                 {
                     path: 'students',

@@ -6,6 +6,7 @@ import BellIcon from '@/assets/icons/bell.svg'
 import DownloadIcon from '@/assets/icons/download.svg'
 import MailIcon from '@/assets/icons/mail.svg'
 import ShieldIcon from '@/assets/icons/shield.svg'
+import DashboardIcon from '@/assets/icons/dashboard.svg'
 </script>
 
 <template>
@@ -13,6 +14,12 @@ import ShieldIcon from '@/assets/icons/shield.svg'
 
     <aside class="admin-sidebar">
       <div class="sidebar-menu">
+        <NavCardItem
+            :label="$t('adminPanel.dashboard')"
+            to="/admin/dashboard"
+            :roles="['admin', 'super_admin']"
+            :icon="DashboardIcon"
+        />
         <NavCardItem
             :label="$t('adminPanel.student_applications')"
             to="/admin/students"
