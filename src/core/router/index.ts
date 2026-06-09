@@ -3,6 +3,7 @@ import { useAuthStore } from "@/stores/auth"
 
 const HomeView = () => import('@/views/HomeView.vue')
 const DashboardView = () => import('@/views/DashboardView.vue')
+const CallsView = () => import('@/views/CallsView.vue')
 const LoginView = () => import('@/views/LoginView.vue')
 const RegisterView = () => import('@/views/RegisterView.vue')
 const SettingsView = () => import('@/views/settings/SettingsView.vue')
@@ -27,6 +28,12 @@ const router = createRouter({
             path: '/dashboard',
             name: 'dashboard',
             component: DashboardView,
+            meta: { requiresAuth: true }
+        },
+        {
+            path: '/calls',
+            name: 'calls',
+            component: CallsView,
             meta: { requiresAuth: true }
         },
         {

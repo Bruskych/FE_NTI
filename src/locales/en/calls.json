@@ -1,0 +1,18 @@
+{
+  "title": "Program Calls",
+  "subtitle": "Browse all active and upcoming incubation program calls.",
+  "loading": "Loading calls...",
+  "empty": "No calls found for this filter.",
+  "filter_all": "All",
+  "filter_open": "Open",
+  "filter_draft": "Draft",
+  "filter_closed": "Closed",
+  "status_open": "Open",
+  "status_draft": "Draft",
+  "status_closed": "Closed",
+  "expired": "Expired",
+  "deadline": "Deadline",
+  "applications": "applications",
+  "action_open": "Open Call",
+  "action_close": "Close Call"
+}
