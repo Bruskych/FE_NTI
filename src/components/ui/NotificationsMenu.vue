@@ -169,7 +169,6 @@ const copyNotification = (notification: NotificationItem) => {
   user-select: none;
   position: relative;
   z-index: 1;
-  transition: all 0.2s ease-in-out;
 
   &:last-child {
     border-bottom: none;
@@ -236,7 +235,6 @@ const copyNotification = (notification: NotificationItem) => {
     opacity: 0.4;
     margin-top: 4px;
     user-select: none;
-    transition: opacity 0.2s ease;
   }
 
   &:hover .notification-date {
@@ -247,6 +245,7 @@ const copyNotification = (notification: NotificationItem) => {
     position: absolute;
     top: 12px;
     right: 12px;
+    z-index: 10;
     background: transparent;
     border: none;
     opacity: 0;
@@ -256,7 +255,6 @@ const copyNotification = (notification: NotificationItem) => {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: opacity 0.2s, background-color 0.2s;
 
     &:hover {
       opacity: 1 !important;
@@ -288,7 +286,6 @@ const copyNotification = (notification: NotificationItem) => {
     font-weight: 600;
     cursor: pointer;
     border: none;
-    transition: transform 0.1s ease;
 
     &:active {
       transform: scale(0.95);

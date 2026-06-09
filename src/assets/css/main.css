@@ -80,3 +80,77 @@ button {
     background: var(--scroll-color);
     border-radius: 10px;
 }
+
+/* Стили для всех checkbox (галочек) на сайте */
+input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+
+    width: 18px;
+    height: 18px;
+
+    border: 2px solid var(--inactive-checkbox-border-color);
+    background-color: var(--inactive-checkbox-bg-color);
+    border-radius: 4px;
+
+    display: inline-grid;
+    place-content: center;
+    vertical-align: middle;
+    position: relative;
+
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+}
+
+/* Эффект при наведении на ПУСТУЮ галочку */
+@media (hover: hover) and (pointer: fine) {
+    input[type="checkbox"]:hover:not(:disabled):not(:checked) {
+        border-color: var(--inactive-checkbox-border-color-hover);
+        background-color: var(--inactive-checkbox-bg-color-hover);
+    }
+}
+
+/* Эффект при наведении на ВЫБРАННУЮ галочку */
+input[type="checkbox"]:checked:hover:not(:disabled) {
+    border-color: var(--active-checkbox-border-color-hover);
+    background-color: var(--active-checkbox-bg-color-hover);
+}
+
+/* Стили для всех checkbox (галочек) на сайте - эффект клика */
+input[type="checkbox"]:active:not(:disabled) {
+    transform: scale(0.92);
+}
+
+/* Стили для всех checkbox (галочек) на сайте - галочка поставлена */
+input[type="checkbox"]:checked {
+    border-color: var(--active-checkbox-border-color);
+    background-color: var(--active-checkbox-bg-color);
+}
+
+/* Стили для всех checkbox (галочек) на сайте - стили внутри галочки */
+input[type="checkbox"]::before {
+    content: "";
+    width: 10px;
+    height: 5px;
+
+    border-left: 2px solid #ffffff;
+    border-bottom: 2px solid #ffffff;
+    transform: rotate(-45deg) translateY(-1px);
+
+    opacity: 0;
+    transition: opacity 0.1s ease;
+}
+
+/* Показываем галочку только когда чекбокс выбран */
+input[type="checkbox"]:checked::before {
+    opacity: 1;
+}
+
+/* Стиль для заблокированной галочки */
+input[type="checkbox"]:disabled {
+    border-color: var(--good-color);
+    background-color: var(--good-color);
+
+    cursor: not-allowed;
+    opacity: 0.65;
+}

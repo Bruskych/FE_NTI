@@ -3,9 +3,9 @@ import { RouterView } from 'vue-router'
 import { watch } from 'vue'
 import { useRoute } from 'vue-router'
 
-
 import AppHeader from '@/components/layout/AppHeader.vue'
 import AppFooter from '@/components/layout/AppFooter.vue'
+import CookieConsent from "@/components/layout/CookieConsent.vue";
 
 const route = useRoute()
 
@@ -29,6 +29,8 @@ watch(
     <main class="app-main">
       <RouterView />
     </main>
+
+    <CookieConsent />
 
     <AppFooter />
   </div>

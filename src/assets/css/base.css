@@ -116,6 +116,16 @@
 
     /* PROFILE PHOTO */
     --photo-bg: var(--main-light-2);
+
+    /* CHECK BOX */
+    --inactive-checkbox-border-color: var(--main-light-3);
+    --inactive-checkbox-border-color-hover: var(--main-color);
+    --inactive-checkbox-bg-color: transparent;
+    --inactive-checkbox-bg-color-hover: transparent;
+    --active-checkbox-border-color: var(--main-color);
+    --active-checkbox-border-color-hover: var(--main-color-dark);
+    --active-checkbox-bg-color: var(--main-color);
+    --active-checkbox-bg-color-hover: var(--main-color-dark);
 }
 
 .dark {
@@ -211,4 +221,14 @@
 
     /* PROFILE PHOTO */
     --photo-bg: var(--main-dark-5);
+
+    /* CHECK BOX */
+    --inactive-checkbox-border-color: var(--main-dark-5);
+    --inactive-checkbox-border-color-hover: var(--main-color);
+    --inactive-checkbox-bg-color: transparent;
+    --inactive-checkbox-bg-color-hover: transparent;
+    --active-checkbox-border-color: var(--main-color);
+    --active-checkbox-border-color-hover: var(--main-color-dark);
+    --active-checkbox-bg-color: var(--main-color);
+    --active-checkbox-bg-color-hover: var(--main-color-dark);
 }

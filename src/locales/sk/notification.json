@@ -11,5 +11,15 @@
     "accept_success": "Úspešne ste sa pripojili k tímu!",
     "decline_success": "Pozvanie bolo odmietnuté.",
     "error": "Nepodarilo sa spracovať pozvanie."
+  },
+  "cookie": {
+    "necessary_tooltip": "Tieto súbory cookie sú nevyhnutné pre základné funkcie webovej stránky: prihlásenie, načítanie mediálnych súborov a uloženie zvoleného jazyka rozhrania. Nedajú sa zakázať.",
+    "marketing_tooltip": "Marketingové súbory cookie sa používajú na sledovanie pohybu návštevníkov na webových stránkach. Účelom tohto sledovania je zobrazovať reklamy, ktoré sú relevantné a zaujímavé pre jednotlivých používateľov, a preto sú hodnotnejšie pre vydavateľov a inzerentov tretích strán.",
+    "necessary": "Požadované súbory",
+    "marketing": "Marketingové súbory",
+    "cookie_desc": "Na našej webovej stránke používame súbory cookie, aby sme vám čo najviac uľahčili a prispôsobili váš zážitok.",
+    "allow_selected": "Povoliť výber",
+    "allow_all": "Povoliť všetko",
+    "reject": "Odmietnuť"
   }
 }
