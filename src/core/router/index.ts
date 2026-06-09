@@ -19,6 +19,9 @@ const CallsAdminView = () => import('@/views/admin/CallsAdminView.vue')
 const ForgotPasswordView = () => import('@/views/ForgotPasswordView.vue')
 const ResetPasswordView = () => import('@/views/ResetPasswordView.vue')
 const VerifyEmailView = () => import('@/views/VerifyEmailView.vue')
+const ChallengesView = () => import('@/views/ChallengesView.vue')
+const OrganizationView = () => import('@/views/OrganizationView.vue')
+const MentorshipsView = () => import('@/views/MentorshipsView.vue')
 
 const router = createRouter({
     history: createWebHistory(), // Используем WebHistory для красивых URL без хэша
@@ -57,6 +60,24 @@ const router = createRouter({
             name: 'team',
             component: TeamView,
             meta: { requiresAuth: true, blockRoles: ['visitor', 'company', 'mentor', 'evaluator', 'content_editor', 'admin', 'super_admin'] }
+        },
+        {
+            path: '/challenges',
+            name: 'challenges',
+            component: ChallengesView,
+            meta: { requiresAuth: true, blockRoles: ['visitor'] }
+        },
+        {
+            path: '/organization',
+            name: 'organization',
+            component: OrganizationView,
+            meta: { requiresAuth: true, blockRoles: ['visitor', 'student', 'team_leader', 'mentor', 'evaluator', 'content_editor'] }
+        },
+        {
+            path: '/mentorships',
+            name: 'mentorships',
+            component: MentorshipsView,
+            meta: { requiresAuth: true, blockRoles: ['visitor', 'student', 'team_leader', 'company', 'evaluator', 'content_editor'] }
         },
         {
             path: '/login',

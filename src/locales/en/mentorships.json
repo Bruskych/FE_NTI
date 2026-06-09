@@ -1,0 +1,22 @@
+{
+  "title": "Mentorships",
+  "subtitle": "Projects assigned to you for mentoring",
+  "loading": "Loading mentorships...",
+  "empty": "No mentorships found",
+  "empty_desc": "You have not been assigned to any projects yet.",
+  "status_pending": "Pending",
+  "status_active": "Active",
+  "status_finished": "Finished",
+  "status_cancelled": "Cancelled",
+  "project": "Project",
+  "no_project": "No project assigned",
+  "started": "Started",
+  "finished": "Finished",
+  "consultations_title": "Consultations",
+  "no_consultations": "No consultations yet",
+  "consultation_scheduled": "Scheduled",
+  "consultation_completed": "Completed",
+  "consultation_upcoming": "Upcoming",
+  "consultation_notes": "Notes",
+  "consultation_recommendations": "Recommendations"
+}

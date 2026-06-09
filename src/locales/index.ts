@@ -57,6 +57,15 @@ import enProjects from './en/projects.json'
 import skCookie from './sk/cookie.json'
 import enCookie from './en/cookie.json'
 
+import skChallenges from './sk/challenges.json'
+import enChallenges from './en/challenges.json'
+
+import skOrganizations from './sk/organizations.json'
+import enOrganizations from './en/organizations.json'
+
+import skMentorships from './sk/mentorships.json'
+import enMentorships from './en/mentorships.json'
+
 const messages = {
     sk: {
         header: skHeader,
@@ -78,6 +87,9 @@ const messages = {
         applications: skApplications,
         projects: skProjects,
         cookie: skCookie,
+        challenges: skChallenges,
+        organizations: skOrganizations,
+        mentorships: skMentorships,
     },
     en: {
         header: enHeader,
@@ -99,6 +111,9 @@ const messages = {
         applications: enApplications,
         projects: enProjects,
         cookie: enCookie,
+        challenges: enChallenges,
+        organizations: enOrganizations,
+        mentorships: enMentorships,
     }
 }
 

@@ -1,0 +1,22 @@
+{
+  "title": "Mentorstvá",
+  "subtitle": "Projekty, ktoré vám boli pridelené na mentoring",
+  "loading": "Načítavam mentorstvá...",
+  "empty": "Žiadne mentorstvá",
+  "empty_desc": "Zatiaľ vám nebol pridelený žiadny projekt.",
+  "status_pending": "Čaká",
+  "status_active": "Aktívne",
+  "status_finished": "Ukončené",
+  "status_cancelled": "Zrušené",
+  "project": "Projekt",
+  "no_project": "Projekt nepriradený",
+  "started": "Začiatok",
+  "finished": "Koniec",
+  "consultations_title": "Konzultácie",
+  "no_consultations": "Zatiaľ žiadne konzultácie",
+  "consultation_scheduled": "Naplánovaná",
+  "consultation_completed": "Dokončená",
+  "consultation_upcoming": "Nadchádzajúca",
+  "consultation_notes": "Poznámky",
+  "consultation_recommendations": "Odporúčania"
+}
