@@ -41,6 +41,11 @@ const canAccessTeam = computed(() => {
   return role === 'student' || role === 'team_leader'
 })
 
+const canAccessProject = computed(() => {
+  const role = user.value?.roles?.[0]?.name
+  return role === 'student' || role === 'team_leader' || role === 'mentor' || role === 'admin' || role === 'super_admin'
+})
+
 // Генерация аватара: если кастомного нет, берем красивый дефолтный по инициалам
 const userInitials = computed(() => {
   const name = user.value?.name ?? ''
@@ -116,6 +121,13 @@ onBeforeUnmount(() => document.removeEventListener('click', handleOutside))
           :label="$t('userPanel.applications')"
           :icon="DashboardIcon"
           to="/applications"
+      />
+
+      <DropdownMenuItem
+          v-if="canAccessProject"
+          :label="$t('userPanel.project')"
+          :icon="DashboardIcon"
+          to="/project"
       />
 
       <DropdownMenuItem

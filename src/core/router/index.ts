@@ -6,6 +6,7 @@ const DashboardView = () => import('@/views/DashboardView.vue')
 const CallsView = () => import('@/views/CallsView.vue')
 const TeamView = () => import('@/views/TeamView.vue')
 const ApplicationsView = () => import('@/views/ApplicationsView.vue')
+const ProjectView = () => import('@/views/ProjectView.vue')
 const LoginView = () => import('@/views/LoginView.vue')
 const RegisterView = () => import('@/views/RegisterView.vue')
 const SettingsView = () => import('@/views/settings/SettingsView.vue')
@@ -37,6 +38,12 @@ const router = createRouter({
             name: 'calls',
             component: CallsView,
             meta: { requiresAuth: true }
+        },
+        {
+            path: '/project',
+            name: 'project',
+            component: ProjectView,
+            meta: { requiresAuth: true, blockRoles: ['visitor', 'company', 'evaluator', 'content_editor'] }
         },
         {
             path: '/applications',
