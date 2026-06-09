@@ -2,6 +2,8 @@ import { defineStore } from 'pinia'
 import type { AxiosError } from 'axios'
 import api from '@/core/api/axios'
 import { useUserNotificationsStore, type UserNotification } from '@/stores/userNotifications'
+import { setCookie } from '@/utils/cookies'
+import { i18n } from '@/locales'
 
 export interface RegisterFormData {
     first_name: string
@@ -81,6 +83,22 @@ export const useAuthStore = defineStore('auth', {
     },
 
     actions: {
+        async loadPreferences(): Promise<void> {
+            try {
+                const { data } = await api.get<{ theme?: string; lang?: string }>('/get-theme')
+                if (data.theme && ['dark', 'light'].includes(data.theme)) {
+                    setCookie('theme', data.theme)
+                    document.documentElement.classList.toggle('dark', data.theme === 'dark')
+                }
+                if (data.lang && ['sk', 'en'].includes(data.lang)) {
+                    setCookie('lang', data.lang)
+                    i18n.global.locale.value = data.lang as 'sk' | 'en'
+                }
+            } catch {
+                // не критично — лишаємо поточні значення з cookie
+            }
+        },
+
         async login(email: string, password: string): Promise<void> {
             this.loading = true
             this.error = null
@@ -97,6 +115,7 @@ export const useAuthStore = defineStore('auth', {
                   : []
 
                 await userNotificationsStore.fetchNotifications()
+                await this.loadPreferences()
             } catch (error: unknown) {
                 const err = error as AxiosError<LoginErrorResponse>
                 this.error = err.response?.data?.errors?.email?.[0] || err.response?.data?.message || 'Login failed'
@@ -186,6 +205,7 @@ export const useAuthStore = defineStore('auth', {
                       ? data.notifications
                       : []
                 }
+                await this.loadPreferences()
             } catch (error: unknown) {
                 const err = error as AxiosError
                 const status = err.response?.status

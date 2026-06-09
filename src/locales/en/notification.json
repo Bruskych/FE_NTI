@@ -13,11 +13,11 @@
     "error": "Failed to process the invitation."
   },
   "cookie": {
-    "necessary_tooltip": "These cookies are essential for the basic functionality of the website: logging in, loading media files, and storing the selected interface language. They cannot be disabled.",
+    "necessary_tooltip": "Essential cookies store your theme (light/dark) and language preference so they are restored on every visit and synced across sessions. They cannot be disabled.",
     "marketing_tooltip": "Marketing cookies are used to track visitors' movements across websites. The purpose of this tracking is to deliver ads that are relevant and interesting to the individual user and therefore more valuable to publishers and third-party advertisers.",
-    "necessary": "Required files",
-    "marketing": "Marketing files",
-    "cookie_desc": "We use cookies to make your experience on our website as convenient and personalized as possible.",
+    "necessary": "Essential cookies",
+    "marketing": "Marketing cookies",
+    "cookie_desc": "We use cookies to remember your theme and language preferences and to keep your session active.",
     "allow_selected": "Allow selection",
     "allow_all": "Allow all",
     "reject": "Reject"

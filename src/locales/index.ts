@@ -1,4 +1,5 @@
 import { createI18n } from 'vue-i18n'
+import { getCookie } from '@/utils/cookies'
 
 import skHeader from './sk/header.json'
 import enHeader from './en/header.json'
@@ -124,7 +125,7 @@ const messages = {
 
 export const i18n = createI18n({
     legacy: false,
-    locale: localStorage.getItem('lang') || 'sk', // Берем язык из памяти или ставим SK
+    locale: getCookie('lang') || 'sk',
     fallbackLocale: 'en', // Если перевода нет на SK, покажет EN
     messages
 })
