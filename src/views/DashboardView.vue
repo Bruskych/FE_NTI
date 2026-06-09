@@ -44,7 +44,7 @@ const allCards: DashCard[] = [
     descKey: 'dashboard.card_applications_desc',
     to: '/applications',
     icon: 'apps',
-    roles: ['student', 'team_leader', 'evaluator', 'admin', 'super_admin'],
+    roles: ['student', 'team_leader'],
   },
   {
     titleKey: 'dashboard.card_project',

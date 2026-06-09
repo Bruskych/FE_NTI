@@ -10,6 +10,8 @@ import AdminIcon from '@/assets/icons/admin.svg'
 import LogoutIcon from '@/assets/icons/logout.svg'
 import DashboardIcon from '@/assets/icons/dashboard.svg'
 import UsersIcon from '@/assets/icons/users.svg'
+import CheckIcon from '@/assets/icons/check.svg'
+import UserIcon from '@/assets/icons/user.svg'
 import DropdownMenuItem from '@/components/ui/DropdownMenuItem.vue'
 
 const authStore = useAuthStore()
@@ -43,7 +45,7 @@ const canAccessTeam = computed(() => {
 
 const canAccessProject = computed(() => {
   const role = user.value?.roles?.[0]?.name
-  return role === 'student' || role === 'team_leader' || role === 'mentor' || role === 'admin' || role === 'super_admin'
+  return role === 'student' || role === 'team_leader' || role === 'mentor'
 })
 
 // Генерация аватара: если кастомного нет, берем красивый дефолтный по инициалам
@@ -119,14 +121,14 @@ onBeforeUnmount(() => document.removeEventListener('click', handleOutside))
       <DropdownMenuItem
           v-if="canAccessTeam"
           :label="$t('userPanel.applications')"
-          :icon="DashboardIcon"
+          :icon="CheckIcon"
           to="/applications"
       />
 
       <DropdownMenuItem
           v-if="canAccessProject"
           :label="$t('userPanel.project')"
-          :icon="DashboardIcon"
+          :icon="UserIcon"
           to="/project"
       />
 

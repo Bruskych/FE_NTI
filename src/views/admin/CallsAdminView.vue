@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useCallsStore } from '@/stores/calls'
 import api from '@/core/api/axios'
 import type { Call, Program, Specialization } from '@/stores/calls'
+
+const { t } = useI18n()
 
 const callsStore = useCallsStore()
 
@@ -101,7 +104,7 @@ async function handleSave() {
 }
 
 async function handleDelete(call: Call) {
-  if (!confirm(`Delete call "${call.title}"?`)) return
+  if (!confirm(t('adminPanel.delete_call_confirm', { title: call.title }))) return
   try {
     await callsStore.deleteCall(call.id)
   } catch (err: unknown) {

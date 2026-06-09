@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useTeamStore } from '@/stores/team'
 import { useAuthStore } from '@/stores/auth'
+
+const { t } = useI18n()
 
 const teamStore = useTeamStore()
 const authStore = useAuthStore()
@@ -86,7 +89,7 @@ async function handleInvite() {
 }
 
 async function handleRemoveMember(userId: number) {
-  if (!confirm('Remove this member from the team?')) return
+  if (!confirm(t('team.remove_confirm'))) return
   actionError.value = null
   try {
     await teamStore.removeMember(userId)
@@ -97,7 +100,7 @@ async function handleRemoveMember(userId: number) {
 }
 
 async function handleLeave() {
-  if (!confirm('Are you sure you want to leave this team?')) return
+  if (!confirm(t('team.leave_confirm'))) return
   actionError.value = null
   try {
     await teamStore.leaveTeam()
@@ -108,7 +111,7 @@ async function handleLeave() {
 }
 
 async function handleDelete() {
-  if (!confirm('Are you sure you want to delete this team? This cannot be undone.')) return
+  if (!confirm(t('team.delete_confirm'))) return
   actionError.value = null
   try {
     await teamStore.deleteTeam()

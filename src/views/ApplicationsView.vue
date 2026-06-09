@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useApplicationsStore } from '@/stores/applications'
 import { useCallsStore } from '@/stores/calls'
 import { useAuthStore } from '@/stores/auth'
 import type { Application } from '@/stores/applications'
+
+const { t } = useI18n()
 
 const appsStore = useApplicationsStore()
 const callsStore = useCallsStore()
@@ -56,7 +59,7 @@ function statusClass(status: string) {
 }
 
 async function handleSubmit(app: Application) {
-  if (!confirm('Submit this application for review? This cannot be undone.')) return
+  if (!confirm(t('applications.submit_confirm'))) return
   try {
     await appsStore.submitApplication(app.id)
   } catch (err: unknown) {
@@ -66,7 +69,7 @@ async function handleSubmit(app: Application) {
 }
 
 async function handleDelete(app: Application) {
-  if (!confirm('Delete this application?')) return
+  if (!confirm(t('applications.delete_confirm'))) return
   try {
     await appsStore.deleteApplication(app.id)
   } catch (err: unknown) {

@@ -21,5 +21,6 @@
   "form_specializations": "Specializations",
   "form_select": "select",
   "save": "Save",
-  "cancel": "Cancel"
+  "cancel": "Cancel",
+  "delete_call_confirm": "Delete call \"{title}\"?"
 }

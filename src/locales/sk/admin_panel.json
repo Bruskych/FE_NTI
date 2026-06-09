@@ -21,5 +21,6 @@
   "form_specializations": "Špecializácie",
   "form_select": "vybrať",
   "save": "Uložiť",
-  "cancel": "Zrušiť"
+  "cancel": "Zrušiť",
+  "delete_call_confirm": "Zmazať výzvu \"{title}\"?"
 }
