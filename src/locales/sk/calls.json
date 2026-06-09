@@ -1,0 +1,18 @@
+{
+  "title": "Programové výzvy",
+  "subtitle": "Prezri všetky aktívne a nadchádzajúce výzvy inkubačného programu.",
+  "loading": "Načítavanie výziev...",
+  "empty": "Pre tento filter sa nenašli žiadne výzvy.",
+  "filter_all": "Všetky",
+  "filter_open": "Otvorené",
+  "filter_draft": "Koncepty",
+  "filter_closed": "Uzavreté",
+  "status_open": "Otvorená",
+  "status_draft": "Koncept",
+  "status_closed": "Uzavretá",
+  "expired": "Vypršala",
+  "deadline": "Termín",
+  "applications": "prihlášok",
+  "action_open": "Otvoriť výzvu",
+  "action_close": "Zatvoriť výzvu"
+}

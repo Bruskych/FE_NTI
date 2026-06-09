@@ -1,6 +1,9 @@
 {
   "profile": "Profil",
   "dashboard": "Moja nástenka",
+  "my_team": "Môj tím",
+  "applications": "Prihlášky",
+  "project": "Môj projekt",
   "admin_panel": "Administrátorský panel",
   "settings": "Nastavenia účtu",
   "logout": "Odhlásiť sa"

@@ -31,6 +31,7 @@ export interface User {
     roles: { name: string }[]
     organization_id?: number | null
     avatar_path?: string | null
+    avatar_url?: string | null
     email_verified_at?: string | null
 }
 
@@ -91,7 +92,6 @@ export const useAuthStore = defineStore('auth', {
                 localStorage.setItem('cached_user', JSON.stringify(data.user))
                 localStorage.setItem('token', data.token)
 
-                // Бэкенд возвращает массив напрямую в data.notifications
                 userNotificationsStore.notifications = Array.isArray(data.notifications)
                   ? data.notifications
                   : []
@@ -215,76 +215,53 @@ export const useAuthStore = defineStore('auth', {
             }
         },
 
-        async updateName(name: string): Promise<void> {
-            this.loading = true
-            this.error = null
-            try {
-                const { data } = await api.post<{ user: User }>('/settings/update-profile/name', { name })
-
-                if (data.user) {
-                    this.user = data.user
-                    localStorage.setItem('cached_user', JSON.stringify(data.user))
-                }
-            } catch (error: unknown) {
-                const err = error as AxiosError<{ message?: string }>
-                this.error = err.response?.data?.message || 'Failed to update name'
-                throw error
-            } finally {
-                this.loading = false
-            }
-        },
-
-        async updateEmail(email: string): Promise<void> {
-            this.loading = true
-            this.error = null
-            try {
-                if (!this.user) return
-
-                const { data } = await api.post<{ user: User }>('/settings/update-profile/email', {
-                    name: this.user.name,
-                    surname: this.user.surname,
-                    email: email
-                })
-
-                if (data.user) {
-                    this.user = data.user
-                    localStorage.setItem('cached_user', JSON.stringify(data.user))
-                }
-            } catch (error: unknown) {
-                console.error('Failed to update email:', error)
-                const err = error as AxiosError<{ message?: string }>
-                this.error = err.response?.data?.message || 'Failed to update email'
-                throw error
-            } finally {
-                this.loading = false
-            }
-        },
-
         async uploadAvatar(file: File): Promise<void> {
             this.loading = true
             this.error = null
             try {
-                if (!this.user) return
-
                 const formData = new FormData()
                 formData.append('avatar', file)
-
                 const { data } = await api.post<{ user: User }>('/settings/update-profile/avatar', formData, {
                     headers: { 'Content-Type': 'multipart/form-data' }
                 })
-
                 if (data.user) {
                     this.user = data.user
                     localStorage.setItem('cached_user', JSON.stringify(data.user))
                 }
             } catch (error: unknown) {
-                console.error('Avatar upload failed:', error)
                 const err = error as AxiosError<{ message?: string }>
                 this.error = err.response?.data?.message || 'Failed to upload avatar'
                 throw error
             } finally {
                 this.loading = false
             }
-        }
+        },
+
+        async updateProfileInfo(payload: { name?: string; email?: string }): Promise<void> {
+            this.loading = true
+            this.error = null
+            try {
+                if (payload.name !== undefined) {
+                    const { data } = await api.post<{ user: User }>('/settings/update-profile/name', { name: payload.name })
+                    if (data.user) {
+                        this.user = data.user
+                        localStorage.setItem('cached_user', JSON.stringify(data.user))
+                    }
+                }
+                if (payload.email !== undefined) {
+                    const { data } = await api.post<{ user: User }>('/settings/update-profile/email', { email: payload.email })
+                    if (data.user) {
+                        this.user = data.user
+                        localStorage.setItem('cached_user', JSON.stringify(data.user))
+                    }
+                }
+            } catch (error: unknown) {
+                const err = error as AxiosError<{ message?: string }>
+                this.error = err.response?.data?.message || 'Failed to update profile'
+                throw error
+            } finally {
+                this.loading = false
+            }
+        },
     },
 })

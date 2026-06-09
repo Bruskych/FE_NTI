@@ -39,6 +39,24 @@ import enHome from './en/home.json'
 import skNotification from './sk/notification.json'
 import enNotification from './en/notification.json'
 
+import skDashboard from './sk/dashboard.json'
+import enDashboard from './en/dashboard.json'
+
+import skCalls from './sk/calls.json'
+import enCalls from './en/calls.json'
+
+import skTeam from './sk/team.json'
+import enTeam from './en/team.json'
+
+import skApplications from './sk/applications.json'
+import enApplications from './en/applications.json'
+
+import skProjects from './sk/projects.json'
+import enProjects from './en/projects.json'
+
+import skCookie from './sk/cookie.json'
+import enCookie from './en/cookie.json'
+
 const messages = {
     sk: {
         header: skHeader,
@@ -53,7 +71,13 @@ const messages = {
         actions: skActions,
         adminTable: skAdminTable,
         home: skHome,
-        notification: skNotification
+        notification: skNotification,
+        dashboard: skDashboard,
+        calls: skCalls,
+        team: skTeam,
+        applications: skApplications,
+        projects: skProjects,
+        cookie: skCookie,
     },
     en: {
         header: enHeader,
@@ -68,7 +92,13 @@ const messages = {
         actions: enActions,
         adminTable: enAdminTable,
         home: enHome,
-        notification: enNotification
+        notification: enNotification,
+        dashboard: enDashboard,
+        calls: enCalls,
+        team: enTeam,
+        applications: enApplications,
+        projects: enProjects,
+        cookie: enCookie,
     }
 }
 

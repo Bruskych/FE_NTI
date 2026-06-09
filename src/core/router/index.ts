@@ -2,6 +2,11 @@ import { createRouter, createWebHistory } from "vue-router"
 import { useAuthStore } from "@/stores/auth"
 
 const HomeView = () => import('@/views/HomeView.vue')
+const DashboardView = () => import('@/views/DashboardView.vue')
+const CallsView = () => import('@/views/CallsView.vue')
+const TeamView = () => import('@/views/TeamView.vue')
+const ApplicationsView = () => import('@/views/ApplicationsView.vue')
+const ProjectView = () => import('@/views/ProjectView.vue')
 const LoginView = () => import('@/views/LoginView.vue')
 const RegisterView = () => import('@/views/RegisterView.vue')
 const SettingsView = () => import('@/views/settings/SettingsView.vue')
@@ -10,6 +15,7 @@ const ProfileSettingsView = () => import('@/views/settings/ProfileSettingsView.v
 const AdminView = () => import('@/views/admin/AdminView.vue')
 const StudentAppsView = () => import('@/views/admin/StudentAppsView.vue')
 const CompanyAppsView = () => import('@/views/admin/CompanyAppsView.vue')
+const CallsAdminView = () => import('@/views/admin/CallsAdminView.vue')
 const ForgotPasswordView = () => import('@/views/ForgotPasswordView.vue')
 const ResetPasswordView = () => import('@/views/ResetPasswordView.vue')
 const VerifyEmailView = () => import('@/views/VerifyEmailView.vue')
@@ -21,6 +27,36 @@ const router = createRouter({
             path: '/',
             name: 'home',
             component: HomeView
+        },
+        {
+            path: '/dashboard',
+            name: 'dashboard',
+            component: DashboardView,
+            meta: { requiresAuth: true }
+        },
+        {
+            path: '/calls',
+            name: 'calls',
+            component: CallsView,
+            meta: { requiresAuth: true }
+        },
+        {
+            path: '/project',
+            name: 'project',
+            component: ProjectView,
+            meta: { requiresAuth: true, blockRoles: ['visitor', 'company', 'evaluator', 'content_editor'] }
+        },
+        {
+            path: '/applications',
+            name: 'applications',
+            component: ApplicationsView,
+            meta: { requiresAuth: true, blockRoles: ['visitor', 'company', 'mentor', 'evaluator', 'content_editor', 'admin', 'super_admin'] }
+        },
+        {
+            path: '/team',
+            name: 'team',
+            component: TeamView,
+            meta: { requiresAuth: true, blockRoles: ['visitor', 'company', 'mentor', 'evaluator', 'content_editor', 'admin', 'super_admin'] }
         },
         {
             path: '/login',
@@ -70,6 +106,11 @@ const router = createRouter({
                     path: 'companies',
                     name: 'admin-companies',
                     component: CompanyAppsView
+                },
+                {
+                    path: 'calls',
+                    name: 'admin-calls',
+                    component: CallsAdminView
                 },
             ]
         },

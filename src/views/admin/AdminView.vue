@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import NavCardItem from '@/components/ui/NavCardItem.vue'
 import UsersIcon from '@/assets/icons/users.svg'
+import AdminIcon from '@/assets/icons/admin.svg'
 </script>
 
 <template>
@@ -19,6 +20,12 @@ import UsersIcon from '@/assets/icons/users.svg'
             to="/admin/companies"
             :roles="['admin', 'super_admin']"
             :icon="UsersIcon"
+        />
+        <NavCardItem
+            :label="$t('adminPanel.calls_management')"
+            to="/admin/calls"
+            :roles="['admin', 'super_admin']"
+            :icon="AdminIcon"
         />
       </div>
     </aside>

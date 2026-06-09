@@ -5,7 +5,7 @@ import { useRoute } from 'vue-router'
 
 import AppHeader from '@/components/layout/AppHeader.vue'
 import AppFooter from '@/components/layout/AppFooter.vue'
-import CookieConsent from "@/components/layout/CookieConsent.vue";
+import CookieConsent from '@/components/layout/CookieConsent.vue'
 
 const route = useRoute()
 
