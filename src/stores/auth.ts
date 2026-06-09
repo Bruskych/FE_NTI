@@ -223,43 +223,44 @@ export const useAuthStore = defineStore('auth', {
             }
         },
 
-        // Загрузка фото в профиль пользователя
         async uploadAvatar(file: File): Promise<void> {
-            this.loading = true;
-            this.error = null;
+            this.loading = true
+            this.error = null
             try {
-                const formData = new FormData();
-                formData.append('photo', file);
-                const { data } = await api.post('/auth/store', formData, {
+                const formData = new FormData()
+                formData.append('avatar', file)
+                const { data } = await api.post('/settings/update-profile/avatar', formData, {
                     headers: { 'Content-Type': 'multipart/form-data' }
-                });
+                })
                 if (data.user) {
-                    this.user = data.user;
+                    this.user = data.user
                     localStorage.setItem('cached_user', JSON.stringify(data.user))
                 }
-            } catch (error: unknown) {
-                console.error('Avatar upload failed:', error);
-                throw error;
             } finally {
-                this.loading = false;
+                this.loading = false
             }
         },
 
-        // Обновления имени + фамилии пользователя
-        async updateProfileInfo(payload: { name: string }): Promise<void> {
-            this.loading = true;
-            this.error = null;
+        async updateProfileInfo(payload: { name?: string; email?: string }): Promise<void> {
+            this.loading = true
+            this.error = null
             try {
-                const { data } = await api.put('/settings/update-profile', payload);
-                if (data.user) {
-                    this.user = data.user;
-                    localStorage.setItem('cached_user', JSON.stringify(data.user));
+                if (payload.name !== undefined) {
+                    const { data } = await api.post('/settings/update-profile/name', { name: payload.name })
+                    if (data.user) {
+                        this.user = data.user
+                        localStorage.setItem('cached_user', JSON.stringify(data.user))
+                    }
                 }
-            } catch (error: unknown) {
-                console.error('Profile update failed:', error);
-                throw error;
+                if (payload.email !== undefined) {
+                    const { data } = await api.post('/settings/update-profile/email', { email: payload.email })
+                    if (data.user) {
+                        this.user = data.user
+                        localStorage.setItem('cached_user', JSON.stringify(data.user))
+                    }
+                }
             } finally {
-                this.loading = false;
+                this.loading = false
             }
         },
 

@@ -1,6 +1,26 @@
 {
   "profile_settings_title": "Profile Settings",
   "photo": "Profile photo",
-  "personal_info": "Personal Information",
-  "label_name": "Full Name"
+  "personal_info": "Account Info",
+  "label_name": "Full Name",
+  "label_email": "Email Address",
+  "label_role": "Role",
+  "label_member_since": "Member since",
+  "edit": "Edit",
+  "save": "Save",
+  "cancel": "Cancel",
+  "saving": "Saving...",
+  "saved": "Saved successfully",
+  "avatar_change": "Change photo",
+  "avatar_loading": "Uploading...",
+  "avatar_hint": "JPG, PNG or WebP · max 2 MB",
+  "student_profile_title": "Student Profile",
+  "label_study_program": "Study Program",
+  "label_year": "Year of Study",
+  "label_avg_grade": "Average Grade (1–4)",
+  "label_skills": "Skills",
+  "label_has_carried": "Has carried subjects",
+  "skills_placeholder": "Add skill and press Enter",
+  "year_placeholder": "e.g. 2",
+  "program_placeholder": "e.g. Computer Science"
 }

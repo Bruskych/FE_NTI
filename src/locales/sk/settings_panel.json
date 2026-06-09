@@ -1,6 +1,26 @@
 {
   "profile_settings_title": "Nastavenia profilu",
   "photo": "Profilová fotografia",
-  "personal_info": "Osobné informácie",
-  "label_name": "Celé meno"
+  "personal_info": "Informácie o účte",
+  "label_name": "Celé meno",
+  "label_email": "E-mailová adresa",
+  "label_role": "Rola",
+  "label_member_since": "Člen od",
+  "edit": "Upraviť",
+  "save": "Uložiť",
+  "cancel": "Zrušiť",
+  "saving": "Ukladám...",
+  "saved": "Úspešne uložené",
+  "avatar_change": "Zmeniť fotografiu",
+  "avatar_loading": "Nahrávam...",
+  "avatar_hint": "JPG, PNG alebo WebP · max 2 MB",
+  "student_profile_title": "Profil študenta",
+  "label_study_program": "Študijný program",
+  "label_year": "Ročník",
+  "label_avg_grade": "Priemerná známka (1–4)",
+  "label_skills": "Zručnosti",
+  "label_has_carried": "Má opakované predmety",
+  "skills_placeholder": "Pridaj zručnosť a stlač Enter",
+  "year_placeholder": "napr. 2",
+  "program_placeholder": "napr. Informatika"
 }
