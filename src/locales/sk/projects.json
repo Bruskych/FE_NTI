@@ -24,5 +24,17 @@
   "project_status_active": "Aktívny",
   "project_status_completed": "Dokončený",
   "project_status_suspended": "Pozastavený",
-  "project_status_archived": "Archivovaný"
+  "project_status_archived": "Archivovaný",
+  "milestone_add": "Pridať míľnik",
+  "milestone_create_title": "Nový míľnik",
+  "milestone_edit_title": "Upraviť míľnik",
+  "milestone_delete_confirm": "Odstrániť tento míľnik?",
+  "milestone_delete_yes": "Áno, odstrániť",
+  "milestone_field_title": "Názov",
+  "milestone_field_description": "Popis",
+  "milestone_field_deadline": "Termín dokončenia",
+  "milestone_field_completion": "Dokončenie (%)",
+  "milestone_field_status": "Stav",
+  "milestone_save": "Uložiť",
+  "milestone_cancel": "Zrušiť"
 }

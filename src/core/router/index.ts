@@ -24,6 +24,8 @@ const ChallengesView = () => import('@/views/ChallengesView.vue')
 const OrganizationView = () => import('@/views/OrganizationView.vue')
 const MentorshipsView = () => import('@/views/MentorshipsView.vue')
 const DocumentsView = () => import('@/views/DocumentsView.vue')
+const ConsultationsView = () => import('@/views/ConsultationsView.vue')
+const EvaluationsView = () => import('@/views/EvaluationsView.vue')
 
 const router = createRouter({
     history: createWebHistory(), // Используем WebHistory для красивых URL без хэша
@@ -86,6 +88,18 @@ const router = createRouter({
             name: 'documents',
             component: DocumentsView,
             meta: { requiresAuth: true, blockRoles: ['visitor'] }
+        },
+        {
+            path: '/consultations',
+            name: 'consultations',
+            component: ConsultationsView,
+            meta: { requiresAuth: true, blockRoles: ['visitor', 'company', 'evaluator', 'content_editor'] }
+        },
+        {
+            path: '/evaluations',
+            name: 'evaluations',
+            component: EvaluationsView,
+            meta: { requiresAuth: true, blockRoles: ['visitor', 'student', 'team_leader', 'company', 'mentor', 'content_editor'] }
         },
         {
             path: '/login',

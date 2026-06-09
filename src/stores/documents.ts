@@ -92,18 +92,38 @@ export const useDocumentsStore = defineStore('documents', () => {
 
   async function downloadDocument(documentId: number, code?: string): Promise<void> {
     const params = code ? { code } : {}
-    const res = await api.get(`/documents/${documentId}/download`, {
-      params,
-      responseType: 'blob',
-    })
+    let res
+    try {
+      res = await api.get(`/documents/${documentId}/download`, {
+        params,
+        responseType: 'blob',
+      })
+    } catch (err: unknown) {
+      const e = err as { response?: { data?: Blob; status?: number } }
+      if (e.response?.data instanceof Blob) {
+        const text = await e.response.data.text()
+        let message = 'Download failed'
+        try {
+          const json = JSON.parse(text) as { message?: string }
+          message = json.message ?? message
+        } catch {
+          // not JSON (HTML error page)
+        }
+        throw new Error(message, { cause: err })
+      }
+      throw err
+    }
     const doc = documents.value.find(d => d.id === documentId)
     const filename = doc?.file_name ?? `document-${documentId}`
-    const url = URL.createObjectURL(new Blob([res.data]))
+    const blob = res.data instanceof Blob ? res.data : new Blob([res.data as BlobPart])
+    const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
     a.download = filename
+    document.body.appendChild(a)
     a.click()
-    URL.revokeObjectURL(url)
+    document.body.removeChild(a)
+    setTimeout(() => URL.revokeObjectURL(url), 150)
   }
 
   return {

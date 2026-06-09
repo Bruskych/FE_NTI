@@ -1,16 +1,26 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useDocumentsStore } from '@/stores/documents'
-import type { DocumentClassification } from '@/stores/documents'
+import { useAuthStore } from '@/stores/auth'
+import type { DocumentClassification, Document } from '@/stores/documents'
 
 const store = useDocumentsStore()
+const authStore = useAuthStore()
+
+function canDownload(doc: Document): boolean {
+  if (doc.classification === 'public') return true
+  if (authStore.user?.id === doc.uploaded_by) return true
+  if (authStore.hasAnyRole(['admin', 'super_admin', 'evaluator'])) return true
+  return false
+}
 
 type FilterTab = 'all' | DocumentClassification
+const filterTabs: FilterTab[] = ['all', 'public', 'internal', 'confidential']
 const activeFilter = ref<FilterTab>('all')
 
 const filtered = computed(() => {
   if (activeFilter.value === 'all') return store.documents
-  return store.documents.filter(d => d.classification === activeFilter.value)
+  return store.documents.filter((d: Document) => d.classification === activeFilter.value)
 })
 
 // Upload modal
@@ -92,8 +102,10 @@ async function handleDownload(id: number, classification: DocumentClassification
   }
   try {
     await store.downloadDocument(id)
-  } catch {
-    // silent
+  } catch (err: unknown) {
+    const e = err as { message?: string }
+    console.error('Download error:', err)
+    alert(e.message ?? t('documents.download_error'))
   }
 }
 
@@ -103,8 +115,9 @@ async function submitCode() {
   try {
     await store.downloadDocument(codeDocId.value, codeValue.value.trim())
     codeDocId.value = null
-  } catch {
-    codeError.value = t('documents.code_error')
+  } catch (err: unknown) {
+    const e = err as Error
+    codeError.value = e.message ?? t('documents.code_error')
   }
 }
 
@@ -160,7 +173,7 @@ onMounted(() => store.fetchDocuments())
       <!-- Filters -->
       <div class="filter-tabs">
         <button
-          v-for="tab in (['all','public','internal','confidential'] as const)"
+          v-for="tab in filterTabs"
           :key="tab"
           class="filter-tab"
           :class="{ active: activeFilter === tab }"
@@ -240,6 +253,7 @@ onMounted(() => store.fetchDocuments())
 
           <div class="doc-actions">
             <button
+              v-if="canDownload(doc)"
               class="action-btn action-download"
               :disabled="store.actionLoading"
               @click="handleDownload(doc.id, doc.classification)"

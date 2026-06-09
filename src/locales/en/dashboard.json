@@ -21,6 +21,10 @@
   "card_admin_desc": "Manage users, calls, and platform settings",
   "card_documents": "Documents",
   "card_documents_desc": "Files and agreements linked to your applications and projects",
+  "card_consultations": "Consultations",
+  "card_consultations_desc": "Scheduled meetings with your mentor and their records",
+  "card_evaluations": "Evaluations",
+  "card_evaluations_desc": "Review and score applications awaiting expert evaluation",
   "card_settings": "Settings",
   "card_settings_desc": "Update your profile and preferences"
 }

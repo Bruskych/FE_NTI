@@ -24,5 +24,17 @@
   "project_status_active": "Active",
   "project_status_completed": "Completed",
   "project_status_suspended": "Suspended",
-  "project_status_archived": "Archived"
+  "project_status_archived": "Archived",
+  "milestone_add": "Add milestone",
+  "milestone_create_title": "New milestone",
+  "milestone_edit_title": "Edit milestone",
+  "milestone_delete_confirm": "Delete this milestone?",
+  "milestone_delete_yes": "Yes, delete",
+  "milestone_field_title": "Title",
+  "milestone_field_description": "Description",
+  "milestone_field_deadline": "Deadline",
+  "milestone_field_completion": "Completion (%)",
+  "milestone_field_status": "Status",
+  "milestone_save": "Save",
+  "milestone_cancel": "Cancel"
 }

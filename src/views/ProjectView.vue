@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useProjectsStore } from '@/stores/projects'
 import { useAuthStore } from '@/stores/auth'
 import type { Milestone } from '@/stores/projects'
@@ -37,6 +37,88 @@ async function handleApprove(milestoneId: number) {
   } catch (err: unknown) {
     const e = err as { response?: { data?: { message?: string } } }
     alert(e.response?.data?.message ?? 'Error approving milestone')
+  }
+}
+
+// ─── Create milestone modal ──────────────────────────────────────────────────
+
+const showCreate = ref(false)
+const createError = ref<string | null>(null)
+const createForm = ref({ title: '', description: '', deadline: '' })
+
+function openCreate() {
+  createForm.value = { title: '', description: '', deadline: '' }
+  createError.value = null
+  showCreate.value = true
+}
+
+async function submitCreate() {
+  if (!project.value || !createForm.value.title || !createForm.value.deadline) return
+  createError.value = null
+  try {
+    await projectsStore.createMilestone(project.value.id, {
+      title: createForm.value.title,
+      description: createForm.value.description || null,
+      deadline: createForm.value.deadline,
+    })
+    showCreate.value = false
+  } catch (err: unknown) {
+    const e = err as { response?: { data?: { message?: string } } }
+    createError.value = e.response?.data?.message ?? 'Failed to create milestone.'
+  }
+}
+
+// ─── Edit milestone modal ────────────────────────────────────────────────────
+
+const showEdit = ref(false)
+const editMilestoneId = ref<number | null>(null)
+const editError = ref<string | null>(null)
+const editForm = ref({
+  title: '',
+  description: '',
+  completion_percentage: 0,
+  status: 'pending' as 'pending' | 'in_progress' | 'completed',
+})
+
+function openEdit(m: Milestone) {
+  editMilestoneId.value = m.id
+  editForm.value = {
+    title: m.title,
+    description: m.description ?? '',
+    completion_percentage: m.completion_percentage,
+    status: (m.status === 'approved' || m.status === 'overdue') ? 'completed' : m.status as 'pending' | 'in_progress' | 'completed',
+  }
+  editError.value = null
+  showEdit.value = true
+}
+
+async function submitEdit() {
+  if (!editMilestoneId.value || !project.value) return
+  editError.value = null
+  try {
+    await projectsStore.updateMilestone(editMilestoneId.value, project.value.id, {
+      title: editForm.value.title,
+      description: editForm.value.description || null,
+      completion_percentage: editForm.value.completion_percentage,
+      status: editForm.value.status,
+    })
+    showEdit.value = false
+  } catch (err: unknown) {
+    const e = err as { response?: { data?: { message?: string } } }
+    editError.value = e.response?.data?.message ?? 'Failed to update milestone.'
+  }
+}
+
+// ─── Delete milestone ────────────────────────────────────────────────────────
+
+const deleteTarget = ref<number | null>(null)
+
+async function confirmDelete() {
+  if (!deleteTarget.value || !project.value) return
+  try {
+    await projectsStore.deleteMilestone(deleteTarget.value, project.value.id)
+  } finally {
+    deleteTarget.value = null
   }
 }
 
@@ -113,7 +195,15 @@ onMounted(() => projectsStore.fetchProjects())
 
         <!-- Milestones -->
         <div class="milestones-section">
-          <h3 class="section-title">{{ $t('projects.milestones') }}</h3>
+          <div class="section-header">
+            <h3 class="section-title">{{ $t('projects.milestones') }}</h3>
+            <button v-if="isMentorOrAdmin" class="btn-add-milestone" @click="openCreate">
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+              </svg>
+              {{ $t('projects.milestone_add') }}
+            </button>
+          </div>
 
           <div v-if="!project.milestones?.length" class="no-milestones">
             {{ $t('projects.no_milestones') }}
@@ -157,14 +247,30 @@ onMounted(() => projectsStore.fetchProjects())
                     </span>
                   </div>
 
-                  <button
-                    v-if="isMentorOrAdmin && m.is_completed && !m.is_approved"
-                    class="approve-btn"
-                    :disabled="projectsStore.actionLoading === m.id"
-                    @click="handleApprove(m.id)"
-                  >
-                    {{ $t('projects.approve') }}
-                  </button>
+                  <div class="ms-action-group">
+                    <button
+                      v-if="isMentorOrAdmin && m.is_completed && !m.is_approved"
+                      class="approve-btn"
+                      :disabled="projectsStore.actionLoading === m.id"
+                      @click="handleApprove(m.id)"
+                    >
+                      {{ $t('projects.approve') }}
+                    </button>
+                    <template v-if="isMentorOrAdmin && !m.is_approved">
+                      <button class="ms-icon-btn" :disabled="projectsStore.actionLoading === m.id" @click="openEdit(m)" title="Edit">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                        </svg>
+                      </button>
+                      <button class="ms-icon-btn ms-icon-delete" :disabled="projectsStore.actionLoading === m.id" @click="deleteTarget = m.id" title="Delete">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                          <path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/>
+                        </svg>
+                      </button>
+                    </template>
+                  </div>
                 </div>
 
                 <!-- Mini progress bar -->
@@ -179,6 +285,111 @@ onMounted(() => projectsStore.fetchProjects())
       </template>
     </div>
   </div>
+<!-- Create milestone modal -->
+<Teleport to="body">
+  <div v-if="showCreate" class="modal-overlay" @click.self="showCreate = false">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>{{ $t('projects.milestone_create_title') }}</h2>
+        <button class="modal-close" @click="showCreate = false">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>{{ $t('projects.milestone_field_title') }}</label>
+          <input type="text" v-model="createForm.title" />
+        </div>
+        <div class="form-group">
+          <label>{{ $t('projects.milestone_field_description') }}</label>
+          <textarea v-model="createForm.description" rows="3"></textarea>
+        </div>
+        <div class="form-group">
+          <label>{{ $t('projects.milestone_field_deadline') }}</label>
+          <input type="date" v-model="createForm.deadline" />
+        </div>
+        <p v-if="createError" class="form-error">{{ createError }}</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" @click="showCreate = false">{{ $t('projects.milestone_cancel') }}</button>
+        <button class="btn-primary" :disabled="!createForm.title || !createForm.deadline || projectsStore.actionLoading === -1" @click="submitCreate">
+          {{ projectsStore.actionLoading === -1 ? '...' : $t('projects.milestone_save') }}
+        </button>
+      </div>
+    </div>
+  </div>
+</Teleport>
+
+<!-- Edit milestone modal -->
+<Teleport to="body">
+  <div v-if="showEdit" class="modal-overlay" @click.self="showEdit = false">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>{{ $t('projects.milestone_edit_title') }}</h2>
+        <button class="modal-close" @click="showEdit = false">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>{{ $t('projects.milestone_field_title') }}</label>
+          <input type="text" v-model="editForm.title" />
+        </div>
+        <div class="form-group">
+          <label>{{ $t('projects.milestone_field_description') }}</label>
+          <textarea v-model="editForm.description" rows="3"></textarea>
+        </div>
+        <div class="form-group">
+          <label>{{ $t('projects.milestone_field_status') }}</label>
+          <select v-model="editForm.status">
+            <option value="pending">{{ $t('projects.milestone_status_pending') }}</option>
+            <option value="in_progress">{{ $t('projects.milestone_status_in_progress') }}</option>
+            <option value="completed">{{ $t('projects.milestone_status_completed') }}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>{{ $t('projects.milestone_field_completion') }}</label>
+          <div class="range-group">
+            <input type="range" min="0" max="100" step="5" v-model.number="editForm.completion_percentage" />
+            <span class="range-val">{{ editForm.completion_percentage }}%</span>
+          </div>
+        </div>
+        <p v-if="editError" class="form-error">{{ editError }}</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" @click="showEdit = false">{{ $t('projects.milestone_cancel') }}</button>
+        <button class="btn-primary" :disabled="!editForm.title || !!projectsStore.actionLoading" @click="submitEdit">
+          {{ projectsStore.actionLoading === editMilestoneId ? '...' : $t('projects.milestone_save') }}
+        </button>
+      </div>
+    </div>
+  </div>
+</Teleport>
+
+<!-- Delete confirm -->
+<Teleport to="body">
+  <div v-if="deleteTarget" class="modal-overlay" @click.self="deleteTarget = null">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h2>{{ $t('projects.milestone_delete_confirm') }}</h2>
+        <button class="modal-close" @click="deleteTarget = null">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" @click="deleteTarget = null">{{ $t('projects.milestone_cancel') }}</button>
+        <button class="btn-danger" @click="confirmDelete">{{ $t('projects.milestone_delete_yes') }}</button>
+      </div>
+    </div>
+  </div>
+</Teleport>
+
 </template>
 
 <style scoped>
@@ -389,4 +600,144 @@ onMounted(() => projectsStore.fetchProjects())
   .page-inner { padding: 32px 20px; }
   .ms-footer { flex-direction: column; align-items: flex-start; }
 }
+
+/* SECTION HEADER */
+.section-header {
+  display: flex; align-items: center;
+  justify-content: space-between; gap: 12px;
+  margin-bottom: 16px;
+}
+.section-header .section-title { margin-bottom: 0; }
+
+.btn-add-milestone {
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 14px;
+  background: color-mix(in srgb, var(--main-color) 12%, transparent);
+  border: 1.5px solid color-mix(in srgb, var(--main-color) 30%, transparent);
+  border-radius: 8px;
+  font-family: var(--font-main), sans-serif;
+  font-size: 12.5px; font-weight: 700;
+  color: var(--main-color);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.btn-add-milestone:hover {
+  background: color-mix(in srgb, var(--main-color) 20%, transparent);
+  border-color: var(--main-color);
+}
+
+/* MS ACTIONS */
+.ms-action-group { display: flex; align-items: center; gap: 6px; }
+
+.ms-icon-btn {
+  display: flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px;
+  background: transparent;
+  border: 1.5px solid var(--menu-border);
+  border-radius: 7px;
+  color: var(--text-color); cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+.ms-icon-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.ms-icon-btn:not(:disabled):hover { border-color: var(--main-color); color: var(--main-color); }
+.ms-icon-delete:not(:disabled):hover { border-color: var(--error-color); color: var(--error-color); }
+
+/* MODAL */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 1000; padding: 20px;
+}
+.modal {
+  background: var(--bg-color);
+  border: 1px solid var(--menu-border);
+  border-radius: 20px;
+  width: 100%; max-width: 480px;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+}
+.modal-sm { max-width: 360px; }
+
+.modal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--menu-border);
+}
+.modal-header h2 { margin: 0; font-size: 17px; font-weight: 800; }
+.modal-close {
+  display: flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px;
+  background: transparent; border: none; border-radius: 8px;
+  color: var(--text-color); cursor: pointer;
+  opacity: 0.5; transition: opacity 0.15s;
+}
+.modal-close:hover { opacity: 1; }
+
+.modal-body { padding: 20px 24px; display: flex; flex-direction: column; gap: 16px; }
+.modal-footer {
+  display: flex; justify-content: flex-end; gap: 10px;
+  padding: 16px 24px; border-top: 1px solid var(--menu-border);
+}
+
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-group label {
+  font-size: 12px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.6px; opacity: 0.6;
+}
+.form-group input,
+.form-group select,
+.form-group textarea {
+  padding: 9px 12px;
+  background: var(--menu-color);
+  border: 1.5px solid var(--menu-border);
+  border-radius: 10px;
+  font-family: var(--font-main), sans-serif;
+  font-size: 13.5px; color: var(--text-color);
+  outline: none; transition: border-color 0.15s;
+  resize: vertical;
+}
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus { border-color: var(--main-color); }
+
+.range-group { display: flex; align-items: center; gap: 12px; }
+.range-group input[type="range"] { flex: 1; accent-color: var(--main-color); }
+.range-val { font-size: 14px; font-weight: 700; color: var(--main-color); min-width: 40px; }
+
+.form-error { font-size: 13px; color: var(--error-color); margin: 0; }
+
+.btn-primary {
+  display: flex; align-items: center; gap: 7px;
+  padding: 9px 18px;
+  background: var(--main-color); color: #fff;
+  border: none; border-radius: 10px;
+  font-family: var(--font-main), sans-serif;
+  font-size: 13.5px; font-weight: 700;
+  cursor: pointer; transition: opacity 0.15s;
+}
+.btn-primary:hover:not(:disabled) { opacity: 0.85; }
+.btn-primary:disabled { opacity: 0.5; cursor: default; }
+
+.btn-secondary {
+  padding: 9px 18px;
+  background: transparent;
+  border: 1.5px solid var(--menu-border);
+  border-radius: 10px;
+  font-family: var(--font-main), sans-serif;
+  font-size: 13.5px; font-weight: 600;
+  color: var(--text-color); cursor: pointer;
+  transition: border-color 0.15s;
+}
+.btn-secondary:hover { border-color: var(--main-color); }
+
+.btn-danger {
+  padding: 9px 18px;
+  background: var(--error-color); color: #fff;
+  border: none; border-radius: 10px;
+  font-family: var(--font-main), sans-serif;
+  font-size: 13.5px; font-weight: 700;
+  cursor: pointer; transition: opacity 0.15s;
+}
+.btn-danger:hover { opacity: 0.85; }
 </style>

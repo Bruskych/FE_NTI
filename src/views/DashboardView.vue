@@ -84,6 +84,22 @@ const allCards: DashCard[] = [
     icon: 'documents',
     roles: ['student', 'team_leader', 'mentor', 'company', 'admin', 'super_admin'],
   },
+  // Consultations
+  {
+    titleKey: 'dashboard.card_consultations',
+    descKey: 'dashboard.card_consultations_desc',
+    to: '/consultations',
+    icon: 'consultations',
+    roles: ['mentor', 'student', 'team_leader', 'admin', 'super_admin'],
+  },
+  // Evaluations
+  {
+    titleKey: 'dashboard.card_evaluations',
+    descKey: 'dashboard.card_evaluations_desc',
+    to: '/evaluations',
+    icon: 'evaluations',
+    roles: ['evaluator', 'admin', 'super_admin'],
+  },
   // Admin
   {
     titleKey: 'dashboard.card_admin',
@@ -186,6 +202,21 @@ const navigate = (to: string) => router.push(to)
             <svg v-else-if="card.icon === 'mentor'" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
               <path d="M12 20h9"/>
               <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+            </svg>
+            <!-- evaluations -->
+            <svg v-else-if="card.icon === 'evaluations'" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/>
+              <rect x="9" y="3" width="6" height="4" rx="1" ry="1"/>
+              <path d="m9 12 2 2 4-4"/>
+            </svg>
+            <!-- consultations -->
+            <svg v-else-if="card.icon === 'consultations'" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+              <line x1="16" y1="2" x2="16" y2="6"/>
+              <line x1="8" y1="2" x2="8" y2="6"/>
+              <line x1="3" y1="10" x2="21" y2="10"/>
+              <line x1="8" y1="14" x2="16" y2="14"/>
+              <line x1="8" y1="18" x2="12" y2="18"/>
             </svg>
             <!-- documents -->
             <svg v-else-if="card.icon === 'documents'" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">

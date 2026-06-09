@@ -21,6 +21,10 @@
   "card_admin_desc": "Spravuj používateľov, výzvy a nastavenia platformy",
   "card_documents": "Dokumenty",
   "card_documents_desc": "Súbory a zmluvy k prihláškami a projektmi",
+  "card_consultations": "Konzultácie",
+  "card_consultations_desc": "Naplánované stretnutia s mentorom a ich záznamy",
+  "card_evaluations": "Hodnotenie",
+  "card_evaluations_desc": "Posudzuj a boduj prihlášky čakajúce na expertné hodnotenie",
   "card_settings": "Nastavenia",
   "card_settings_desc": "Aktualizuj profil a preferencie"
 }
