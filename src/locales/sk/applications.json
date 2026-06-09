@@ -26,6 +26,7 @@
   "action_submit": "Odoslať",
   "action_delete": "Zmazať",
   "submit_confirm": "Odoslať túto prihlášku na posúdenie? Táto akcia je nenávratná.",
+  "submit_error": "Prihlášku sa nepodarilo odoslať. Vyplňte všetky povinné polia.",
   "delete_confirm": "Zmazať túto prihlášku?",
   "form_title": "Nová prihláška",
   "form_select_call": "Vyberte výzvu",

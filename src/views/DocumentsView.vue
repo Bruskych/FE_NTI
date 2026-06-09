@@ -170,8 +170,7 @@ async function handlePreview(doc: Document) {
   try {
     previewUrl.value = await store.getPreviewUrl(doc.id)
   } catch {
-    // interceptor shows error toast
-    previewDoc.value = null
+    // interceptor shows error toast; keep modal open so user sees the error
   } finally {
     previewLoading.value = false
   }

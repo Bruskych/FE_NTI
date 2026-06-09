@@ -10,7 +10,7 @@ import CookieConsent from '@/components/layout/CookieConsent.vue'
 const route = useRoute()
 
 watch(
-    () => route.meta.isWhitePage,
+    () => route.matched.some(r => (r.meta as Record<string, unknown>).isWhitePage),
     (isWhite) => {
       if (isWhite) {
         document.body.classList.add('white-theme')

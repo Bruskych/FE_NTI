@@ -26,6 +26,7 @@
   "action_submit": "Submit",
   "action_delete": "Delete",
   "submit_confirm": "Submit this application for review? This cannot be undone.",
+  "submit_error": "Could not submit application. Please fill in all required fields.",
   "delete_confirm": "Delete this application?",
   "form_title": "New Application",
   "form_select_call": "Select a Call",

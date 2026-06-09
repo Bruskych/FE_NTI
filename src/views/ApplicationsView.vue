@@ -5,6 +5,7 @@ import { useApplicationsStore } from '@/stores/applications'
 import { useCallsStore } from '@/stores/calls'
 import { useAuthStore } from '@/stores/auth'
 import type { Application } from '@/stores/applications'
+import type { Call } from '@/stores/calls'
 
 const { t } = useI18n()
 
@@ -60,7 +61,19 @@ function statusClass(status: string) {
 
 async function handleSubmit(app: Application) {
   if (!confirm(t('applications.submit_confirm'))) return
-  await appsStore.submitApplication(app.id)
+  try {
+    await appsStore.submitApplication(app.id)
+  } catch (err: unknown) {
+    const e = err as { response?: { data?: { message?: string; errors?: Record<string, string[]> } } }
+    const msg = e.response?.data?.message
+    const errs = e.response?.data?.errors
+    if (errs) {
+      const first = Object.values(errs)[0]?.[0]
+      alert(first ?? msg ?? t('applications.submit_error'))
+    } else if (msg) {
+      alert(msg)
+    }
+  }
 }
 
 async function handleDelete(app: Application) {
@@ -73,7 +86,7 @@ async function handleCreate() {
   createError.value = null
   creating.value = true
 
-  const call = openCalls.value.find(c => c.id === selectedCallId.value)
+  const call = openCalls.value.find((c: Call) => c.id === selectedCallId.value)
   if (!call || !call.program) return
 
   try {
