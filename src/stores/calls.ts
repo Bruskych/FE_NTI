@@ -111,5 +111,19 @@ export const useCallsStore = defineStore('calls', {
         this.actionLoading = null
       }
     },
+
+    async createCall(payload: object): Promise<Call> {
+      const { data } = await api.post('/calls', payload)
+      const created: Call = data.data ?? data
+      this.calls.unshift(created)
+      return created
+    },
+
+    async updateCall(callId: number, payload: object): Promise<void> {
+      const { data } = await api.put(`/calls/${callId}`, payload)
+      const updated: Call = data.data ?? data
+      const idx = this.calls.findIndex(c => c.id === callId)
+      if (idx !== -1) this.calls[idx] = updated
+    },
   },
 })

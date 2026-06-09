@@ -15,6 +15,7 @@ const ProfileSettingsView = () => import('@/views/settings/ProfileSettingsView.v
 const AdminView = () => import('@/views/admin/AdminView.vue')
 const StudentAppsView = () => import('@/views/admin/StudentAppsView.vue')
 const CompanyAppsView = () => import('@/views/admin/CompanyAppsView.vue')
+const CallsAdminView = () => import('@/views/admin/CallsAdminView.vue')
 const ForgotPasswordView = () => import('@/views/ForgotPasswordView.vue')
 const ResetPasswordView = () => import('@/views/ResetPasswordView.vue')
 const VerifyEmailView = () => import('@/views/VerifyEmailView.vue')
@@ -105,6 +106,11 @@ const router = createRouter({
                     path: 'companies',
                     name: 'admin-companies',
                     component: CompanyAppsView
+                },
+                {
+                    path: 'calls',
+                    name: 'admin-calls',
+                    component: CallsAdminView
                 },
             ]
         },
