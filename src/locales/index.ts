@@ -48,6 +48,9 @@ import enCalls from './en/calls.json'
 import skTeam from './sk/team.json'
 import enTeam from './en/team.json'
 
+import skApplications from './sk/applications.json'
+import enApplications from './en/applications.json'
+
 const messages = {
     sk: {
         header: skHeader,
@@ -65,7 +68,8 @@ const messages = {
         notification: skNotification,
         dashboard: skDashboard,
         calls: skCalls,
-        team: skTeam
+        team: skTeam,
+        applications: skApplications
     },
     en: {
         header: enHeader,
@@ -83,7 +87,8 @@ const messages = {
         notification: enNotification,
         dashboard: enDashboard,
         calls: enCalls,
-        team: enTeam
+        team: enTeam,
+        applications: enApplications
     }
 }
 

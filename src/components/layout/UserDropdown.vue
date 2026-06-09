@@ -112,6 +112,13 @@ onBeforeUnmount(() => document.removeEventListener('click', handleOutside))
       />
 
       <DropdownMenuItem
+          v-if="canAccessTeam"
+          :label="$t('userPanel.applications')"
+          :icon="DashboardIcon"
+          to="/applications"
+      />
+
+      <DropdownMenuItem
           v-if="isAnyAdmin"
           :label="$t('userPanel.admin_panel')"
           :icon="AdminIcon"
