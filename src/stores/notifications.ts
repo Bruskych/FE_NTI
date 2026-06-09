@@ -1,23 +1,36 @@
 import { defineStore } from 'pinia'
+import { ref } from 'vue'
 
-interface Toast {
-  id: number
-  message: string
-  type: 'success' | 'error'
+// ---------------------------------------------------------
+// Интерфейсы данных
+// ---------------------------------------------------------
+
+export interface Toast {
+    id: number
+    message: string
+    type: 'success' | 'error'
 }
 
-export const useNotificationStore = defineStore('notifications', {
-  state: () => ({
-    toasts: [] as Toast[]
-  }),
-  actions: {
-    add(message: string, type: 'success' | 'error' = 'success') {
-      const id = Date.now()
-      this.toasts.push({ id, message, type })
+// ---------------------------------------------------------
+// Стор уведомлений (Setup Store)
+// ---------------------------------------------------------
 
-      setTimeout(() => {
-        this.toasts = this.toasts.filter(t => t.id !== id)
-      }, 3000)
+export const useNotificationStore = defineStore('notifications', () => {
+    // State
+    const toasts = ref<Toast[]>([])
+
+    // Actions
+    function add(message: string, type: 'success' | 'error' = 'success') {
+        const id = Date.now()
+        toasts.value.push({ id, message, type })
+
+        setTimeout(() => {
+            toasts.value = toasts.value.filter(t => t.id !== id)
+        }, 3000)
     }
-  }
+
+    return {
+        toasts,
+        add
+    }
 })

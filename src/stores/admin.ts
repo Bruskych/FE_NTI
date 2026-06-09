@@ -1,164 +1,176 @@
 import { defineStore } from 'pinia'
+import { ref } from 'vue'
 import type { AxiosError } from 'axios'
 import api from '@/core/api/axios'
 
-// Интерфейсы приведены в строгое соответствие с Laravel API Resources
+// ---------------------------------------------------------
+// Интерфейсы данных
+// ---------------------------------------------------------
+
 export interface StudentApplication {
-  application_id: number
-  status: string
-  submitted_at: string | null
-  student_name: string
-  student_email: string
-  user_id: number | null
+    application_id: number
+    status: string
+    submitted_at: string | null
+    student_name: string
+    student_email: string
+    user_id: number | null
 }
 
 export interface CompanyApplication {
-  application_id: number
-  status: string
-  submitted_at: string | null
-  company_name: string
-  company_tax_id: string
-  sector: string
-  website_link: string | null
-  description: string
-  owner_name: string
-  owner_email: string
-  user_id: number | null
+    application_id: number
+    status: string
+    submitted_at: string | null
+    company_name: string
+    company_tax_id: string
+    sector: string
+    website_link: string | null
+    description: string
+    owner_name: string
+    owner_email: string
+    user_id: number | null
 }
 
 export interface DashboardUser {
-  id: number
-  name: string
-  email: string
-  created_at: string
-  roles: { name: string }[]
+    id: number
+    name: string
+    email: string
+    created_at: string
+    roles: { name: string }[]
 }
 
 export interface DashboardStats {
-  users_count: number
-  pending_applications_count: number
-  latest_users: DashboardUser[]
+    users_count: number
+    pending_applications_count: number
+    latest_users: DashboardUser[]
 }
 
-interface AdminState {
-  studentApplications: StudentApplication[]
-  companyApplications: CompanyApplication[]
-  dashboard: DashboardStats | null
-  dashboardLoading: boolean
-  loading: boolean
-  actionLoading: number | null
-  error: string | null
-}
+// ---------------------------------------------------------
+// Стор администратора (Setup Store)
+// ---------------------------------------------------------
 
-export const useAdminStore = defineStore('admin', {
-  state: (): AdminState => ({
-    studentApplications: [],
-    companyApplications: [],
-    dashboard: null,
-    dashboardLoading: false,
-    loading: false,
-    actionLoading: null,
-    error: null,
-  }),
+export const useAdminStore = defineStore('admin', () => {
+    // State
+    const studentApplications = ref<StudentApplication[]>([])
+    const companyApplications = ref<CompanyApplication[]>([])
+    const dashboard = ref<DashboardStats | null>(null)
 
-  actions: {
-    async fetchDashboard(): Promise<void> {
-      this.dashboardLoading = true
-      try {
-        const { data } = await api.get('/admin/dashboard')
-        this.dashboard = data.data ?? data
-      } catch (error: unknown) {
-        const err = error as AxiosError<{ message?: string }>
-        this.error = err.response?.data?.message || 'Failed to load dashboard'
-      } finally {
-        this.dashboardLoading = false
-      }
-    },
+    const dashboardLoading = ref(false)
+    const loading = ref(false)
+    const actionLoading = ref<number | null>(null)
+    const error = ref<string | null>(null)
 
-    async fetchPendingStudents(): Promise<void> {
-      this.loading = true
-      this.error = null
-      try {
-        const { data } = await api.get('/admin/students/pending')
-        // Laravel Resources возвращают данные в ключе 'data'
-        this.studentApplications = data.data || data
-      } catch (error: unknown) {
-        const err = error as AxiosError<{ message?: string }>
-        this.error = err.response?.data?.message || 'Failed to load students'
-      } finally {
-        this.loading = false
-      }
-    },
-
-    async approveStudent(appId: number, comment?: string): Promise<void> {
-      this.actionLoading = appId
-      try {
-        // Передаем appId (это $this->id на бэкенде)
-        await api.post(`/admin/students/${appId}/approve`, {
-          comment: comment || 'Schválené administrátorom.'
-        })
-        this.studentApplications = this.studentApplications.filter(app => app.application_id !== appId)
-      } catch (error: unknown) {
-        const err = error as AxiosError<{ message?: string }>
-        throw err.response?.data?.message || 'Approve failed'
-      } finally {
-        this.actionLoading = null
-      }
-    },
-
-    async rejectStudent(appId: number, comment: string): Promise<void> {
-      this.actionLoading = appId
-      try {
-        await api.post(`/admin/students/${appId}/reject`, { comment })
-        this.studentApplications = this.studentApplications.filter(app => app.application_id !== appId)
-      } catch (error: unknown) {
-        const err = error as AxiosError<{ message?: string }>
-        throw err.response?.data?.message || 'Reject failed'
-      } finally {
-        this.actionLoading = null
-      }
-    },
-
-    async fetchPendingCompanies(): Promise<void> {
-      this.loading = true
-      this.error = null
-      try {
-        const { data } = await api.get('/admin/companies/pending')
-        this.companyApplications = data.data || data
-      } catch (error: unknown) {
-        const err = error as AxiosError<{ message?: string }>
-        this.error = err.response?.data?.message || 'Failed to load companies'
-      } finally {
-        this.loading = false
-      }
-    },
-
-    async approveCompany(appId: number, comment?: string): Promise<void> {
-      this.actionLoading = appId
-      try {
-        await api.post(`/admin/companies/${appId}/approve`, {
-          comment: comment || 'Firma schválená administrátorom.'
-        })
-        this.companyApplications = this.companyApplications.filter(app => app.application_id !== appId)
-      } catch (error: unknown) {
-        const err = error as AxiosError<{ message?: string }>
-        throw err.response?.data?.message || 'Approve failed'
-      } finally {
-        this.actionLoading = null
-      }
-    },
-
-    async rejectCompany(appId: number, comment: string): Promise<void> {
-      this.actionLoading = appId
-      try {
-        await api.post(`/admin/companies/${appId}/reject`, { comment })
-        this.companyApplications = this.companyApplications.filter(app => app.application_id !== appId)
-      } catch (error: unknown) {
-        const err = error as AxiosError<{ message?: string }>
-        throw err.response?.data?.message || 'Reject failed'
-      } finally {
-        this.actionLoading = null
-      }
+    // Actions
+    async function fetchDashboard(): Promise<void> {
+        dashboardLoading.value = true
+        try {
+            const { data } = await api.get('/admin/dashboard')
+            dashboard.value = data.data ?? data
+        } catch (err: unknown) {
+            const e = err as AxiosError<{ message?: string }>
+            error.value = e.response?.data?.message ?? 'Failed to load dashboard'
+        } finally {
+            dashboardLoading.value = false
+        }
     }
-  }
+
+    async function fetchPendingStudents(): Promise<void> {
+        loading.value = true
+        error.value = null
+        try {
+            const { data } = await api.get('/admin/students/pending')
+            studentApplications.value = data.data ?? data
+        } catch (err: unknown) {
+            const e = err as AxiosError<{ message?: string }>
+            error.value = e.response?.data?.message ?? 'Failed to load students'
+        } finally {
+            loading.value = false
+        }
+    }
+
+    async function approveStudent(appId: number, comment?: string): Promise<void> {
+        actionLoading.value = appId
+        try {
+            await api.post(`/admin/students/${appId}/approve`, {
+                comment: comment || 'Schválené administrátorom.'
+            })
+            studentApplications.value = studentApplications.value.filter(app => app.application_id !== appId)
+        } catch (err: unknown) {
+            const e = err as AxiosError<{ message?: string }>
+            throw e.response?.data?.message ?? 'Approve failed'
+        } finally {
+            actionLoading.value = null
+        }
+    }
+
+    async function rejectStudent(appId: number, comment: string): Promise<void> {
+        actionLoading.value = appId
+        try {
+            await api.post(`/admin/students/${appId}/reject`, { comment })
+            studentApplications.value = studentApplications.value.filter(app => app.application_id !== appId)
+        } catch (err: unknown) {
+            const e = err as AxiosError<{ message?: string }>
+            throw e.response?.data?.message ?? 'Reject failed'
+        } finally {
+            actionLoading.value = null
+        }
+    }
+
+    async function fetchPendingCompanies(): Promise<void> {
+        loading.value = true
+        error.value = null
+        try {
+            const { data } = await api.get('/admin/companies/pending')
+            companyApplications.value = data.data ?? data
+        } catch (err: unknown) {
+            const e = err as AxiosError<{ message?: string }>
+            error.value = e.response?.data?.message ?? 'Failed to load companies'
+        } finally {
+            loading.value = false
+        }
+    }
+
+    async function approveCompany(appId: number, comment?: string): Promise<void> {
+        actionLoading.value = appId
+        try {
+            await api.post(`/admin/companies/${appId}/approve`, {
+                comment: comment || 'Firma schválená administrátorom.'
+            })
+            companyApplications.value = companyApplications.value.filter(app => app.application_id !== appId)
+        } catch (err: unknown) {
+            const e = err as AxiosError<{ message?: string }>
+            throw e.response?.data?.message ?? 'Approve failed'
+        } finally {
+            actionLoading.value = null
+        }
+    }
+
+    async function rejectCompany(appId: number, comment: string): Promise<void> {
+        actionLoading.value = appId
+        try {
+            await api.post(`/admin/companies/${appId}/reject`, { comment })
+            companyApplications.value = companyApplications.value.filter(app => app.application_id !== appId)
+        } catch (err: unknown) {
+            const e = err as AxiosError<{ message?: string }>
+            throw e.response?.data?.message ?? 'Reject failed'
+        } finally {
+            actionLoading.value = null
+        }
+    }
+
+    return {
+        studentApplications,
+        companyApplications,
+        dashboard,
+        dashboardLoading,
+        loading,
+        actionLoading,
+        error,
+        fetchDashboard,
+        fetchPendingStudents,
+        approveStudent,
+        rejectStudent,
+        fetchPendingCompanies,
+        approveCompany,
+        rejectCompany,
+    }
 })
