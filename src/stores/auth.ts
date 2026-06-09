@@ -274,51 +274,33 @@ export const useAuthStore = defineStore('auth', {
          */
         async fetchNotifications(): Promise<void> {
             try {
-                // Бэкенд возвращает ['data' => $notifications], поэтому забираем data.data
-                const { data } = await api.get<{ data: Notification[] }>('/v1/notifications')
+                const { data } = await api.get<{ data: Notification[] }>('/notifications')
                 this.notifications = data.data || []
             } catch (error) {
                 console.error('Failed to fetch notifications:', error)
             }
         },
 
-        /**
-         * 2. Принятие инвайта в команду.
-         * Вызывает эндпоинт POST /api/v1/teams/invite/{notification}/accept (TeamController@acceptInvite)
-         */
         async acceptInvite(notificationId: number): Promise<void> {
             const toastStore = useNotificationStore()
             try {
-                await api.post(`/v1/teams/invite/${notificationId}/accept`)
-                // Передаем системный ключ i18n для вывода успешного тоста
-                toastStore.add('notification.toast.accept_success', 'success')
-                // Удаляем уведомление из списка, чтобы оно исчезло из выпадающего меню
+                await api.post(`/notifications/${notificationId}/accept`)
                 this.notifications = this.notifications.filter(n => n.id !== notificationId)
-                // Перезапрашиваем профиль, так как у пользователя изменился список команд или ролей
                 await this.fetchMe()
             } catch (error: unknown) {
                 const err = error as AxiosError<{ message?: string }>
-                const errorMessage = err.response?.data?.message || 'notification.toast.error'
-                toastStore.add(errorMessage, 'error')
+                toastStore.add(err.response?.data?.message || 'Error', 'error')
             }
         },
 
-        /**
-         * 3. Отклонение инвайта в команду.
-         * Вызывает эндпоинт POST /api/v1/teams/invite/{notification}/decline (TeamController@declineInvite)
-         */
         async declineInvite(notificationId: number): Promise<void> {
             const toastStore = useNotificationStore()
             try {
-                await api.post(`/v1/teams/invite/${notificationId}/decline`)
-                // Передаем системный ключ i18n для вывода тоста об отклонении
-                toastStore.add('notification.toast.decline_success', 'success')
-                // Удаляем уведомление из списка на фронтенде
+                await api.post(`/notifications/${notificationId}/reject`)
                 this.notifications = this.notifications.filter(n => n.id !== notificationId)
             } catch (error: unknown) {
                 const err = error as AxiosError<{ message?: string }>
-                const errorMessage = err.response?.data?.message || 'notification.toast.error'
-                toastStore.add(errorMessage, 'error')
+                toastStore.add(err.response?.data?.message || 'Error', 'error')
             }
         }
     },

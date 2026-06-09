@@ -37,9 +37,18 @@ export const useProjectsStore = defineStore('projects', () => {
   async function fetchProjects() {
     loading.value = true
     try {
-      const res = await api.get('/projects')
-      const data = res.data.data ?? res.data
-      projects.value = Array.isArray(data) ? data : []
+      const listRes = await api.get('/projects')
+      const list: Project[] = Array.isArray(listRes.data.data)
+        ? listRes.data.data
+        : Array.isArray(listRes.data) ? listRes.data : []
+
+      // index does not load milestones — fetch full detail for each project
+      const detailed = await Promise.all(
+        list.map((p: Project) =>
+          api.get(`/projects/${p.id}`).then(r => r.data.data ?? r.data)
+        )
+      )
+      projects.value = detailed
     } finally {
       loading.value = false
     }
