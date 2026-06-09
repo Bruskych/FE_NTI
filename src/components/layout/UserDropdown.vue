@@ -95,7 +95,7 @@ onBeforeUnmount(() => document.removeEventListener('click', handleOutside))
       <DropdownMenuItem
           :label="$t('userPanel.dashboard')"
           :icon="DashboardIcon"
-          to="/"
+          to="/dashboard"
       />
 
       <DropdownMenuItem

@@ -39,6 +39,9 @@ import enHome from './en/home.json'
 import skNotification from './sk/notification.json'
 import enNotification from './en/notification.json'
 
+import skDashboard from './sk/dashboard.json'
+import enDashboard from './en/dashboard.json'
+
 const messages = {
     sk: {
         header: skHeader,
@@ -53,7 +56,8 @@ const messages = {
         actions: skActions,
         adminTable: skAdminTable,
         home: skHome,
-        notification: skNotification
+        notification: skNotification,
+        dashboard: skDashboard
     },
     en: {
         header: enHeader,
@@ -68,7 +72,8 @@ const messages = {
         actions: enActions,
         adminTable: enAdminTable,
         home: enHome,
-        notification: enNotification
+        notification: enNotification,
+        dashboard: enDashboard
     }
 }
 
