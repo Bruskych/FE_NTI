@@ -26,11 +26,27 @@ export interface CompanyApplication {
   user_id: number | null
 }
 
+export interface DashboardUser {
+  id: number
+  name: string
+  email: string
+  created_at: string
+  roles: { name: string }[]
+}
+
+export interface DashboardStats {
+  users_count: number
+  pending_applications_count: number
+  latest_users: DashboardUser[]
+}
+
 interface AdminState {
   studentApplications: StudentApplication[]
   companyApplications: CompanyApplication[]
+  dashboard: DashboardStats | null
+  dashboardLoading: boolean
   loading: boolean
-  actionLoading: number | null // Сюда пишем application_id
+  actionLoading: number | null
   error: string | null
 }
 
@@ -38,12 +54,27 @@ export const useAdminStore = defineStore('admin', {
   state: (): AdminState => ({
     studentApplications: [],
     companyApplications: [],
+    dashboard: null,
+    dashboardLoading: false,
     loading: false,
     actionLoading: null,
     error: null,
   }),
 
   actions: {
+    async fetchDashboard(): Promise<void> {
+      this.dashboardLoading = true
+      try {
+        const { data } = await api.get('/admin/dashboard')
+        this.dashboard = data.data ?? data
+      } catch (error: unknown) {
+        const err = error as AxiosError<{ message?: string }>
+        this.error = err.response?.data?.message || 'Failed to load dashboard'
+      } finally {
+        this.dashboardLoading = false
+      }
+    },
+
     async fetchPendingStudents(): Promise<void> {
       this.loading = true
       this.error = null

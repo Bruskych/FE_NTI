@@ -34,5 +34,25 @@
   "notif_deadlines": "Deadline reminders",
   "notif_deadlines_desc": "Get reminders about upcoming deadlines",
   "notif_marketing": "News & updates",
-  "notif_marketing_desc": "Platform news, tips and new features"
+  "notif_marketing_desc": "Platform news, tips and new features",
+
+  "gdpr_nav": "Data Privacy",
+  "gdpr_title": "Personal Data & Privacy",
+  "gdpr_subtitle": "Manage your personal data in accordance with GDPR",
+  "gdpr_export_title": "Export my data",
+  "gdpr_export_desc": "Download a copy of all your personal data stored in the system. The file will be prepared and sent to your email.",
+  "gdpr_export_btn": "Request export",
+  "gdpr_exporting": "Requesting...",
+  "gdpr_export_queued": "Request received — the file will be sent to your email",
+  "gdpr_export_success": "Personal data export has been queued",
+  "gdpr_erase_title": "Erase my data",
+  "gdpr_erase_desc": "Permanently anonymize and delete all your personal data. This action is irreversible and your account will no longer be accessible.",
+  "gdpr_erase_btn": "Erase my data",
+  "gdpr_erase_confirm_title": "Are you sure?",
+  "gdpr_erase_warning": "This action is IRREVERSIBLE. All your personal data will be anonymized and you will lose access to your account.",
+  "gdpr_erase_confirm_label": "Type \"{word}\" to confirm",
+  "gdpr_erase_confirm_word": "DELETE",
+  "gdpr_erasing": "Erasing...",
+  "gdpr_erase_confirm_btn": "Confirm deletion",
+  "gdpr_erase_success": "Personal data has been anonymized"
 }

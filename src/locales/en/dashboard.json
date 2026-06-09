@@ -25,6 +25,8 @@
   "card_consultations_desc": "Scheduled meetings with your mentor and their records",
   "card_evaluations": "Evaluations",
   "card_evaluations_desc": "Review and score applications awaiting expert evaluation",
+  "card_cms": "Content Management",
+  "card_cms_desc": "Create and edit posts and website pages",
   "card_settings": "Settings",
   "card_settings_desc": "Update your profile and preferences"
 }

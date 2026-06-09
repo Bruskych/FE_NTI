@@ -76,6 +76,18 @@ import enConsultations from './en/consultations.json'
 import skEvaluations from './sk/evaluations.json'
 import enEvaluations from './en/evaluations.json'
 
+import skExports from './sk/exports.json'
+import enExports from './en/exports.json'
+
+import skEmailTemplates from './sk/email_templates.json'
+import enEmailTemplates from './en/email_templates.json'
+
+import skCms from './sk/cms.json'
+import enCms from './en/cms.json'
+
+import skAdminGdpr from './sk/admin_gdpr.json'
+import enAdminGdpr from './en/admin_gdpr.json'
+
 const messages = {
     sk: {
         header: skHeader,
@@ -103,6 +115,10 @@ const messages = {
         documents: skDocuments,
         consultations: skConsultations,
         evaluations: skEvaluations,
+        exports: skExports,
+        emailTemplates: skEmailTemplates,
+        cms: skCms,
+        adminGdpr: skAdminGdpr,
     },
     en: {
         header: enHeader,
@@ -130,6 +146,10 @@ const messages = {
         documents: enDocuments,
         consultations: enConsultations,
         evaluations: enEvaluations,
+        exports: enExports,
+        emailTemplates: enEmailTemplates,
+        cms: enCms,
+        adminGdpr: enAdminGdpr,
     }
 }
 

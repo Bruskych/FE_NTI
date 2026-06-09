@@ -32,12 +32,7 @@ function msClass(m: Milestone) {
 
 async function handleApprove(milestoneId: number) {
   if (!project.value) return
-  try {
-    await projectsStore.approveMilestone(milestoneId, project.value.id)
-  } catch (err: unknown) {
-    const e = err as { response?: { data?: { message?: string } } }
-    alert(e.response?.data?.message ?? 'Error approving milestone')
-  }
+  await projectsStore.approveMilestone(milestoneId, project.value.id)
 }
 
 // ─── Create milestone modal ──────────────────────────────────────────────────
@@ -645,17 +640,24 @@ onMounted(() => projectsStore.fetchProjects())
 /* MODAL */
 .modal-overlay {
   position: fixed; inset: 0;
-  background: rgba(0, 0, 0, 0.45);
+  background: rgba(0, 0, 0, 0.5);
   display: flex; align-items: center; justify-content: center;
-  z-index: 1000; padding: 20px;
+  z-index: 1001; padding: 20px;
+  color: var(--text-color);
 }
 .modal {
-  background: var(--bg-color);
+  background: var(--menu-color);
   border: 1px solid var(--menu-border);
   border-radius: 20px;
   width: 100%; max-width: 480px;
   display: flex; flex-direction: column;
   overflow: hidden;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.35);
+  animation: modal-in 0.18s ease;
+}
+@keyframes modal-in {
+  from { opacity: 0; transform: translateY(10px) scale(0.98); }
+  to   { opacity: 1; transform: none; }
 }
 .modal-sm { max-width: 360px; }
 

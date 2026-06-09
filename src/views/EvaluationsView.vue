@@ -451,9 +451,10 @@ onMounted(async () => {
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  z-index: 999;
+  z-index: 1001;
   padding: 40px 20px;
   overflow-y: auto;
+  color: var(--text-color);
 }
 .modal {
   background: var(--menu-color);
@@ -516,8 +517,6 @@ onMounted(async () => {
   display: flex;
   flex-direction: column;
   gap: 24px;
-  max-height: 70vh;
-  overflow-y: auto;
 }
 
 .form-section { display: flex; flex-direction: column; gap: 10px; }

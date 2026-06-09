@@ -31,19 +31,11 @@ const formatBudget = (budget: number | null) => {
 }
 
 const handleOpen = async (call: Call) => {
-  try {
-    await callsStore.openCall(call.id)
-  } catch (err) {
-    alert(err)
-  }
+  await callsStore.openCall(call.id)
 }
 
 const handleClose = async (call: Call) => {
-  try {
-    await callsStore.closeCall(call.id)
-  } catch (err) {
-    alert(err)
-  }
+  await callsStore.closeCall(call.id)
 }
 
 onMounted(() => callsStore.fetchCalls())

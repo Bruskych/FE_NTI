@@ -1,0 +1,15 @@
+{
+  "title": "Exporty dát",
+  "subtitle": "Generujte a sťahujte dáta systému v rôznych formátoch",
+  "trigger_title": "Spustiť export",
+  "history_title": "História exportov",
+  "loading": "Načítavam históriu...",
+  "empty": "Zatiaľ nebol vytvorený žiadny export",
+  "scheduled_success": "Export bol úspešne zaradený do fronty",
+  "resource_users": "Používatelia",
+  "resource_projects": "Projekty",
+  "resource_applications": "Prihlášky",
+  "resource_personal_data": "Osobné údaje",
+  "status_done": "Hotový",
+  "status_pending": "Čaká"
+}

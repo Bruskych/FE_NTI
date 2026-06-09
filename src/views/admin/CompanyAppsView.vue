@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
 import { useAdminStore } from '@/stores/admin'
+import { useNotificationStore } from '@/stores/notifications'
 import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
+const notif = useNotificationStore()
 
 import IconButton from '@/components/ui/IconButton.vue'
 import AcceptIcon from '@/assets/icons/check.svg'
@@ -45,25 +47,17 @@ const sortedApplications = computed(() => {
 })
 
 const handleApprove = async (appId: number) => {
-  try {
-    await adminStore.approveCompany(appId, commentText.value[appId])
-    delete commentText.value[appId]
-  } catch (err) {
-    alert(err)
-  }
+  await adminStore.approveCompany(appId, commentText.value[appId])
+  delete commentText.value[appId]
 }
 
 const handleReject = async (appId: number) => {
   if (!commentText.value[appId]) {
-    alert(t('Prosím, uveďte dôvod zamietnutia registrácie firmy.'))
+    notif.add(t('Prosím, uveďte dôvod zamietnutia registrácie firmy.'), 'error')
     return
   }
-  try {
-    await adminStore.rejectCompany(appId, commentText.value[appId])
-    delete commentText.value[appId]
-  } catch (err) {
-    alert(err)
-  }
+  await adminStore.rejectCompany(appId, commentText.value[appId])
+  delete commentText.value[appId]
 }
 
 const formatDate = (dateString: string | null) => {

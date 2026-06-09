@@ -1,0 +1,19 @@
+{
+  "title": "GDPR — správa dát",
+  "subtitle": "Exportujte alebo anonymizujte osobné údaje konkrétneho používateľa",
+  "lookup_title": "Akcia nad používateľom",
+  "lookup_desc": "Zadajte ID používateľa a zvoľte akciu. ID nájdete v zozname prihlášok študentov alebo firiem.",
+  "id_placeholder": "ID používateľa",
+  "export_btn": "Exportovať dáta",
+  "exporting": "Exportujem...",
+  "export_success": "Export osobných dát bol zaradený do fronty",
+  "erase_btn": "Anonymizovať dáta",
+  "confirm_title": "Potvrdiť anonymizáciu",
+  "confirm_warning": "NEVRATNÁ akcia: osobné dáta používateľa #{id} budú anonymizované. Tento krok sa nedá vrátiť späť.",
+  "confirm_label": "Pre potvrdenie napíšte \"{word}\"",
+  "confirm_word": "VYMAZAT",
+  "confirm_btn": "Potvrdiť",
+  "erasing": "Anonymizujem...",
+  "erase_success": "Osobné dáta používateľa boli anonymizované",
+  "info": "Táto sekcia slúži na plnenie GDPR požiadaviek. Export vytvorí JSON súbor so všetkými osobnými dátami. Anonymizácia nahradí osobné údaje generickými hodnotami a zruší prístupy."
+}

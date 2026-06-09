@@ -111,12 +111,7 @@ async function handleSave() {
 
 async function handleDelete(challenge: Challenge) {
   if (!confirm(t('challenges.delete_confirm'))) return
-  try {
-    await challengesStore.deleteChallenge(challenge.id)
-  } catch (err: unknown) {
-    const e = err as { response?: { data?: { message?: string } } }
-    alert(e.response?.data?.message ?? 'Error')
-  }
+  await challengesStore.deleteChallenge(challenge.id)
 }
 
 function toggleSpec(id: number) {
@@ -533,7 +528,8 @@ onMounted(async () => {
 .modal-overlay {
   position: fixed; inset: 0; background: rgba(0,0,0,0.45);
   display: flex; align-items: center; justify-content: center;
-  z-index: 999; padding: 20px; overflow-y: auto;
+  z-index: 1001; padding: 20px; overflow-y: auto;
+  color: var(--text-color);
 }
 .modal-box {
   background: var(--menu-color);
