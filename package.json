@@ -11,7 +11,9 @@
     "lint:fix": "eslint . --fix",
     "type-check": "vue-tsc --noEmit",
     "check": "npm run lint && npm run type-check && npm run build",
-    "prepare": "husky"
+    "prepare": "husky",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.2.4",
@@ -33,6 +35,7 @@
     "autoprefixer": "^10.5.0",
     "eslint": "^10.3.0",
     "eslint-plugin-vue": "^10.9.0",
+    "gh-pages": "^6.3.0",
     "globals": "^17.6.0",
     "husky": "^9.1.7",
     "typescript-eslint": "^8.59.1",
