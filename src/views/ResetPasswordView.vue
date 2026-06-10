@@ -61,7 +61,7 @@ const handleSubmit = async () => {
   serverError.value = ''
 
   try {
-    await api.post('/reset-password', form.value)
+    await api.post('/auth/reset-password', form.value)
     router.push({ name: 'login' })
   } catch (error: unknown) {
     // Безопасное приведение ошибки к типу без any для прохождения eslint проверки
