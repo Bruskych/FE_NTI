@@ -85,7 +85,7 @@ const navigateToSection = async (sectionId: string) => {
     <div class="footer-copyright-line">
       <div class="footer-wrap copyright-flex">
         <p class="copyright-text">© 2026 Nitriansky technologický inkubátor. {{ $t('footer.license') }}</p>
-        <router-link to="/privacy" class="legal-bottom-link">
+        <router-link to="/page/privacy-policy" class="legal-bottom-link">
           {{ $t('footer.privacy_policy') }}
         </router-link>
       </div>

@@ -175,7 +175,7 @@
     /* TEXT */
     --text-color: var(--main-light-1);
     --text-color-hover: var(--main-color);
-    --text-color-unimp: var(--main-dark-4);
+    --text-color-unimp: var(--main-light-3);
 
     /* 1 BUTTON */
     --button-text-color: var(--main-light-1);

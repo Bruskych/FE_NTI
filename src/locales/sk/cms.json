@@ -38,5 +38,8 @@
   "page_updated": "Stránka bola aktualizovaná",
   "page_deleted": "Stránka bola odstránená",
   "delete_title": "Odstrániť?",
-  "delete_confirm": "Naozaj chcete odstrániť \"{title}\"?"
+  "delete_confirm": "Naozaj chcete odstrániť \"{title}\"?",
+  "post_not_found": "Tento príspevok sa nepodarilo nájsť.",
+  "page_not_found": "Túto stránku sa nepodarilo nájsť.",
+  "back_home": "Späť na domovskú stránku"
 }

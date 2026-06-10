@@ -33,14 +33,26 @@ const MentorshipsView = () => import('@/views/MentorshipsView.vue')
 const DocumentsView = () => import('@/views/DocumentsView.vue')
 const ConsultationsView = () => import('@/views/ConsultationsView.vue')
 const EvaluationsView = () => import('@/views/EvaluationsView.vue')
+const PostView = () => import('@/views/PostView.vue')
+const PageView = () => import('@/views/PageView.vue')
 
 const router = createRouter({
-    history: createWebHistory(), // Используем WebHistory для красивых URL без хэша
+    history: createWebHistory(import.meta.env.BASE_URL), // Используем WebHistory для красивых URL без хэша
     routes: [
         {
             path: '/',
             name: 'home',
             component: HomeView
+        },
+        {
+            path: '/news/:slug',
+            name: 'post',
+            component: PostView
+        },
+        {
+            path: '/page/:slug',
+            name: 'page',
+            component: PageView
         },
         {
             path: '/dashboard',

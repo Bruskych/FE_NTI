@@ -5,8 +5,8 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 import svgLoader from 'vite-svg-loader'
 
 // https://vite.dev/config/
-export default defineConfig({
-  base: '/FE_NTI/',
+export default defineConfig(({ command }) => ({
+  base: command === 'build' ? '/FE_NTI/' : '/',
   plugins: [
     vue(),
     vueDevTools(),
@@ -25,4 +25,4 @@ export default defineConfig({
       usePolling: true,
     },
   },
-})
+}))

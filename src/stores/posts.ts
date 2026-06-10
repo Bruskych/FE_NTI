@@ -63,6 +63,18 @@ export const usePostsStore = defineStore('posts', () => {
         }
     }
 
+    async function fetchPostBySlug(slug: string): Promise<void> {
+        loading.value = true
+        error.value = null
+        try {
+            const { data } = await api.get('/posts')
+            const list: Post[] = data.data ?? data
+            currentPost.value = list.find(p => p.slug === slug) ?? null
+        } finally {
+            loading.value = false
+        }
+    }
+
     async function createPost(payload: object): Promise<Post> {
         actionLoading.value = 0 // Используем 0 как флаг создания
         try {
@@ -105,6 +117,7 @@ export const usePostsStore = defineStore('posts', () => {
         error,
         fetchPosts,
         fetchPost,
+        fetchPostBySlug,
         createPost,
         updatePost,
         deletePost,
