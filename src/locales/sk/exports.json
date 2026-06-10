@@ -11,5 +11,7 @@
   "resource_applications": "Prihlášky",
   "resource_personal_data": "Osobné údaje",
   "status_done": "Hotový",
-  "status_pending": "Čaká"
+  "status_pending": "Čaká",
+  "delete": "Odstrániť export",
+  "delete_confirm": "Naozaj chcete odstrániť tento export aj jeho súbor?"
 }

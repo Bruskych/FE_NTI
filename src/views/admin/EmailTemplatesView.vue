@@ -98,8 +98,12 @@ async function handleSubmit() {
       notif.add(t('emailTemplates.created'), 'success')
     }
     closeModal()
-  } catch {
-    // interceptor handles
+  } catch (err: unknown) {
+    const e = err as { response?: { data?: { errors?: Record<string, string[]>; message?: string } } }
+    const errors = e.response?.data?.errors
+    formError.value = errors
+      ? Object.values(errors).flat().join(' ')
+      : e.response?.data?.message || t('emailTemplates.validation')
   }
 }
 
@@ -129,6 +133,7 @@ onMounted(() => store.fetchTemplates())
 </script>
 
 <template>
+  <div>
   <div class="et-page">
 
     <!-- Header -->
@@ -312,6 +317,7 @@ onMounted(() => store.fetchTemplates())
       </div>
     </transition>
   </teleport>
+  </div>
 </template>
 
 <style scoped>

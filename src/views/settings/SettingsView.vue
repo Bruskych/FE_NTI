@@ -61,7 +61,7 @@ import ShieldIcon from '@/assets/icons/shield.svg'
     <main class="settings-content">
       <router-view v-slot="{ Component }">
         <transition name="page-fade" mode="out-in">
-          <component :is="Component" />
+          <component :is="Component" :key="$route.name" />
         </transition>
       </router-view>
     </main>
@@ -91,6 +91,7 @@ import ShieldIcon from '@/assets/icons/shield.svg'
   padding: 32px 16px;
   box-sizing: border-box;
   background: var(--menu-color);
+  border-right: 1px solid var(--menu-border);
 }
 
 .sidebar-menu {

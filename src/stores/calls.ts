@@ -69,6 +69,21 @@ export const useCallsStore = defineStore('calls', () => {
         }
     }
 
+    // Публичный список открытых отборов с дедлайнами — доступен без авторизации (главная страница)
+    async function fetchOpenCalls(): Promise<void> {
+        loading.value = true
+        error.value = null
+        try {
+            const { data } = await api.get('/calls/open')
+            calls.value = data.data ?? data
+        } catch (err: unknown) {
+            const e = err as AxiosError<{ message?: string }>
+            error.value = e.response?.data?.message || 'Failed to load open calls'
+        } finally {
+            loading.value = false
+        }
+    }
+
     async function openCall(callId: number): Promise<void> {
         actionLoading.value = callId
         try {
@@ -135,6 +150,7 @@ export const useCallsStore = defineStore('calls', () => {
         draftCalls,
         closedCalls,
         fetchCalls,
+        fetchOpenCalls,
         openCall,
         closeCall,
         deleteCall,

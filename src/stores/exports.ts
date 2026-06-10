@@ -41,9 +41,9 @@ export const useExportsStore = defineStore('exports', () => {
     try {
       const { data } = await api.get('/admin/exports', { params: { page } })
       logs.value = data.data ?? []
-      currentPage.value = data.meta?.current_page ?? page
-      lastPage.value = data.meta?.last_page ?? 1
-      total.value = data.meta?.total ?? logs.value.length
+      currentPage.value = data.current_page ?? page
+      lastPage.value = data.last_page ?? 1
+      total.value = data.total ?? logs.value.length
     } finally {
       loading.value = false
     }
@@ -53,14 +53,22 @@ export const useExportsStore = defineStore('exports', () => {
     scheduling.value = exportType
     try {
       const { data } = await api.post('/admin/exports', { export_type: exportType })
-      const newLog: ExportLog = data.data?.export ?? data.export
-      logs.value.unshift(newLog)
-      total.value++
+      const newLog: ExportLog = data.data?.export ?? data.export ?? data.data ?? data
+      if (newLog && newLog.id) {
+        logs.value.unshift(newLog)
+        total.value++
+      }
       return newLog
     } finally {
       scheduling.value = null
     }
   }
 
-  return { logs, loading, scheduling, currentPage, lastPage, total, types, typesLoaded, fetchTypes, fetchLogs, scheduleExport }
+  async function deleteExport(id: number) {
+    await api.delete(`/admin/exports/${id}`)
+    logs.value = logs.value.filter(l => l.id !== id)
+    total.value = Math.max(0, total.value - 1)
+  }
+
+  return { logs, loading, scheduling, currentPage, lastPage, total, types, typesLoaded, fetchTypes, fetchLogs, scheduleExport, deleteExport }
 })

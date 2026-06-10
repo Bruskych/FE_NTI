@@ -130,12 +130,9 @@ const router = createRouter({
             path: '/settings',
             name: 'settings',
             component: SettingsView,
+            redirect: { name: 'settings-profile' },
             meta: { requiresAuth: true, isWhitePage: true, blockRoles: ['visitor'] },
             children: [
-                {
-                    path: '',
-                    redirect: { name: 'settings-profile' }
-                },
                 {
                     path: 'profile',
                     name: 'settings-profile',
@@ -157,12 +154,9 @@ const router = createRouter({
             path: '/admin',
             name: 'admin',
             component: AdminView,
+            redirect: { name: 'admin-dashboard' },
             meta: { requiresAuth: true, requiresAdmin: true, isWhitePage: true },
             children: [
-                {
-                    path: '',
-                    redirect: { name: 'admin-dashboard' }
-                },
                 {
                     path: 'dashboard',
                     name: 'admin-dashboard',

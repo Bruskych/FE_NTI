@@ -40,10 +40,10 @@ export const useBulkMessagesStore = defineStore('bulkMessages', () => {
     loading.value = true
     try {
       const { data } = await api.get(`/admin/bulk-messages?page=${page}`)
-      messages.value = data.data
+      messages.value = data.data ?? []
       currentPage.value = data.meta?.current_page ?? 1
       lastPage.value = data.meta?.last_page ?? 1
-      total.value = data.meta?.total ?? data.data?.length ?? 0
+      total.value = data.meta?.total ?? messages.value.length
     } finally {
       loading.value = false
     }

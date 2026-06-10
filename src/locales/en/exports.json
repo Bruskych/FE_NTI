@@ -11,5 +11,7 @@
   "resource_applications": "Applications",
   "resource_personal_data": "Personal data",
   "status_done": "Done",
-  "status_pending": "Pending"
+  "status_pending": "Pending",
+  "delete": "Delete export",
+  "delete_confirm": "Are you sure you want to delete this export and its file?"
 }

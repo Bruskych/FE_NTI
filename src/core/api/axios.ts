@@ -50,11 +50,11 @@ api.interceptors.response.use(
   (error) => {
     const notifications = useNotificationStore()
 
-    if (error.response?.status === 422) {
+    if (error.response?.status === 422 || error.response?.status === 404) {
       return Promise.reject(error)
     }
 
-    // Для всех остальных критических ошибок (401, 403, 404, 500) выводим глобальный тост
+    // Для всех остальных критических ошибок (401, 403, 500) выводим глобальный тост
     const errorMessage = error.response?.data?.message || 'System error (Connection failed)'
     notifications.add(errorMessage, 'error')
 

@@ -50,6 +50,7 @@ async function handleErase() {
 </script>
 
 <template>
+  <div>
   <div class="gdpr-page">
 
     <div class="page-header">
@@ -157,6 +158,7 @@ async function handleErase() {
       </div>
     </transition>
   </teleport>
+  </div>
 </template>
 
 <style scoped>

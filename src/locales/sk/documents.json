@@ -23,6 +23,8 @@
   "action_request_code": "Požiadať o prístupový kód",
   "preview_loading": "Načítavam náhľad...",
   "preview_open_new": "Otvoriť v novom okne",
+  "preview_unsupported": "Náhľad nie je dostupný pre tento typ súboru. Stiahnite súbor na zobrazenie.",
+  "preview_unavailable": "Náhľad sa nepodarilo načítať.",
   "delete_confirm": "Odstrániť tento dokument?",
   "upload_title": "Nahrať dokument",
   "upload_file_label": "Súbor",

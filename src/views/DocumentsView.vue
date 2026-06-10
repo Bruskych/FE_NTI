@@ -759,12 +759,30 @@ onMounted(() => store.fetchDocuments())
                 :alt="previewDoc.file_name"
               />
               <iframe
-                v-else
+                v-else-if="previewDoc.mime_type === 'application/pdf'"
                 :src="previewUrl"
                 class="preview-iframe"
                 :title="previewDoc.file_name"
               />
+              <div v-else class="preview-unsupported">
+                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+                </svg>
+                <p>{{ $t('documents.preview_unsupported') }}</p>
+                <a :href="previewUrl" download class="btn-dl-unsupported">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+                  </svg>
+                  {{ $t('documents.action_download') }}
+                </a>
+              </div>
             </template>
+            <div v-else-if="!previewLoading" class="preview-unsupported">
+              <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+              </svg>
+              <p>{{ $t('documents.preview_unavailable') }}</p>
+            </div>
           </div>
 
           <div class="modal-footer">
@@ -1300,6 +1318,39 @@ onMounted(() => store.fetchDocuments())
   border-top: 1px solid var(--menu-border);
   margin-top: 16px;
 }
+.preview-unsupported {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 48px 32px;
+  text-align: center;
+  opacity: 0.65;
+}
+.preview-unsupported p {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0;
+}
+.btn-dl-unsupported {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  background: var(--main-color);
+  color: #fff;
+  border: none;
+  border-radius: 9px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  opacity: 1;
+  transition: opacity 0.15s;
+}
+.btn-dl-unsupported:hover { opacity: 0.85; }
+
 .btn-open-new {
   display: inline-flex;
   align-items: center;

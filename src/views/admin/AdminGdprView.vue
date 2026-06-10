@@ -14,14 +14,15 @@ const showConfirm  = ref(false)
 const confirmInput = ref('')
 
 function isValidId() {
-  return /^\d+$/.test(userId.value.trim()) && parseInt(userId.value) > 0
+  const id = String(userId.value).trim()
+  return /^\d+$/.test(id) && parseInt(id) > 0
 }
 
 async function handleExport() {
   if (!isValidId()) return
   exporting.value = true
   try {
-    await api.post(`/admin/gdpr/users/${userId.value.trim()}/export`)
+    await api.post(`/admin/gdpr/users/${String(userId.value).trim()}/export`)
     notif.add(t('adminGdpr.export_success'), 'success')
   } catch {
     // interceptor
@@ -39,7 +40,7 @@ async function handleErase() {
   if (confirmInput.value !== t('adminGdpr.confirm_word')) return
   erasing.value = true
   try {
-    await api.delete(`/admin/gdpr/users/${userId.value.trim()}`)
+    await api.delete(`/admin/gdpr/users/${String(userId.value).trim()}`)
     notif.add(t('adminGdpr.erase_success'), 'success')
     userId.value = ''
     showConfirm.value = false
@@ -52,6 +53,7 @@ async function handleErase() {
 </script>
 
 <template>
+  <div>
   <div class="gdpr-admin-page">
 
     <div class="page-header">
@@ -158,6 +160,7 @@ async function handleErase() {
       </div>
     </transition>
   </teleport>
+  </div>
 </template>
 
 <style scoped>

@@ -23,6 +23,8 @@
   "action_request_code": "Request access code",
   "preview_loading": "Loading preview...",
   "preview_open_new": "Open in new tab",
+  "preview_unsupported": "Preview is not available for this file type. Please download the file to view it.",
+  "preview_unavailable": "Preview could not be loaded.",
   "delete_confirm": "Delete this document?",
   "upload_title": "Upload document",
   "upload_file_label": "File",

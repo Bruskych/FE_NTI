@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { onMounted, computed } from 'vue'
+import { onMounted, onUnmounted, computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useExportsStore } from '@/stores/exports'
+import { useExportsStore, type ExportLog } from '@/stores/exports'
 import { useNotificationStore } from '@/stores/notifications'
+import api from '@/core/api/axios'
 
 const { t } = useI18n()
 const store = useExportsStore()
@@ -29,13 +30,71 @@ const orderedResources = computed(() =>
   resourceOrder.filter(r => store.types[r]?.length)
 )
 
+let pollTimer: ReturnType<typeof setInterval> | null = null
+
+function pollUntilDone() {
+  if (pollTimer) return
+  let attempts = 0
+  pollTimer = setInterval(async () => {
+    attempts++
+    await store.fetchLogs(store.currentPage)
+    const stillPending = store.logs.some((l: ExportLog) => !l.file_path)
+    if (!stillPending || attempts >= 10) {
+      if (pollTimer) clearInterval(pollTimer)
+      pollTimer = null
+    }
+  }, 1500)
+}
+
+onUnmounted(() => {
+  if (pollTimer) clearInterval(pollTimer)
+})
+
 async function trigger(exportType: string) {
   if (store.scheduling) return
   try {
     await store.scheduleExport(exportType)
     notif.add(t('exports.scheduled_success'), 'success')
+    pollUntilDone()
   } catch {
     // interceptor handles
+  }
+}
+
+const downloading = ref<number | null>(null)
+
+async function download(log: ExportLog) {
+  if (!log.file_path || downloading.value) return
+  downloading.value = log.id
+  try {
+    const response = await api.get(`/admin/exports/${log.id}/download`, { responseType: 'blob' })
+    const url = window.URL.createObjectURL(new Blob([response.data]))
+    const link = document.createElement('a')
+    link.href = url
+    link.download = log.file_path.split('/').pop() ?? 'export'
+    document.body.appendChild(link)
+    link.click()
+    link.remove()
+    window.URL.revokeObjectURL(url)
+  } catch {
+    // interceptor handles
+  } finally {
+    downloading.value = null
+  }
+}
+
+const deleting = ref<number | null>(null)
+
+async function removeExport(log: ExportLog) {
+  if (deleting.value) return
+  if (!window.confirm(t('exports.delete_confirm'))) return
+  deleting.value = log.id
+  try {
+    await store.deleteExport(log.id)
+  } catch {
+    // interceptor handles
+  } finally {
+    deleting.value = null
   }
 }
 
@@ -58,6 +117,9 @@ function formatLabel(exportType: string): string {
 onMounted(async () => {
   await store.fetchTypes()
   await store.fetchLogs()
+  if (store.logs.some((l: ExportLog) => !l.file_path)) {
+    pollUntilDone()
+  }
 })
 </script>
 
@@ -145,12 +207,37 @@ onMounted(async () => {
             <p class="log-type">{{ log.export_type }}</p>
           </div>
           <div class="log-meta">
-            <span class="log-status" :class="log.file_path ? 'status-done' : 'status-pending'">
-              {{ log.file_path ? $t('exports.status_done') : $t('exports.status_pending') }}
+            <button
+              v-if="log.file_path"
+              class="log-download"
+              :class="{ loading: downloading === log.id }"
+              :disabled="!!downloading"
+              @click="download(log)"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+              {{ $t('exports.status_done') }}
+            </button>
+            <span v-else class="log-status status-pending">
+              {{ $t('exports.status_pending') }}
             </span>
             <span class="log-user">{{ log.user?.name ?? '—' }}</span>
             <span class="log-date">{{ formatDate(log.created_at) }}</span>
           </div>
+          <button
+            class="log-delete"
+            :class="{ loading: deleting === log.id }"
+            :disabled="!!deleting"
+            :title="$t('exports.delete')"
+            @click="removeExport(log)"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+              <path d="M10 11v6"/><path d="M14 11v6"/>
+            </svg>
+          </button>
         </div>
       </div>
 
@@ -365,8 +452,45 @@ onMounted(async () => {
 }
 .status-done    { background: color-mix(in srgb, var(--good-color) 15%, transparent); color: var(--good-color); }
 .status-pending { background: color-mix(in srgb, #f59e0b 15%, transparent); color: #f59e0b; }
+
+.log-download {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 3px 9px;
+  border-radius: 100px;
+  border: none;
+  cursor: pointer;
+  background: color-mix(in srgb, var(--good-color) 15%, transparent);
+  color: var(--good-color);
+  font-family: inherit;
+  transition: background 0.15s;
+}
+.log-download:hover:not(:disabled) { background: color-mix(in srgb, var(--good-color) 28%, transparent); }
+.log-download:disabled { opacity: 0.6; cursor: not-allowed; }
+.log-download.loading { opacity: 0.7; }
 .log-user { font-size: 11.5px; opacity: 0.5; }
 .log-date { font-size: 11.5px; opacity: 0.4; white-space: nowrap; }
+
+.log-delete {
+  flex-shrink: 0;
+  width: 30px; height: 30px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 8px;
+  border: 1.5px solid var(--menu-border);
+  background: transparent;
+  color: var(--text-color);
+  opacity: 0.5;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s, opacity 0.15s;
+}
+.log-delete:hover:not(:disabled) { background: var(--error-color); border-color: var(--error-color); color: #fff; opacity: 1; }
+.log-delete:disabled { opacity: 0.3; cursor: not-allowed; }
+.log-delete.loading { opacity: 0.6; }
 
 /* PAGINATION */
 .pagination {
