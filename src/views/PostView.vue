@@ -148,6 +148,7 @@ useSeoMeta(
   gap: 8px;
   font-weight: 600;
   font-size: 0.9rem;
+  color: var(--text-color);
 }
 .author-avatar {
   width: 30px;
